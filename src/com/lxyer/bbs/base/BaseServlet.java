@@ -13,8 +13,6 @@ import org.redkale.util.AnyValue;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.lxyer.bbs.base.RetCodes.RET_USER_UNLOGIN;
 
