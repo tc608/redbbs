@@ -1,0 +1,89 @@
+#@layout()
+
+#define main()
+<div class="main layui-clear">
+  <div class="wrap">
+    <div class="content" style="margin-right:0">
+      <div class="fly-tab">
+        <span>
+          <a href="/jie/all" class="all">全部</a>
+          <a href="/jie/unsolved" class="unsolved">未结帖</a>
+          <a href="/jie/solved" class="solved">已采纳</a>
+          <a href="/jie/wonderful" class="wonderful">精帖</a>
+          <a href="/user">我的帖</a>
+        </span>
+        <form action="https://www.baidu.com/s" class="fly-search">
+          <i class="iconfont icon-sousuo"></i>
+          <input class="layui-input" autocomplete="off" placeholder="搜索内容，回车跳转" type="text" name="wd">
+        </form>
+        <a href="/jie/add" class="layui-btn jie-add">发布帖子</a>
+      </div>
+
+      <ul class="fly-list">
+        #for(x : contents.rows)
+          <li class="fly-list-li">
+            <a href="/user/home.html" class="fly-list-avatar">
+              <img src="#(x.avatar??)" alt="">
+            </a>
+            <h2 class="fly-tip">
+              <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
+                #if(x.top == 1)
+                  <span class="fly-tip-stick">置顶</span>
+                #end
+                #if(x.wonderful == 1)
+                  <span class="fly-tip-jing">精帖</span>
+                #end
+            </h2>
+            <p>
+              <span><a href="/user/home.html">#(x.nickname??"昵称")</a></span>
+              <span>#(x.createTime??)</span>
+              <span>#(x.cateName??)</span>
+              <span class="fly-list-hint">
+                <i class="iconfont" title="回答">&#xe60c;</i> #(x.replyNum??)
+                <i class="iconfont" title="人气">&#xe60b;</i> #(x.viewNum??)
+              </span>
+            </p>
+          </li>
+        #else
+          <li class="fly-none">没有任何帖子</li>
+        #end
+
+      </ul>
+
+      <!-- <div class="fly-none">并无相关数据</div> -->
+
+      <div style="text-align: center">
+        <div id="jie-laypage">  <!--class="laypage-main"-->
+          <!--分页加载到这里-->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+#end
+
+#define js()
+<script>
+    layui.cache.page = 'jie';
+    layui.cache.actived = "#(actived??'all')";
+    layui.cache.url = "#(url)";
+    layui.cache.total = parseInt('#(contents.total??0)');
+    layui.cache.curr = parseInt('#(curr??1)');
+
+
+    layui.cache.user = {
+        username: '游客'
+        ,uid: -1
+        ,avatar: '../../res/images/avatar/00.jpg'
+        ,experience: 83
+        ,sex: '男'
+    };
+    layui.config({
+        version: "2.0.0"
+        ,base: '../../res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use('fly');
+</script>
+#end
