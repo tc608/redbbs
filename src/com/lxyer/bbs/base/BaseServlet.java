@@ -29,6 +29,9 @@ public class BaseServlet extends HttpServlet {
     @Resource
     protected UserService userService;
 
+    /*@Resource(name = "redis")
+    protected RedisCacheSource<String> cache;*/
+
     private HttpRequest request;
     private HttpResponse response;
     private static final Kv _kv = Kv.create();
@@ -52,6 +55,10 @@ public class BaseServlet extends HttpServlet {
             request.setCurrentUser(userService.current(sessionid));
             _kv.set("mine", request.currentUser());
         }
+
+        /*cache.set("a", "ABC");
+        String a = cache.get("a");
+        System.out.println(a);*/
 
         this.request = request;
         this.response = response;

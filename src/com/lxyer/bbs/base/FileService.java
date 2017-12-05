@@ -25,7 +25,7 @@ public class FileService extends BaseService {
         String name = tmpFile.getName();
         String suffix = name.substring(name.lastIndexOf("."));
         String path = String.format(format, System.currentTimeMillis()) + suffix;
-        File destFile = new File((winos ? "E:/wk/_own/bbs/root/tem/" : dir) + path);
+        File destFile = new File((winos ? "E:/wk/redbbs/root/tem/" : dir) + path);
         destFile.getParentFile().mkdir();
         if (!tmpFile.renameTo(destFile)){
             try{

@@ -17,9 +17,10 @@ import java.util.function.Supplier;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet({"/"
+@WebServlet({"/","/site"
         ,"/user", "/user/*"
-        ,"/jie" ,"/jie/*"})
+        ,"/jie" ,"/jie/*"
+})
 public class IndexServlet extends BaseServlet {
 
     @Resource
@@ -39,8 +40,8 @@ public class IndexServlet extends BaseServlet {
         Sheet<ContentInfo> top = contentService.contentQuery(flipper, "top");
 
         //热帖
-        Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
-        Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");
+        /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
+        Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
@@ -49,8 +50,14 @@ public class IndexServlet extends BaseServlet {
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
 
-        Kv kv = Kv.by("top", top).set("contents", contents).set("hotView", hotView).set("hotReply", hotReply).set("lastReg", lastReg);
+        Kv kv = Kv.by("top", top).set("contents", contents)/*.set("hotView", hotView)*/.set("hotReply", hotReply).set("lastReg", lastReg);
         finish("index.html", kv);
+    }
+
+    @HttpMapping(url = "/site", auth = false, comment = "网站首页")
+    public void site(HttpRequest request, HttpResponse response){
+
+        finish("/site.html");
     }
 
     //====================================用户相关====================================
@@ -171,8 +178,8 @@ public class IndexServlet extends BaseServlet {
         Sheet<CommentInfo> comments = commentService.commentQuery(request.getSessionid(false) ,contentid, new Flipper().limit(30));
 
         //热帖
-        Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
-        Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");
+        //Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
+        //Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
@@ -187,7 +194,7 @@ public class IndexServlet extends BaseServlet {
             }
         });
 
-        Kv kv = Kv.by("bean", content).set("comments", comments).set("hotView", hotView).set("hotReply", hotReply);
+        Kv kv = Kv.by("bean", content).set("comments", comments)/*.set("hotView", hotView)*/.set("hotReply", hotReply);
         finish("/jie/detail.html", kv);
     }
 

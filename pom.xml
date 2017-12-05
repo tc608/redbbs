@@ -38,6 +38,12 @@
             <version>3.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>jfinal</artifactId>
+            <version>3.3</version>
+        </dependency>
+
     </dependencies>
 
 

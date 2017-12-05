@@ -29,7 +29,7 @@ public class EJ {
         /*EJ ej = new EJ();
 
         System.out.println(ej.date(1511682960591L));*/
-        List<Kv> list = asList(
+        /*List<Kv> list = asList(
                 Kv.by("k", 1).set("a", "1+1=?").set("q", 2)
                 , Kv.by("k", 2).set("a", "1*1=?").set("q", 1)
                 , Kv.by("k", 3).set("a", "3+2-5=?").set("q", 0)
@@ -41,7 +41,7 @@ public class EJ {
 
         System.out.println(System.currentTimeMillis());
         System.out.println(kv.toString());
-        System.out.println(kv.getStr("q").equals("0"));
+        System.out.println(kv.getStr("q").equals("0"));*/
 
     }
 
