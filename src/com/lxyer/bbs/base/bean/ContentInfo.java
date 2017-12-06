@@ -1,6 +1,5 @@
 package com.lxyer.bbs.base.bean;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 
 /**

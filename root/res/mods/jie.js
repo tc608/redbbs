@@ -233,7 +233,7 @@ layui.define('fly', function(exports){
 
   form.on('submit(jie-add)', function(data){
       var bean = {};
-      ["contentId","title", "content", "cate"].forEach(function (value) {
+      ["contentId","title", "content", "type"].forEach(function (value) {
         bean[value] = data.field[value];
       });
       console.log(bean);

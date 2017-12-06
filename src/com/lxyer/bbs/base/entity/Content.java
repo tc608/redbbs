@@ -5,7 +5,6 @@ import com.lxyer.bbs.base.bean.ContentInfo;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 
 /**
  *

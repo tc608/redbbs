@@ -7,6 +7,8 @@ import com.lxyer.bbs.base.entity.User;
 import com.lxyer.bbs.service.CommentService;
 import com.lxyer.bbs.service.ContentService;
 import org.redkale.net.http.*;
+import org.redkale.source.FilterExpress;
+import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
 
@@ -17,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet({"/","/site"
+@WebServlet({"/","/column","/column/*"
         ,"/user", "/user/*"
         ,"/jie" ,"/jie/*"
 })
@@ -31,13 +33,14 @@ public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
     public void abc(HttpRequest request, HttpResponse response){
-
-        //问答列表
         Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, "untop");
-
         //置顶贴
-        Sheet<ContentInfo> top = contentService.contentQuery(flipper, "top");
+        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 1);
+        Sheet<ContentInfo> top = contentService.contentQuery(flipper, topNode);
+
+        //非置顶贴
+        FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 0);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, untopNode);
 
         //热帖
         /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
@@ -50,8 +53,28 @@ public class IndexServlet extends BaseServlet {
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
 
-        Kv kv = Kv.by("top", top).set("contents", contents)/*.set("hotView", hotView)*/.set("hotReply", hotReply).set("lastReg", lastReg);
+        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg);
         finish("index.html", kv);
+    }
+
+    @HttpMapping(url = "/column", auth = false, comment = "社区首页")
+    public void column(HttpRequest request, HttpResponse response){
+        String para = getPara();//空，qz，fx，jy，gg，dt，
+
+        Kv column = Kv.by("qz", 10).set("fx", 20).set("jy", 30).set("gg", 40).set("dt", 50);//栏目
+
+        Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
+        //帖子列表
+        FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("type", column.getAs(para));
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, filterNode);
+
+        //热议
+        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+
+
+        Kv kv = Kv.by("contents", contents).set("hotReply", hotReply);
+        finish("/jie/index.html", kv);
     }
 
     @HttpMapping(url = "/site", auth = false, comment = "网站首页")

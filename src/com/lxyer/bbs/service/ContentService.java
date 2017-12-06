@@ -17,7 +17,8 @@ import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lxy at 2017/11/26 9:33.
@@ -25,23 +26,16 @@ import java.util.*;
 @RestService(automapping = true, comment = "内容管理")
 public class ContentService extends BaseService{
 
-    /*@Resource(name = "contentInfos")
-    protected CacheSource<ContentInfo> infoCache;*/
-
     @Resource
     protected UserService userService;
 
-    @RestMapping(name = "query", auth = false, comment = "内容列表")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived){
-        FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
-        switch (actived){
-            case "top": filterNode.and("top", 1);break;
-            case "untop": filterNode.and("top", 0);break;
-            case "unsolved": filterNode.and("solved", 0);break;
-            case "solved": filterNode.and("solved", 1);break;
-            case "wonderful": filterNode.and("wonderful", 1);break;
-        }
-
+    /**
+     *
+     * @param flipper
+     * @param filterNode
+     * @return
+     */
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, filterNode);
 
         int[] userids = contents.stream().mapToInt(x -> x.getUserId()).distinct().toArray();
@@ -61,6 +55,19 @@ public class ContentService extends BaseService{
         infos.setRows(list);
         infos.setTotal(contents.getTotal());
         return infos;
+    }
+
+    @RestMapping(name = "query", auth = false, comment = "内容列表")
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived){
+        FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
+        switch (actived){
+            case "top": filterNode.and("top", 1);break;
+            case "untop": filterNode.and("top", 0);break;
+            case "unsolved": filterNode.and("solved", 0);break;
+            case "solved": filterNode.and("solved", 1);break;
+            case "wonderful": filterNode.and("wonderful", 1);break;
+        }
+        return contentQuery(flipper, filterNode);
     }
 
 
@@ -92,7 +99,7 @@ public class ContentService extends BaseService{
 
             source.insert(content);
         }else {
-            source.updateColumn(content, SelectColumn.createIncludes("title", "digest", "content","cate"));
+            source.updateColumn(content, SelectColumn.createIncludes("title", "digest", "content","type"));
         }
 
         return RetResult.success();
@@ -118,6 +125,7 @@ public class ContentService extends BaseService{
         return contentInfo;
     }
 
+    @RestMapping(name = "upview", comment = "增加文章1个访问量")
     public void incrViewNum(int contentId){
         source.updateColumn(Content.class, contentId, ColumnValue.inc("viewNum", 1));
     }
