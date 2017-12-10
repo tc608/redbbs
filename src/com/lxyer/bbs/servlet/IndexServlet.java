@@ -219,7 +219,9 @@ public class IndexServlet extends BaseServlet {
         CompletableFuture.supplyAsync(new Supplier<String>() {
             @Override
             public String get() {
-                contentService.incrViewNum(contentid);
+                User user = request.currentUser();
+                if (user == null || user.getUserId() > 10_0003)
+                    contentService.incrViewNum(contentid);
                 return "";
             }
         });
