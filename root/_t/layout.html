@@ -1,4 +1,9 @@
 <!-- Created by Lxy at 2017/11/25 17:36. -->
+#define columned(e)
+    #if(e == column??"") layui-this
+    #end
+#end
+
 #define layout()
 <!DOCTYPE html>
 <html>
@@ -33,13 +38,17 @@
             <li class="layui-nav-item">
                 <a class="fly-nav-avatar" href="javascript:;">
                     <cite class="layui-hide-xs">#(mine.nickname)</cite>
+                    <!--
                     <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-                    <!--<i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>-->
+                    <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
+                    -->
                     <img src="#(mine.avatar)">
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="/user/set"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-                    <!--<dd><a href="/user/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>-->
+                    <!--
+                    <dd><a href="/user/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+                    -->
                     <dd><a href="/user"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
                     <hr style="margin: 5px 0;">
                     <dd><a href="javascript:;" class="logout" style="text-align: center;">退出</a></dd>
@@ -68,12 +77,12 @@
 <div class="fly-panel fly-column">
     <div class="layui-container">
         <ul class="layui-clear">
-            <li class="layui-hide-xs layui-this"><a href="/">首页</a></li>
-            <li><a href="/column/qz">求助</a></li>
-            <li><a href="/column/fx">分享<span class="layui-badge-dot"></span></a></li>
-            <li><a href="/column/jy">建议</a></li>
-            <li><a href="/column/gg">公告</a></li>
-            <li><a href="/column/dt">动态</a></li>
+            <li class="layui-hide-xs #@columned('')"><a href="/column/">首页</a></li>
+            <li class="#@columned('qz')"><a href="/column/qz">求助</a></li>
+            <li class="#@columned('fx')"><a href="/column/fx">分享<span class="layui-badge-dot"></span></a></li>
+            <li class="#@columned('jy')"><a href="/column/jy">建议</a></li>
+            <li class="#@columned('gg')"><a href="/column/gg">公告</a></li>
+            <li class="#@columned('dt')"><a href="/column/dt">动态</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
 
             <!-- 用户登入后显示 -->

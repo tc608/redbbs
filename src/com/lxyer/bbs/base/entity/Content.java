@@ -1,5 +1,6 @@
 package com.lxyer.bbs.base.entity;
 
+import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.bean.ContentInfo;
 import org.redkale.convert.json.JsonConvert;
@@ -176,6 +177,7 @@ public class Content implements java.io.Serializable {
         return JsonConvert.root().convertTo(this);
     }
 
+    private static final Kv types = Kv.by(10, "求助").set(20, "分享").set(30, "建议").set(40, "公告").set(50, "动态");
     public ContentInfo createContentInfo(){
         ContentInfo info = new ContentInfo();
         info.setContentId(contentId);
@@ -183,24 +185,15 @@ public class Content implements java.io.Serializable {
         info.setTitle(title);
         info.setContent(content);
         info.setCate(cate);
+        info.setType(type);
         info.setViewNum(viewNum);
         info.setReplyNum(replyNum);
         info.setWonderful(wonderful);
         info.setTop(top);
         info.setSolved(solved);
 
-        info.setCateName(cateName());
+        info.setTypeName(types.getOrDefault(type, "其他").toString());
         info.setCreateTime(LxyKit.dateFmt(createTime));
         return info;
-    }
-
-    public String cateName(){
-        switch (cate){
-            case 1: return "Redkale框架综合";
-            case 2: return "JFinal框架综合";
-            case 3: return "Layui框架综合";
-            case 4: return "JSON解析";
-            default: return "其他";
-        }
     }
 }

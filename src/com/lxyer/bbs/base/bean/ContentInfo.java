@@ -22,7 +22,7 @@ public class ContentInfo implements Serializable {
     private int status = 1;
 
     private String createTime;
-    private String cateName;
+    private String typeName;
     private String nickname = "";
     private String avatar = "";
     private int hadCollect = -1;
@@ -139,12 +139,12 @@ public class ContentInfo implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getCateName() {
-        return cateName;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setCateName(String cateName) {
-        this.cateName = cateName;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getNickname() {

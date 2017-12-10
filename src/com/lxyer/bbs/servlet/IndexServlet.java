@@ -60,12 +60,18 @@ public class IndexServlet extends BaseServlet {
     @HttpMapping(url = "/column", auth = false, comment = "社区首页")
     public void column(HttpRequest request, HttpResponse response){
         String para = getPara();//空，qz，fx，jy，gg，dt，
+        int solved = request.getIntParameter("solved", -1);
+        int wonderful = request.getIntParameter("wonderful", -1);
+        int curr = request.getIntParameter("curr", 1);
 
         Kv column = Kv.by("qz", 10).set("fx", 20).set("jy", 30).set("gg", 40).set("dt", 50);//栏目
 
-        Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
+        Flipper flipper = new Flipper().offset((curr-1) * 5).limit(5).sort("top DESC,createTime DESC");
         //帖子列表
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("type", column.getAs(para));
+        if (solved > -1) filterNode.and("solved", solved);
+        if (wonderful > -1) filterNode.and("wonderful", wonderful);
+
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, filterNode);
 
         //热议
@@ -73,7 +79,8 @@ public class IndexServlet extends BaseServlet {
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
 
 
-        Kv kv = Kv.by("contents", contents).set("hotReply", hotReply);
+        Kv kv = Kv.by("contents", contents).set("hotReply", hotReply)
+                .set("solved", solved).set("wonderful", wonderful).set("column", para).set("curr", curr);
         finish("/jie/index.html", kv);
     }
 

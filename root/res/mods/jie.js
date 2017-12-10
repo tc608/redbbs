@@ -4,13 +4,14 @@
 
  */
  
-layui.define('fly', function(exports){
+layui.define(['fly','laypage'], function(exports){
 
   var $ = layui.jquery;
   var layer = layui.layer;
   var util = layui.util;
   var laytpl = layui.laytpl;
   var form = layui.form;
+  var laypage = layui.laypage;
   var fly = layui.fly;
   
   var gather = {}, dom = {
@@ -76,14 +77,12 @@ layui.define('fly', function(exports){
     del: function(div){
       layer.confirm('确认删除该求解么？', function(index){
         layer.close(index);
-        fly.json('/api/jie-delete/', {
-          id: div.data('id')
+        fly.json('/os/content/set', {
+            id: div.data('id')
+            ,v: -1
+            ,field:"status"
         }, function(res){
-          if(res.status === 0){
-            location.href = '/jie/';
-          } else {
-            layer.msg(res.msg);
-          }
+            location.href= "/";
         });
       });
     }
@@ -91,14 +90,12 @@ layui.define('fly', function(exports){
     //设置置顶、状态
     ,set: function(div){
       var othis = $(this);
-      fly.json('/api/jie-set/', {
+      fly.json('/os/content/set', {
         id: div.data('id')
-        ,rank: othis.attr('rank')
+        ,v: othis.attr('v')
         ,field: othis.attr('field')
       }, function(res){
-        if(res.status === 0){
-          location.reload();
-        }
+        location.reload();
       });
     }
 
@@ -267,15 +264,43 @@ layui.define('fly', function(exports){
 
     $("."+ layui.cache.actived).addClass("tab-this");
 
+    function getUrl(curr){
+        var args=new Object();
+        var query=location.search.substring(1);//获取查询串
+        var pairs=query.split("&");//在逗号处断开
+        for(var i=0;i<pairs.length;i++){
+            var pos=pairs[i].indexOf('=');//查找name=value
+            if(pos==-1){//如果没有找到就跳过
+                continue;
+            }
+            var argname=pairs[i].substring(0,pos);//提取name
+            var value=pairs[i].substring(pos+1);//提取value
+            args[argname]=unescape(value);//存为属性
+        }
+        if(curr)args.curr = curr;
+
+        var url = location.href;
+        url = url.substring(0, url.indexOf("?"));
+
+        var search = "?"
+        for(x in args){
+            console.log(search);
+            search = search + x+ "=" +args[x] +"&";
+        }
+        return url+search;//返回对象
+    }
+
     if(layui.cache.curr){
-      layui.laypage({
-          cont:"jie-laypage"
+      layui.laypage.render({
+          elem:"jie-laypage"
           ,curr:layui.cache.curr
-          ,pages: parseInt(layui.cache.total/15) + (layui.cache.total%15 > 0 ? 1:0)
+          ,count: layui.cache.total
+          ,limit:5
           ,jump: function(obj, first){
               var curr = obj.curr;
-              if(!first)
-                  location.href=layui.cache.url+"?curr="+curr;
+              if(!first){
+                  location.href = getUrl(curr);
+              }
           }
       });
   }

@@ -23,15 +23,15 @@
                         <div class="fly-list-info">
                             <a href="/user/#(x.userId)" link>
                                 <cite>#(x.nickname)</cite>
-                                <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                                <i class="layui-badge fly-badge-vip">VIP3</i>
+                                <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+                                <i class="layui-badge fly-badge-vip">VIP3</i>-->
                             </a>
                             <span>#(x.createTime)</span>
 
-                            <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
+                            <!--<span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>-->
                             <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                             <span class="fly-list-nums">
-                    <i class="iconfont icon-pinglun1" title="回答"></i> 66
+                    <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
                   </span>
                         </div>
                         <div class="fly-list-badge">
@@ -48,13 +48,13 @@
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">综合</a>
+                    <a href="/column" class="layui-this">综合</a>
                     <span class="fly-mid"></span>
-                    <a href="">未结</a>
+                    <a href="/column?solved=0">未结</a>
                     <span class="fly-mid"></span>
-                    <a href="">已结</a>
+                    <a href="/column?solved=1">已结</a>
                     <span class="fly-mid"></span>
-                    <a href="">精华</a>
+                    <a href="/column?wonderful=1">精华</a>
                     <span class="fly-filter-right layui-hide-xs">
                 <a href="" class="layui-this">按最新</a>
                 <span class="fly-mid"></span>
@@ -65,11 +65,11 @@
                 <ul class="fly-list">
                     #for(x : contents.rows??)
                     <li>
-                        <a href="user/home.html" class="fly-avatar">
+                        <a href="/user/home.html" class="fly-avatar">
                             <img src="#(x.avatar)" alt="#(x.nickname)">
                         </a>
                         <h2>
-                            <a class="layui-badge">动态</a>
+                            <a class="layui-badge">#(x.typeName)</a>
                             <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
                         </h2>
                         <div class="fly-list-info">
@@ -82,10 +82,12 @@
                             </a>
                             <span>#(x.createTime)</span>
 
+                            <!--
                             <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
-                            <!--<span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>-->
+                            <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
+                            -->
                             <span class="fly-list-nums">
-                    <i class="iconfont icon-pinglun1" title="回答"></i> 66
+                    <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
                   </span>
                         </div>
                         <div class="fly-list-badge">
@@ -96,7 +98,7 @@
                 </ul>
                 <div style="text-align: center">
                     <div class="laypage-main">
-                        <a href="/jie/all" class="laypage-next">更多求解</a>
+                        <a href="/column/" class="laypage-next">更多求解</a>
                     </div>
                 </div>
 
@@ -131,7 +133,7 @@
             </div>
             #end
 
-
+            #define xx()
             <div class="fly-panel fly-signin">
                 <div class="fly-panel-title">
                     签到
@@ -152,6 +154,7 @@
                     -->
                 </div>
             </div>
+            #end
 
             <!--最新加入-->
             <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">

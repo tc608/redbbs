@@ -1,19 +1,26 @@
 #@layout()
 
+#define checked(e)
+    #if(e == "wj" && solved == 0) class="layui-this"
+    #elseif(e == "yj" && solved == 1) class="layui-this"
+    #elseif(e == "jh" && wonderful == 1) class="layui-this"
+    #elseif(e == "zh" && solved == -1 && wonderful == -1) class="layui-this"
+    #end
+#end
+
 #define main()
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8">
             <div class="fly-panel" style="margin-bottom: 0;">
-
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">综合</a>
+                    <a href="?" #@checked('zh')>综合</a>
                     <span class="fly-mid"></span>
-                    <a href="">未结</a>
+                    <a href="?solved=0" #@checked('wj')>未结</a>
                     <span class="fly-mid"></span>
-                    <a href="">已结</a>
+                    <a href="?solved=1" #@checked('yj')>已结</a>
                     <span class="fly-mid"></span>
-                    <a href="">精华</a>
+                    <a href="?wonderful=1" #@checked('jh')>精华</a>
                     <span class="fly-filter-right layui-hide-xs">
             <a href="" class="layui-this">按最新</a>
             <span class="fly-mid"></span>
@@ -25,11 +32,11 @@
                     #for(x : contents.rows)
                     <li>
 
-                        <a href="user/#(x.userId)" class="fly-avatar">
+                        <a href="/user/#(x.userId)" class="fly-avatar">
                             <img src="#(x.avatar??)" alt="#(x.nickname)">
                         </a>
                         <h2>
-                            <a class="layui-badge">分享</a>
+                            <a class="layui-badge">#(x.typeName)</a>
                             <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
                         </h2>
                         <div class="fly-list-info">
@@ -42,8 +49,10 @@
                             </a>
                             <span>#(x.createTime)</span>
 
+                            <!--
                             <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
-                            <!--<span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>-->
+                            <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
+                            -->
                             <span class="fly-list-nums">
                                 <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
                             </span>
@@ -63,12 +72,7 @@
                 </ul>
 
                 <div style="text-align: center">
-                    <div class="laypage-main"><span class="laypage-curr">1</span><a href="/jie/page/2/">2</a><a
-                            href="/jie/page/3/">3</a><a href="/jie/page/4/">4</a><a
-                            href="/jie/page/5/">5</a><span>…</span><a href="/jie/page/148/" class="laypage-last"
-                                                                      title="尾页">尾页</a><a href="/jie/page/2/"
-                                                                                          class="laypage-next">下一页</a>
-                    </div>
+                    <div id="jie-laypage" class=""> </div>
                 </div>
 
             </div>
@@ -86,6 +90,7 @@
                 #end
             </dl>
 
+            #define x()
             <div class="fly-panel">
                 <div class="fly-panel-title">
                     这里可作为广告区域
@@ -95,7 +100,6 @@
                 </div>
             </div>
 
-            #define x()
             <div class="fly-panel fly-link">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
@@ -118,11 +122,8 @@
 #define js()
 <script>
     layui.cache.page = 'jie';
-    layui.cache.actived = "#(actived??'all')";
-    layui.cache.url = "#(url)";
     layui.cache.total = parseInt('#(contents.total??0)');
     layui.cache.curr = parseInt('#(curr??1)');
-
 
     layui.cache.user = {
         username: '游客'

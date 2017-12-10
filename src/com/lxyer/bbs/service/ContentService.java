@@ -179,4 +179,10 @@ public class ContentService extends BaseService{
         return infos;
     }
 
+    @RestMapping(name = "set", comment = "内容操作")
+    public RetResult contentSet(int id, String field, int v){
+        source.updateColumn(Content.class, id, field, v);
+        return RetResult.success();
+    }
+
 }
