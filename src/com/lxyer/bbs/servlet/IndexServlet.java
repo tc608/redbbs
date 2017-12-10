@@ -66,7 +66,7 @@ public class IndexServlet extends BaseServlet {
 
         Kv column = Kv.by("qz", 10).set("fx", 20).set("jy", 30).set("gg", 40).set("dt", 50);//栏目
 
-        Flipper flipper = new Flipper().offset((curr-1) * 5).limit(5).sort("top DESC,createTime DESC");
+        Flipper flipper = new Flipper().offset((curr-1) * 20).limit(20).sort("top DESC,createTime DESC");
         //帖子列表
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("type", column.getAs(para));
         if (solved > -1) filterNode.and("solved", solved);

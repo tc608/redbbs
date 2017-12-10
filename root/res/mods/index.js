@@ -160,7 +160,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
               upload.render({
                 elem: '#uploadImg'
                 ,url: '/os/file/upload'
-                ,size: 200
+                ,size: 2000000
                 ,done: function(res){
                     if(res.retcode == 0){
                         image.val(res.retinfo);

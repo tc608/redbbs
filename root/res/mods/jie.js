@@ -295,7 +295,7 @@ layui.define(['fly','laypage'], function(exports){
           elem:"jie-laypage"
           ,curr:layui.cache.curr
           ,count: layui.cache.total
-          ,limit:5
+          ,limit:20
           ,jump: function(obj, first){
               var curr = obj.curr;
               if(!first){

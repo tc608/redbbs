@@ -51,13 +51,17 @@
 				<div class="fly-detail-user">
 					<a href="/user/#(bean.userId)" class="fly-link">
 					<cite>#(bean.nickname)</cite>
+					<!--
 					<i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
 					<i class="layui-badge fly-badge-vip">VIP3</i>
+					-->
 					</a>
 					<span>#(bean.createTime??)</span>
 				</div>
 				<div class="detail-hits" id="LAY_jieAdmin" data-id="123">
+					<!--
 					<span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
+					-->
 					#if(bean.userId == mine.userId?? || mine.userId?? == 100001)
 					<span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/jie/add/#(bean.contentId)">编辑此贴</a></span>
 					#end
