@@ -11,7 +11,7 @@ import javax.persistence.*;
  *
  * @author lxyer
  */
-@Cacheable(interval = 60)
+@Cacheable(interval = 5*60)
 @Table(catalog = "db_redbbs", name = "content", comment = "[内容表]")
 public class Content implements java.io.Serializable {
 

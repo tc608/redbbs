@@ -2,6 +2,7 @@ package com.lxyer.bbs.base.entity;
 
 import org.redkale.convert.json.JsonConvert;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
  *
  * @author lxyer
  */
+@Cacheable(interval = 5*60)
 @Table(catalog = "db_art_red", name = "dyna_attr", comment = "[动态属性表]")
 public class DynaAttr implements java.io.Serializable {
 
