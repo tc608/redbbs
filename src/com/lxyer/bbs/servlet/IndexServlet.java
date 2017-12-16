@@ -35,7 +35,7 @@ public class IndexServlet extends BaseServlet {
     public void abc(HttpRequest request, HttpResponse response){
         Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
         //置顶贴
-        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 1);
+        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", FilterExpress.GREATERTHAN, 0);
         Sheet<ContentInfo> top = contentService.contentQuery(flipper, topNode);
 
         //非置顶贴

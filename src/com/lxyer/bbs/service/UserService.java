@@ -66,6 +66,7 @@ public class UserService extends BaseService {
         Integer userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         return userid == null ? null : findUserInfo(userid);
     }
+    @RestMapping(name = "userid")
     public int currentUserId(String sessionid){
         Integer userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         return userid == null ? 0 : userid;
