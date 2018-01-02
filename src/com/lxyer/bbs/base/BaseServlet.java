@@ -56,10 +56,6 @@ public class BaseServlet extends HttpServlet {
             _kv.set("mine", request.currentUser());
         }
 
-        /*cache.set("a", "ABC");
-        String a = cache.get("a");
-        System.out.println(a);*/
-
         this.request = request;
         this.response = response;
         String uri = request.getRequestURI();
@@ -79,7 +75,6 @@ public class BaseServlet extends HttpServlet {
             finish("/front/index.html", Kv.by("",""));
             return;
         }*/
-
 
         response.nextEvent();
     }

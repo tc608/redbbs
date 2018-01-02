@@ -5,9 +5,6 @@
     <!--  详细配置说明见： http://redkale.org/redkale.html#redkale_confxml  -->
     
     <resources>
-        <!--<source name="redis" value="org.redkalex.cache.RedisCacheSource" xxx="16">
-            <node addr="120.24.230.60" port="6379"/>
-        </source>-->
     </resources>
         
     <server protocol="HTTP" host="0.0.0.0" port="6060" root="root">
@@ -28,14 +25,6 @@
 
             <!--<rewrite type="location" match="^/([^-]+)-[^-\.]+\.png(.*)" forward="/$1.png"/>-->
         </resource-servlet>
-
-        <!--<response>
-            <defcookie domain="" path=""/>
-            <addheader name="Access-Control-Allow-Origin" value="request.headers.Origin" />
-            <setheader name="Access-Control-Allow-Headers" value="request.headers.Access-Control-Request-Headers"/>
-            <setheader name="Access-Control-Allow-Credentials" value="true"/>
-            <options auto="true" />
-        </response>-->
     </server>
     
 </application>
