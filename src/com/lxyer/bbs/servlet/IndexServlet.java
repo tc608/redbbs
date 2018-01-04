@@ -2,10 +2,14 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.bean.*;
-import com.lxyer.bbs.base.entity.User;
-import com.lxyer.bbs.service.CommentService;
-import com.lxyer.bbs.service.ContentService;
+import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserBean;
+import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.comment.CommentInfo;
+import com.lxyer.bbs.content.ContentBean;
+import com.lxyer.bbs.content.ContentInfo;
+import com.lxyer.bbs.comment.CommentService;
+import com.lxyer.bbs.content.ContentService;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterNode;

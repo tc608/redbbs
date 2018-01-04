@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base.bean;
+package com.lxyer.bbs.base.user;
 
 import org.redkale.convert.ConvertColumn;
 import org.redkale.convert.ConvertType;

@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base.bean;
+package com.lxyer.bbs.comment;
 
 import org.redkale.convert.json.JsonConvert;
 

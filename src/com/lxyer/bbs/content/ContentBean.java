@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base.bean;
+package com.lxyer.bbs.content;
 
 import org.redkale.convert.json.JsonConvert;
 import org.redkale.source.FilterBean;

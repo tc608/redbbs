@@ -1,8 +1,7 @@
-package com.lxyer.bbs.base.entity;
+package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.LxyKit;
-import com.lxyer.bbs.base.bean.ContentInfo;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.*;
@@ -177,7 +176,7 @@ public class Content implements java.io.Serializable {
         return JsonConvert.root().convertTo(this);
     }
 
-    private static final Kv types = Kv.by(10, "求助").set(20, "分享").set(30, "建议").set(40, "公告").set(50, "动态");
+    private static final Kv types = Kv.by(10, "求助").set(20, "分享").set(30, "讨论").set(40, "公告").set(50, "动态");
     public ContentInfo createContentInfo(){
         ContentInfo info = new ContentInfo();
         info.setContentId(contentId);

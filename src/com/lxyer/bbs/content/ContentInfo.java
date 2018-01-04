@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base.bean;
+package com.lxyer.bbs.content;
 
 import java.io.Serializable;
 

@@ -3,7 +3,7 @@ package com.lxyer.bbs.base;
 import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
-import com.lxyer.bbs.service.UserService;
+import com.lxyer.bbs.base.user.UserService;
 import org.redkale.net.http.HttpContext;
 import org.redkale.net.http.HttpRequest;
 import org.redkale.net.http.HttpResponse;

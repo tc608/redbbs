@@ -16,8 +16,8 @@ import java.nio.file.StandardCopyOption;
 @RestService(automapping = true, comment = "文件服务")
 public class FileService extends BaseService {
 
-    private static final String dir = "/var/www/upload/bbs/";
-    private static final String view = "http://img.1216.top/bbs/";
+    private static final String dir = "/var/www/upload/redbbs/";
+    private static final String view = "http://img.1216.top/redbbs/";
     private static final String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
 
     @RestMapping(name = "upload", comment = "文件上传")

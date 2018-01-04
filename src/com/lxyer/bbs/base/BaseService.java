@@ -12,7 +12,6 @@ import java.io.File;
 public class BaseService implements Service {
 
     protected final int sessionExpireSeconds = 30 * 60;
-    protected final int contentinfoExpireSeconds = 30 * 60;
 
     @Resource(name = "SERVER_ROOT")
     protected File webroot;

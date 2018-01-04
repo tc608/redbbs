@@ -1,7 +1,6 @@
-package com.lxyer.bbs.base.entity;
+package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.LxyKit;
-import com.lxyer.bbs.base.bean.CommentInfo;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.*;

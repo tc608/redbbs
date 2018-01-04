@@ -1,12 +1,12 @@
-package com.lxyer.bbs.service;
+package com.lxyer.bbs.base.user;
 
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
-import com.lxyer.bbs.base.bean.LoginBean;
-import com.lxyer.bbs.base.bean.UserBean;
-import com.lxyer.bbs.base.bean.UserInfo;
-import com.lxyer.bbs.base.entity.User;
+import com.lxyer.bbs.base.user.LoginBean;
+import com.lxyer.bbs.base.user.UserBean;
+import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.base.user.User;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
 import org.redkale.net.http.RestService;
@@ -20,8 +20,6 @@ import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;

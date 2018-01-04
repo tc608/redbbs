@@ -1,6 +1,5 @@
-package com.lxyer.bbs.base.entity;
+package com.lxyer.bbs.base.user;
 
-import com.lxyer.bbs.base.bean.UserInfo;
 import org.redkale.convert.ConvertColumn;
 import org.redkale.convert.ConvertType;
 import org.redkale.convert.json.JsonConvert;

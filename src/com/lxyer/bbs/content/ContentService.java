@@ -1,12 +1,13 @@
-package com.lxyer.bbs.service;
+package com.lxyer.bbs.content;
 
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
-import com.lxyer.bbs.base.bean.ContentInfo;
+import com.lxyer.bbs.base.user.UserService;
+import com.lxyer.bbs.content.ContentInfo;
 import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.base.entity.Content;
-import com.lxyer.bbs.base.entity.User;
+import com.lxyer.bbs.content.Content;
+import com.lxyer.bbs.base.user.User;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
 import org.redkale.net.http.RestService;

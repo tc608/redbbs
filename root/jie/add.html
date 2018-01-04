@@ -19,12 +19,15 @@
                                     <div class="layui-input-block">
                                         <select lay-verify="required" name="type">
                                         <option></option>
-                                        <!--[内容栏目]10求助，20分享，30建议，40公告，50动态-->
-                                        <option value="10" #if(bean.type?? == 10) selected #end>求助</option>
-                                        <option value="20" #if(bean.type?? == 20) selected #end>分享</option>
-                                        <option value="30" #if(bean.type?? == 30) selected #end>建议</option>
-                                        <option value="40" #if(bean.type?? == 40) selected #end>公告</option>
-                                        <option value="50" #if(bean.type?? == 50) selected #end>动态</option>
+                                            <!--[内容栏目]10求助，20分享，30建议，40公告，50动态-->
+                                            <option value="10" #if(bean.type?? == 10) selected #end>求助</option>
+                                            <option value="20" #if(bean.type?? == 20) selected #end>分享</option>
+                                            <option value="30" #if(bean.type?? == 30) selected #end>讨论</option>
+                                            <!--高级权限开放类别-->
+                                            #if(mine.userId?? == 100001)
+                                            <option value="40" #if(bean.type?? == 40) selected #end>公告</option>
+                                            <option value="50" #if(bean.type?? == 50) selected #end>动态</option>
+                                            #end
                                         </select>
                                     </div>
                                 </div>

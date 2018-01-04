@@ -1,6 +1,5 @@
-package com.lxyer.bbs.base.bean;
+package com.lxyer.bbs.base.user;
 
-import com.lxyer.bbs.base.entity.User;
 import org.redkale.net.http.RestSessionid;
 import org.redkale.source.FilterBean;
 import org.redkale.util.Comment;

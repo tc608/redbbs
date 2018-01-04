@@ -1,12 +1,11 @@
-package com.lxyer.bbs.service;
+package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.RetCodes;
-import com.lxyer.bbs.base.bean.CommentInfo;
 import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.base.entity.Comment;
-import com.lxyer.bbs.base.entity.Content;
-import com.lxyer.bbs.base.entity.User;
+import com.lxyer.bbs.content.Content;
+import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserService;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
 import org.redkale.net.http.RestService;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.lxyer.bbs.base.RetCodes.*;
-import static java.util.Arrays.asList;
 
 /**
  * Created by Lxy at 2017/11/29 10:00.
