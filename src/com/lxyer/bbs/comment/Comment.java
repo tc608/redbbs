@@ -10,7 +10,7 @@ import javax.persistence.*;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "db_redbbs", name = "comment", comment = "[评论表]")
+@Table(catalog = "redbbs", name = "comment", comment = "[评论表]")
 public class Comment implements java.io.Serializable {
 
     @Id

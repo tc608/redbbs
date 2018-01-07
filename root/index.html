@@ -161,7 +161,10 @@
 
                 <!--最新加入-->
                 <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
-                    <h3 class="fly-panel-title">最新加入</h3>
+                    <h3 class="fly-panel-title">
+                        最新加入|
+                        总用户：<span id="user_count">0</span>人
+                    </h3>
                     <dl>
                         <!--<i class="layui-icon fly-loading">&#xe63d;</i>-->
                         #for(x : lastReg.rows??)
@@ -231,6 +234,9 @@
         ,base: '../res/mods/' //这里实际使用时，建议改成绝对路径
     }).extend({
         fly: 'index'
-    }).use('fly');
+    }).use('fly',function () {
+        var fly = layui.fly;
+        fly.userstat();
+    });
 </script>
 #end

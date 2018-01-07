@@ -309,6 +309,12 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
       }
       return arguments.callee;
     }
+
+    ,userstat: function () {
+      $.getJSON("/os/user/stat",{},function (data) {
+        $("#user_count").html(data.count);
+      });
+    }
     
   };
 

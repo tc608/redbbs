@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "db_art_red", name = "dyna_attr", comment = "[动态属性表]")
+@Table(catalog = "redbbs", name = "dyna_attr", comment = "[动态属性表]")
 public class DynaAttr implements java.io.Serializable {
 
     @Id

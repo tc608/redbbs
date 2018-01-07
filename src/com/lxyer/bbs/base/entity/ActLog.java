@@ -9,7 +9,7 @@ import javax.persistence.*;
  * @author lxyer
  */
 @Cacheable
-@Table(catalog = "db_redbbs", name = "act_log")
+@Table(catalog = "redbbs", name = "act_log")
 public class ActLog implements java.io.Serializable {
 
     @Id

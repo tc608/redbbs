@@ -26,5 +26,5 @@
             <!--<rewrite type="location" match="^/([^-]+)-[^-\.]+\.png(.*)" forward="/$1.png"/>-->
         </resource-servlet>
     </server>
-    
+
 </application>

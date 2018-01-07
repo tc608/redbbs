@@ -5,10 +5,10 @@
     <persistence-unit name="redbbs" transaction-type="RESOURCE_LOCAL">
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://558cfc37a10ef.sh.cdb.myqcloud.com:3817/db_art_red?autoReconnect=true&amp;characterEncoding=utf8"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://dbserver:3306/redbbs?autoReconnect=true&amp;characterEncoding=utf8"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.user" value="cdb_outerroot"/>
-            <property name="javax.persistence.jdbc.password" value="l237809796"/>
+            <property name="javax.persistence.jdbc.user" value="guest"/>
+            <property name="javax.persistence.jdbc.password" value="hello"/>
         </properties>
     </persistence-unit>
     

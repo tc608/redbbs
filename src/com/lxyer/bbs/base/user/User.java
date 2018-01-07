@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "db_redbbs", name = "user")
+@Table(catalog = "redbbs", name = "user")
 public class User implements java.io.Serializable {
 
     @Id

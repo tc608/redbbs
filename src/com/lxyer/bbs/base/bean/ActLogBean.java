@@ -4,14 +4,12 @@ import org.redkale.convert.json.JsonConvert;
 import org.redkale.source.FilterBean;
 
 import javax.persistence.Column;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  *
  * @author lxyer
  */
-@Table(catalog = "db_redbbs", name = "act_log")
 public class ActLogBean implements Serializable, FilterBean {
 
     @Column(comment = "[日志id]")

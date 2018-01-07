@@ -1,26 +1,21 @@
 package com.lxyer.bbs.base.user;
 
+import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
-import com.lxyer.bbs.base.user.LoginBean;
-import com.lxyer.bbs.base.user.UserBean;
-import com.lxyer.bbs.base.user.UserInfo;
-import com.lxyer.bbs.base.user.User;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
 import org.redkale.net.http.RestService;
 import org.redkale.net.http.RestSessionid;
 import org.redkale.service.RetResult;
-import org.redkale.source.CacheSource;
-import org.redkale.source.FilterFunc;
-import org.redkale.source.FilterNode;
-import org.redkale.source.Flipper;
+import org.redkale.source.*;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -114,7 +109,7 @@ public class UserService extends BaseService {
 
         user.setCreateTime(System.currentTimeMillis());
         user.setPassword(user.passwordForMd5());
-        user.setStatus(1);//待激活
+        user.setStatus(1);
         user.setUsername(user.getEmail());
         user.setAvatar("/res/images/avatar/"+ new Random().nextInt(21) +".jpg");//默认头像
 
@@ -156,5 +151,13 @@ public class UserService extends BaseService {
         infos.setTotal(users.getTotal());
 
         return infos;
+    }
+
+    @RestMapping(name = "stat", auth = false, comment = "用户数据统计")
+    public Map userStat(){
+
+        Number count = source.getNumberResult(User.class, FilterFunc.COUNT, "userId", FilterNode.create("status", FilterExpress.NOTEQUAL, -1));
+
+        return Kv.by("count", count);
     }
 }
