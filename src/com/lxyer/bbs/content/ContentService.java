@@ -1,17 +1,16 @@
 package com.lxyer.bbs.content;
 
+import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
+import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.ContentInfo;
 import com.lxyer.bbs.base.entity.ActLog;
 import com.lxyer.bbs.content.Content;
 import com.lxyer.bbs.base.user.User;
-import org.redkale.net.http.RestMapping;
-import org.redkale.net.http.RestParam;
-import org.redkale.net.http.RestService;
-import org.redkale.net.http.RestSessionid;
+import org.redkale.net.http.*;
 import org.redkale.service.RetResult;
 import org.redkale.source.*;
 import org.redkale.util.SelectColumn;
@@ -184,6 +183,34 @@ public class ContentService extends BaseService{
     public RetResult contentSet(int id, String field, int v){
         source.updateColumn(Content.class, id, field, v);
         return RetResult.success();
+    }
+
+    @RestMapping(name = "t",auth = false, comment = "测试HttpScope 模板使用")
+    public HttpScope t(){
+        ContentService contentService = this;
+        Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
+        //置顶贴
+        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", FilterExpress.GREATERTHAN, 0);
+        Sheet<ContentInfo> top = contentService.contentQuery(flipper, topNode);
+
+        //非置顶贴
+        FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 0);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, untopNode);
+
+        //热帖
+        /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
+        Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
+
+        //热议
+        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+
+        //最新加入
+        Sheet<UserInfo> lastReg = userService.lastReg();
+
+        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg);
+
+        return HttpScope.refer("index.html").attr(kv);
     }
 
 }

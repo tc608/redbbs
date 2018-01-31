@@ -25,6 +25,13 @@
 
             <!--<rewrite type="location" match="^/([^-]+)-[^-\.]+\.png(.*)" forward="/$1.png"/>-->
         </resource-servlet>
+        <!--
+           【节点在<server>中唯一】
+           当Server为HTTP协议时，render才有效. 指定输出引擎的实现类
+           value: 输出引擎的实现类, 必须是org.redkale.net.http.HttpRender的子类
+        -->
+        <render value="com.lxyer.bbs.base.EnjoyRender">
+        </render>
     </server>
 
 </application>
