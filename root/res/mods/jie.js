@@ -13,12 +13,19 @@ layui.define(['fly','laypage'], function(exports){
   var form = layui.form;
   var laypage = layui.laypage;
   var fly = layui.fly;
-  
+
+  var editor;
   var gather = {}, dom = {
     jieda: $('#jieda')
     ,content: $('#L_content')
     ,jiedaCount: $('#jiedaCount')
   };
+
+  var jie = {
+      createEditer : function(){
+          editor = fly.editer();
+      }
+  }
 
   //监听专栏选择
   form.on('select(column)', function(obj){
@@ -233,6 +240,7 @@ layui.define(['fly','laypage'], function(exports){
       ["contentId","title", "content", "type"].forEach(function (value) {
         bean[value] = data.field[value];
       });
+      bean["content"] = editor.txt.html();
       console.log(bean);
 
       fly.json("/os/content/save",{
@@ -249,6 +257,7 @@ layui.define(['fly','laypage'], function(exports){
       ["contentId","pid", "content"].forEach(function (value) {
         bean[value] = data.field[value];
       });
+      bean["content"] = editor.txt.html();
       console.log(bean);
 
       fly.json("/os/comment/save",{
@@ -305,5 +314,5 @@ layui.define(['fly','laypage'], function(exports){
       });
   }
 
-  exports('jie', null);
+  exports('jie', jie);
 });

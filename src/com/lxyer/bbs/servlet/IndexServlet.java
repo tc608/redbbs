@@ -6,9 +6,9 @@ import com.lxyer.bbs.base.user.User;
 import com.lxyer.bbs.base.user.UserBean;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.comment.CommentInfo;
+import com.lxyer.bbs.comment.CommentService;
 import com.lxyer.bbs.content.ContentBean;
 import com.lxyer.bbs.content.ContentInfo;
-import com.lxyer.bbs.comment.CommentService;
 import com.lxyer.bbs.content.ContentService;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterExpress;
@@ -17,6 +17,12 @@ import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -26,6 +32,7 @@ import java.util.function.Supplier;
 @WebServlet({"/","/column","/column/*"
         ,"/user", "/user/*"
         ,"/jie" ,"/jie/*"
+        ,"/upload","/upload/*"
 })
 public class IndexServlet extends BaseServlet {
 
@@ -237,6 +244,39 @@ public class IndexServlet extends BaseServlet {
 
     //====================================帖子相关====================================
 
+    //====================================上传相关====================================、
+
+    private static final String dir = "/var/www/upload/redbbs/";
+    private static final String view = "http://img.1216.top/redbbs/";
+    private static final String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
+    protected static final boolean winos = System.getProperty("os.name").contains("Window");
+    @HttpMapping(url = "/upload/img", auth = false, comment = "图片上传")
+    public void uploadImg(HttpRequest request, HttpResponse response){
+        try {
+            Map ret = new HashMap();
+            ret.put("errno", 0);
+            List data = new ArrayList();
+
+            for (MultiPart part : request.multiParts()) {
+                String name = part.getName();
+                String suffix = name.substring(name.lastIndexOf("."));
+                String path = String.format(format, System.currentTimeMillis()) + suffix;
+                File destFile = new File((winos ? "D:/wk/_own/redbbs/root/tem/" : dir) + path);
+                destFile.getParentFile().mkdir();
+
+                part.save(destFile);
+
+                data.add((winos ? "/tem/": view) + path);
+            }
+            ret.put("data", data);
+
+            response.setContentType("application/json; charset=utf-8");
+            response.finish(ret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }

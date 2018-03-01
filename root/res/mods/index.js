@@ -250,6 +250,15 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
       
     }
 
+    ,editer: function(){
+          var E = window.wangEditor;
+          var editor = new E('#editor');
+          editor.customConfig.uploadImgServer = '/upload/img';
+          editor.create()
+
+          return editor;
+    }
+
     ,escape: function(html){
       return String(html||'').replace(/&(?!#?[a-zA-Z0-9]+;)/g, '&amp;')
       .replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');

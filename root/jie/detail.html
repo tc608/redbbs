@@ -89,8 +89,8 @@
 						<div class="fly-detail-user">
 						<a href="" class="fly-link">
 							<cite>#(x.nickname)</cite>
-							<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-							<i class="layui-badge fly-badge-vip">VIP3</i>
+							<!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+							<i class="layui-badge fly-badge-vip">VIP3</i>-->
 						</a>
 						#if(x.userId == bean.userId??)
 						<span>(楼主)</span>
@@ -137,9 +137,10 @@
 					<form action="/jie/reply/" method="post">
 						<div class="layui-form-item layui-form-text">
 						<a name="comment"></a>
-							<div class="layui-input-block">
-								<textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
-							</div>
+							<!--<div class="layui-input-block">
+								<textarea id="mytextarea">Hello, World!</textarea>
+							</div>-->
+							<div id="editor"></div>
 						</div>
 						<div class="layui-form-item">
 							<input type="hidden" name="contentId" value="#(bean.contentId??)">
@@ -186,6 +187,7 @@
 #end
 
 #define js()
+<script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
 <script>
     layui.cache.page = 'jie';
     layui.cache.user = {
@@ -200,14 +202,16 @@
         ,base: '../../res/mods/'
     }).extend({
         fly: 'index'
-    }).use('fly', function(){
+    }).use(['fly', 'jie'], function(){
         var $ = layui.jquery, fly = layui.fly;
+        var jie = layui.jie;
         //如果你是采用模版自带的编辑器，你需要开启以下语句来解析。
-        $('.detail-body').each(function(){
+        /*$('.detail-body').each(function(){
           var othis = $(this), html = othis.html();
           othis.html(fly.content(html));
-        });
+        });*/
 
+        jie.createEditer();
     });
 </script>
 #end
