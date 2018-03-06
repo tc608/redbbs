@@ -12,6 +12,7 @@ import org.redkale.service.RetResult;
 import org.redkale.source.*;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
+import org.redkalex.cache.RedisCacheSource;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ import static com.lxyer.bbs.base.RetCodes.*;
 @RestService(automapping = true, comment = "用户服务")
 public class UserService extends BaseService {
 
-    @Resource(name = "usersessions")
-    protected CacheSource<Integer> sessions;
+    @Resource(name = "redis")
+    protected RedisCacheSource<Integer> sessions;
 
     @Resource
     protected CacheSource<UserInfo> userInfos;
@@ -48,7 +49,7 @@ public class UserService extends BaseService {
         //log(user, 0, "用户登录成功.");
         UserInfo userInfo = user.createUserInfo();
 
-        this.sessions.set(sessionExpireSeconds, loginBean.getSessionid(), userInfo.getUserId());
+        this.sessions.setAsync(sessionExpireSeconds, loginBean.getSessionid(), userInfo.getUserId());
         retResult.setRetcode(0);
         retResult.setResult(userInfo);
         retResult.setRetinfo("登录成功.");
