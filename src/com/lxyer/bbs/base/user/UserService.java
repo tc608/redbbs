@@ -1,6 +1,5 @@
 package com.lxyer.bbs.base.user;
 
-import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
@@ -16,7 +15,6 @@ import org.redkalex.cache.RedisCacheSource;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -62,6 +60,7 @@ public class UserService extends BaseService {
     }
     @RestMapping(name = "userid")
     public int currentUserId(String sessionid){
+        if (sessionid == null) return 0;
         Integer userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         return userid == null ? 0 : userid;
     }
@@ -125,6 +124,16 @@ public class UserService extends BaseService {
 
     @RestMapping(name = "update", comment = "用户信息修改")
     public RetResult userUpdate(@RestSessionid String sessionid, @RestParam(name = "bean") User user, String[] columns){
+        String nickname = user.getNickname();
+        if (nickname == null && nickname.isEmpty())
+            return RetCodes.retResult(RET_USER_NICKNAME_ILLEGAL, "昵称无效");
+
+        nickname = nickname.replace(" ", "");
+        User _user = source.find(User.class, FilterNode.create("nickname", nickname));
+        if (_user != null && _user.getUserId() != currentUserId(sessionid))
+            return RetCodes.retResult(RET_USER_NICKNAME_EXISTS, "昵称已存在");
+
+        user.setNickname(nickname);//去除昵称中的空格
         source.updateColumn(user
                 ,FilterNode.create("userId", currentUserId(sessionid))
                 ,SelectColumn.createIncludes(columns)
@@ -154,11 +163,16 @@ public class UserService extends BaseService {
         return infos;
     }
 
-    @RestMapping(name = "stat", auth = false, comment = "用户数据统计")
+    /*@RestMapping(name = "stat", auth = false, comment = "用户数据统计")
     public Map userStat(){
 
         Number count = source.getNumberResult(User.class, FilterFunc.COUNT, "userId", FilterNode.create("status", FilterExpress.NOTEQUAL, -1));
 
         return Kv.by("count", count);
+    }*/
+
+    @RestMapping(name = "usercount", auth = false, comment = "用户数据统计")
+    public Number userCount() {
+        return source.getNumberResult(User.class, FilterFunc.COUNT, "userId", FilterNode.create("status", FilterExpress.NOTEQUAL, -1));
     }
 }

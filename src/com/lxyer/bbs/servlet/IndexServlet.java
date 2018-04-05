@@ -64,7 +64,10 @@ public class IndexServlet extends BaseServlet {
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
 
-        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg);
+        //用户统计
+        Number userCount = userService.userCount();
+
+        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg).set("userCount", userCount);
         finish("index.html", kv);
     }
 

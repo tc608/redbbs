@@ -39,6 +39,12 @@ public abstract class RetCodes {
     @RetLabel("邮箱无效")
     public static final int RET_USER_EMAIL_ILLEGAL = 3002_0009;
 
+    @RetLabel("昵称无效")
+    public static final int RET_USER_NICKNAME_ILLEGAL = 3002_0010;
+
+    @RetLabel("昵称已存在")
+    public static final int RET_USER_NICKNAME_EXISTS = 3002_0011;
+
     //------------------------------------- 内容模块 -----------------------------------------
 
     //------------------------------------- 评论模块 -----------------------------------------
