@@ -254,7 +254,17 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
           var E = window.wangEditor;
           var editor = new E('#editor');
           editor.customConfig.uploadImgServer = '/upload/img';
-          editor.create()
+
+          var cache_key = "content_" + $("input[name='contentId']").val();
+          var html = localStorage.getItem(cache_key);
+
+          editor.customConfig.onblur = function (html) {
+              localStorage.setItem(cache_key, html);
+          };
+
+          editor.create();
+
+          if (html) editor.txt.html(html);//缓存的内容
 
           return editor;
     }
@@ -319,11 +329,11 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
       return arguments.callee;
     }
 
-    ,userstat: function () {
+    /*,userstat: function () {
       $.getJSON("/os/user/stat",{},function (data) {
         $("#user_count").html(data.count);
       });
-    }
+    }*/
     
   };
 

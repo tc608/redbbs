@@ -4,12 +4,10 @@ import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.LxyKit;
 import com.lxyer.bbs.base.RetCodes;
+import com.lxyer.bbs.base.entity.ActLog;
+import com.lxyer.bbs.base.user.User;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
-import com.lxyer.bbs.content.ContentInfo;
-import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.content.Content;
-import com.lxyer.bbs.base.user.User;
 import org.redkale.net.http.*;
 import org.redkale.service.RetResult;
 import org.redkale.source.*;
@@ -89,6 +87,11 @@ public class ContentService extends BaseService{
 
     @RestMapping(name = "save", auth = true, comment = "内容保存")
     public RetResult contentSave(@RestParam(name = "bean")Content content, @RestSessionid String sessionid){
+        //数据校验
+        if (content.getTitle().isEmpty() || content.getTitle().length() > 64){
+            return RetCodes.retResult(-1, "少年你的文章标题太长啦，精简化标题吧，为了更好的SEO长度请少于64个字节");
+        }
+
         if (content.getContentId() < 1){
             int maxId = source.getNumberResult(Content.class, FilterFunc.MAX,  10_0000, "contentId").intValue();
             int userId = userService.currentUserId(sessionid);

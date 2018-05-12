@@ -288,7 +288,8 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
           bean:JSON.stringify({username:fdata.username, password:fdata.password})
           ,vercode:fdata.vercode
       },function (data) {
-          data = JSON.parse(data);
+        console.log(data);
+          //data = JSON.parse(data);
           if(data.retcode != 0){
               layer.msg(data.retinfo);
               return false;

@@ -247,7 +247,9 @@ layui.define(['fly','laypage'], function(exports){
           bean:JSON.stringify(bean)
       },function (res) {
           layer.msg("发布成功",{time:2000},function () {
-              location.href = "/";
+              var cache_key = "content_" + $("input[name='contentId']").val();
+              localStorage.removeItem(cache_key);
+              location.href = "/user";
           });
       });
       return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。

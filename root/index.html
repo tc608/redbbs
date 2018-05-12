@@ -19,7 +19,13 @@
                             </a>
                             <h2>
                                 <a class="layui-badge">#(x.typeName)</a>
-                                <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
+                                <a href="/jie/detail/#(x.contentId)">
+                                    #if(x.top == 3)
+                                        <span style="color: #AB5D7C;font-weight: bold;">#(x.title)</span>
+                                    #else
+                                        #(x.title)
+                                    #end
+                                </a>
                             </h2>
                             <div class="fly-list-info">
                                 <a href="/user/#(x.userId)" link>
@@ -34,6 +40,7 @@
                                 <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                                 -->
                                 <span class="fly-list-nums">
+                        <i class="iconfont" title="人气">&#xe60b;</i> #(x.viewNum??0)
                         <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
                       </span>
                             </div>
@@ -90,6 +97,7 @@
                                 <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                                 -->
                                 <span class="fly-list-nums">
+                        <i class="iconfont" title="人气">&#xe60b;</i> #(x.viewNum??0)
                         <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
                       </span>
                             </div>
