@@ -18,29 +18,18 @@ public class UserInfo implements java.io.Serializable {
     private int userId;
 
     private String username = "";
-
     private int sex = 1;
-
     private String password = "";
-
     private String phone = "";
-
     private String nickname = "";
-
     private String avatar = "";
-
     private String relaname = "";
-
     private String email = "";
-
+    private int roleId = 0;
     private long createTime;
-
     private String sign = "";
-
     private String city = "";
-
     private int status = 1;
-
     private String time = "";
 
     public void setUserId(int userId) {
@@ -114,6 +103,14 @@ public class UserInfo implements java.io.Serializable {
 
     public String getEmail() {
         return this.email == null || this.email.isEmpty() ? "" : this.email;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
     public void setCreateTime(long createTime) {

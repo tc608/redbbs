@@ -49,6 +49,9 @@ public class User implements java.io.Serializable {
     @Column(length = 32, comment = "[邮箱]")
     private String email = "";
 
+    @Column(length = 2, comment = "[用户角色]")
+    private int roleId = 0;
+
     @Column(comment = "[创建时间]", updatable = false)
     private long createTime;
 
@@ -153,6 +156,14 @@ public class User implements java.io.Serializable {
         this.email = email;
     }
 
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
     public long getCreateTime() {
         return createTime;
     }
@@ -201,6 +212,7 @@ public class User implements java.io.Serializable {
         userInfo.setAvatar(avatar);
         userInfo.setRelaname(realname);
         userInfo.setEmail(email);
+        userInfo.setRoleId(roleId);
         userInfo.setCreateTime(createTime);
         userInfo.setSign(sign);
         userInfo.setCity(city);

@@ -27,7 +27,7 @@
             <version>1.8.6</version>
         </dependency>-->
 
-        <dependency>
+        <!--<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
@@ -35,8 +35,8 @@
         <dependency>
             <groupId>com.jfinal</groupId>
             <artifactId>enjoy</artifactId>
-            <version>3.3</version>
-        </dependency>
+            <version>3.4</version>
+        </dependency>-->
 
     </dependencies>
 

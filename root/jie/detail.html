@@ -23,7 +23,7 @@
 				#if(bean.wonderful == 1)
                 <span class="layui-badge layui-bg-red">精帖</span>
 				#end
-				#if(mine.userId?? == 100001)
+				#if(mine.roleId?? == 1)
                 <div class="fly-admin-box" data-id="#(bean.contentId)">
                     <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
 					#if(bean.top == 1)
@@ -62,7 +62,7 @@
 					<!--
 					<span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
 					-->
-					#if(bean.userId == mine.userId?? || mine.userId?? == 100001)
+					#if(bean.userId == mine.userId?? || mine.roleId?? == 1)
 					<span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/jie/add/#(bean.contentId)">编辑此贴</a></span>
 					#end
 				</div>
