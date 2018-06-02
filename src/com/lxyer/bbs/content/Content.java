@@ -190,6 +190,7 @@ public class Content implements java.io.Serializable {
         info.setWonderful(wonderful);
         info.setTop(top);
         info.setSolved(solved);
+        info.setStatus(status);
 
         info.setTypeName(types.getOrDefault(type, "其他").toString());
         info.setCreateTime(LxyKit.dateFmt(createTime));

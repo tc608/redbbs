@@ -37,7 +37,11 @@
                             <img src="#(x.avatar??)" alt="#(x.nickname)">
                         </a>
                         <h2>
+                            #if(x.status == 3)
+                            <a class="layui-badge">私密</a>
+                            #else
                             <a class="layui-badge">#(x.typeName)</a>
+                            #end
                             <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
                         </h2>
                         <div class="fly-list-info">

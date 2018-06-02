@@ -54,10 +54,10 @@ public class ContentBean implements FilterBean,java.io.Serializable {
     private int top;
 
     @Column(comment = "[结帖]大于0结帖")
-    private int solved;*/
+    private int solved;
 
     @Column(comment = "[状态]")
-    private int status = 1;
+    private int status = 1;*/
 
     public void setContentId(int contentId) {
         this.contentId = contentId;
@@ -137,14 +137,6 @@ public class ContentBean implements FilterBean,java.io.Serializable {
 
     public void setViewNum(int viewNum) {
         this.viewNum = viewNum;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     @Override

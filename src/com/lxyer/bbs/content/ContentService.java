@@ -56,7 +56,7 @@ public class ContentService extends BaseService{
     }
 
     @RestMapping(name = "query", auth = false, comment = "内容列表")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived){
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, int currentId){
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
         switch (actived){
             case "top": filterNode.and("top", 1);break;
@@ -65,6 +65,12 @@ public class ContentService extends BaseService{
             case "solved": filterNode.and("solved", 1);break;
             case "wonderful": filterNode.and("wonderful", 1);break;
         }
+        if (currentId > 0){
+            filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", currentId)));
+        }else {
+            filterNode.and("status", FilterExpress.NOTEQUAL, 3);
+        }
+
         return contentQuery(flipper, filterNode);
     }
 
@@ -102,7 +108,7 @@ public class ContentService extends BaseService{
 
             source.insert(content);
         }else {
-            source.updateColumn(content, SelectColumn.createIncludes("title", "digest", "content","type"));
+            source.updateColumn(content, SelectColumn.createIncludes("title", "digest", "content","type", "status"));
         }
 
         return RetResult.success();
@@ -206,7 +212,7 @@ public class ContentService extends BaseService{
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", 0);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();

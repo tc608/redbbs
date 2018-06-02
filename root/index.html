@@ -18,7 +18,11 @@
                                 <img src="#(x.avatar)" alt="#(x.nickname)">
                             </a>
                             <h2 title="#(x.title)">
+                                #if(x.status == 3)
+                                <a class="layui-badge">私密</a>
+                                #else
                                 <a class="layui-badge">#(x.typeName)</a>
+                                #end
                                 <a href="/jie/detail/#(x.contentId)">
                                     #if(x.top == 3)
                                         <span style="color: #AB5D7C;font-weight: bold;">#(x.title)</span>
@@ -79,7 +83,11 @@
                                 <img src="#(x.avatar)" alt="#(x.nickname)">
                             </a>
                             <h2 title="#(x.title)">
+                                #if(x.status == 3)
+                                <a class="layui-badge">私密</a>
+                                #else
                                 <a class="layui-badge">#(x.typeName)</a>
+                                #end
                                 <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
                             </h2>
                             <div class="fly-list-info">

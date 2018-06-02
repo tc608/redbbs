@@ -47,11 +47,11 @@ public class IndexServlet extends BaseServlet {
         Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
         //置顶贴
         FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", FilterExpress.GREATERTHAN, 0);
-        Sheet<ContentInfo> top = contentService.contentQuery(flipper, topNode);
+        Sheet<ContentInfo> top = contentService.contentQuery(flipper, setPrivate(topNode));
 
         //非置顶贴
         FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 0);
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, untopNode);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(untopNode));
 
         //热帖
         /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
@@ -59,7 +59,7 @@ public class IndexServlet extends BaseServlet {
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId());
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
@@ -86,11 +86,11 @@ public class IndexServlet extends BaseServlet {
         if (solved > -1) filterNode.and("solved", solved);
         if (wonderful > -1) filterNode.and("wonderful", wonderful);
 
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, filterNode);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(filterNode));
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId());
 
 
         Kv kv = Kv.by("contents", contents).set("hotReply", hotReply)
@@ -194,7 +194,7 @@ public class IndexServlet extends BaseServlet {
 
         //分页帖子列表
         Flipper flipper = new Flipper().offset((curr-1)*15).limit(15).sort("top DESC,createTime DESC");
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived, currentId());
 
         Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI())
                 .set("actived", actived).set("curr", curr);
@@ -227,7 +227,7 @@ public class IndexServlet extends BaseServlet {
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId());
 
         //更新
         CompletableFuture.supplyAsync(new Supplier<String>() {

@@ -237,7 +237,7 @@ layui.define(['fly','laypage'], function(exports){
 
   form.on('submit(jie-add)', function(data){
       var bean = {};
-      ["contentId","title", "content", "type"].forEach(function (value) {
+      ["contentId","title", "content", "type", "status"].forEach(function (value) {
         bean[value] = data.field[value];
       });
       bean["content"] = editor.txt.html();
