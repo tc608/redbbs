@@ -3,11 +3,14 @@ package com.lxyer.bbs.base;
 import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
+import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
 import org.redkale.net.http.HttpContext;
 import org.redkale.net.http.HttpRequest;
 import org.redkale.net.http.HttpResponse;
 import org.redkale.net.http.HttpServlet;
+import org.redkale.source.FilterExpress;
+import org.redkale.source.FilterNode;
 import org.redkale.util.AnyValue;
 
 import javax.annotation.Resource;
@@ -154,5 +157,22 @@ public class BaseServlet extends HttpServlet {
 
         }
         return n;
+    }
+
+    //设置私密帖子过滤
+    protected FilterNode setPrivate(FilterNode node){
+        UserInfo userInfo = request.currentUser();
+        if (userInfo == null){
+            node.and("status", FilterExpress.NOTEQUAL, 3);
+        }else {
+            //select * from content c where c.status != -1 and (c.status!=3 or (c.status=3 and c.userId=100001))
+            node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", userInfo.getUserId())));
+        }
+
+        return node;
+    }
+    protected int currentId(){
+        UserInfo userInfo = request.currentUser();
+        return userInfo == null ? 0 : userInfo.getUserId();
     }
 }
