@@ -1,8 +1,8 @@
 package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.BaseService;
-import com.lxyer.bbs.base.LxyKit;
-import com.lxyer.bbs.base.RetCodes;
+import com.lxyer.bbs.base.kit.LxyKit;
+import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.entity.ActLog;
 import com.lxyer.bbs.base.user.User;
 import com.lxyer.bbs.base.user.UserService;
@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.lxyer.bbs.base.RetCodes.RET_COMMENT_CONTENT_ILLEGAL;
-import static com.lxyer.bbs.base.RetCodes.RET_COMMENT_PARA_ILLEGAL;
+import static com.lxyer.bbs.base.kit.RetCodes.RET_COMMENT_CONTENT_ILLEGAL;
+import static com.lxyer.bbs.base.kit.RetCodes.RET_COMMENT_PARA_ILLEGAL;
 
 /**
  * Created by Lxy at 2017/11/29 10:00.

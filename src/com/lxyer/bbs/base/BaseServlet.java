@@ -3,8 +3,12 @@ package com.lxyer.bbs.base;
 import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
+import com.lxyer.bbs.base.kit.EJ;
+import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
+import com.lxyer.bbs.comment.CommentService;
+import com.lxyer.bbs.content.ContentService;
 import org.redkale.net.http.HttpContext;
 import org.redkale.net.http.HttpRequest;
 import org.redkale.net.http.HttpResponse;
@@ -17,12 +21,20 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 
-import static com.lxyer.bbs.base.RetCodes.RET_USER_UNLOGIN;
+import static com.lxyer.bbs.base.kit.RetCodes.RET_USER_UNLOGIN;
 
 /**
  * Created by Lxy at 2017/10/3 13:39.
  */
 public class BaseServlet extends HttpServlet {
+    private HttpRequest request;
+    private HttpResponse response;
+    private static final Kv _kv = Kv.create();
+    private static Engine engine;
+    protected String sessionid;
+    protected int currentId;//登录人id
+
+    protected static final boolean winos = System.getProperty("os.name").contains("Window");
 
     @Resource(name = "SERVER_ROOT")
     protected File webroot;
@@ -35,11 +47,12 @@ public class BaseServlet extends HttpServlet {
     /*@Resource(name = "redis")
     protected RedisCacheSource<String> cache;*/
 
-    private HttpRequest request;
-    private HttpResponse response;
-    private static final Kv _kv = Kv.create();
-    private static Engine engine;
-    protected String sessionid;
+    @Resource
+    protected ContentService contentService;
+
+    @Resource
+    protected CommentService commentService;
+
 
     @Override
     public void init(HttpContext context, AnyValue config) {
@@ -56,6 +69,7 @@ public class BaseServlet extends HttpServlet {
         sessionid = request.getSessionid(false);
         if (sessionid != null) {
             request.setCurrentUser(userService.current(sessionid));
+            currentId = userService.currentUserId(sessionid);
             _kv.set("mine", request.currentUser());
         }
 
@@ -170,9 +184,5 @@ public class BaseServlet extends HttpServlet {
         }
 
         return node;
-    }
-    protected int currentId(){
-        UserInfo userInfo = request.currentUser();
-        return userInfo == null ? 0 : userInfo.getUserId();
     }
 }

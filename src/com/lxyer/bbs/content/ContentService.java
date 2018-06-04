@@ -2,8 +2,8 @@ package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
-import com.lxyer.bbs.base.LxyKit;
-import com.lxyer.bbs.base.RetCodes;
+import com.lxyer.bbs.base.kit.LxyKit;
+import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.entity.ActLog;
 import com.lxyer.bbs.base.user.User;
 import com.lxyer.bbs.base.user.UserInfo;

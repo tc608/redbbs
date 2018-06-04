@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base;
+package com.lxyer.bbs.base.kit;
 
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;

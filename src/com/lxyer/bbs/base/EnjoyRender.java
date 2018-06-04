@@ -2,6 +2,7 @@ package com.lxyer.bbs.base;
 
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
+import com.lxyer.bbs.base.kit.EJ;
 import org.redkale.convert.Convert;
 import org.redkale.net.http.*;
 import org.redkale.util.AnyValue;

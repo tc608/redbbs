@@ -1,7 +1,7 @@
 package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
-import com.lxyer.bbs.base.LxyKit;
+import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.*;

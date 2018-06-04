@@ -1,8 +1,8 @@
 package com.lxyer.bbs.base.user;
 
 import com.lxyer.bbs.base.BaseService;
-import com.lxyer.bbs.base.LxyKit;
-import com.lxyer.bbs.base.RetCodes;
+import com.lxyer.bbs.base.kit.LxyKit;
+import com.lxyer.bbs.base.kit.RetCodes;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
 import org.redkale.net.http.RestService;
@@ -11,26 +11,18 @@ import org.redkale.service.RetResult;
 import org.redkale.source.*;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
-import org.redkalex.cache.RedisCacheSource;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-import static com.lxyer.bbs.base.RetCodes.*;
+import static com.lxyer.bbs.base.kit.RetCodes.*;
 
 /**
  * Created by Lxy at 2017/10/3 14:02.
  */
 @RestService(automapping = true, comment = "用户服务")
 public class UserService extends BaseService {
-
-    @Resource(name = "redis")
-    protected RedisCacheSource<Integer> sessions;
-
-    @Resource
-    protected CacheSource<UserInfo> userInfos;
 
     @RestMapping(auth = false, comment = "登录校验")
     public RetResult<UserInfo> login(@RestParam(name = "bean") LoginBean loginBean){
@@ -47,7 +39,7 @@ public class UserService extends BaseService {
         //log(user, 0, "用户登录成功.");
         UserInfo userInfo = user.createUserInfo();
 
-        this.sessions.setAsync(sessionExpireSeconds, loginBean.getSessionid(), userInfo.getUserId());
+        sessions.setAsync(sessionExpireSeconds, loginBean.getSessionid(), userInfo.getUserId());
         retResult.setRetcode(0);
         retResult.setResult(userInfo);
         retResult.setRetinfo("登录成功.");

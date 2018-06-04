@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base;
+package com.lxyer.bbs.base.kit;
 
 import org.redkale.net.http.RestService;
 
