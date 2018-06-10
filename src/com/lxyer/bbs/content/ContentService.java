@@ -65,9 +65,10 @@ public class ContentService extends BaseService{
             case "solved": filterNode.and("solved", 1);break;
             case "wonderful": filterNode.and("wonderful", 1);break;
         }
-        if (currentId > 0){
+
+        if (!userService.isAdmin(currentId)){//私密贴：非管理员限制查看
             filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", currentId)));
-        }else {
+        }else if (currentId <= 0){//私密贴：未登录限制查看
             filterNode.and("status", FilterExpress.NOTEQUAL, 3);
         }
 
@@ -164,7 +165,7 @@ public class ContentService extends BaseService{
         int userId = userService.currentUserId(sessionid);
 
         Flipper flipper = new Flipper().sort("createTime DESC");
-        FilterNode filterNode = FilterNode.create("cate", 2).and("status", 1);
+        FilterNode filterNode = FilterNode.create("cate", 2).and("status", 1).and("userId", userId);
         Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.createIncludes("tid", "createTime"), flipper, filterNode);
 
         int[] contentids = actLogs.stream().mapToInt(x -> x.getTid()).toArray();

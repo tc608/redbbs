@@ -13,6 +13,7 @@ import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -166,5 +167,19 @@ public class UserService extends BaseService {
     @RestMapping(name = "usercount", auth = false, comment = "用户数据统计")
     public Number userCount() {
         return source.getNumberResult(User.class, FilterFunc.COUNT, "userId", FilterNode.create("status", FilterExpress.NOTEQUAL, -1));
+    }
+
+    @RestMapping(ignore = true, comment = "判断用户是否是管理员")
+    public boolean isAdmin(int userId){
+        if (userId <= 0) return false;
+
+        List<Integer> userIds = source.queryColumnList("userId", User.class, FilterNode.create("roleId", 1));
+        for (Integer x : userIds) {
+            if (userId == x) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

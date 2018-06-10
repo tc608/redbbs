@@ -178,7 +178,7 @@ public class BaseServlet extends HttpServlet {
         UserInfo userInfo = request.currentUser();
         if (userInfo == null){
             node.and("status", FilterExpress.NOTEQUAL, 3);
-        }else {
+        }else if (!userService.isAdmin(currentId)){
             //select * from content c where c.status != -1 and (c.status!=3 or (c.status=3 and c.userId=100001))
             node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", userInfo.getUserId())));
         }

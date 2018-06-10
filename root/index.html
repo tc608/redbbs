@@ -79,7 +79,7 @@
                     <ul class="fly-list">
                         #for(x : contents.rows??)
                         <li>
-                            <a href="/user/home.html" class="fly-avatar">
+                            <a href="/user/#(x.userId)" class="fly-avatar">
                                 <img src="#(x.avatar)" alt="#(x.nickname)">
                             </a>
                             <h2 title="#(x.title)">

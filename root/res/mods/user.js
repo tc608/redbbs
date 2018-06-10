@@ -288,8 +288,6 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
           bean:JSON.stringify({username:fdata.username, password:fdata.password})
           ,vercode:fdata.vercode
       },function (data) {
-        console.log(data);
-          //data = JSON.parse(data);
           if(data.retcode != 0){
               layer.msg(data.retinfo);
               return false;
@@ -330,7 +328,6 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
       bean:JSON.stringify(bean)
       ,columns:JSON.stringify(columns)
     },function (res) {
-      res = JSON.parse(res);
       if(res.retcode  != 0){
         layer.msg(res.retinfo);
         return false;
@@ -345,7 +342,6 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
         nowpass:data.field.nowpass
         ,pass:data.field.pass
     },function (res) {
-      res = JSON.parse(res);
       if(res.retcode  != 0){
         layer.msg(res.retinfo);
         return false;
