@@ -307,7 +307,6 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
       $.post("/os/user/register",{
           bean:JSON.stringify(bean)
       },function (data) {
-        data = JSON.parse(data);
         if(data.retcode != 0){
           layer.msg(data.retinfo);
           return false;
@@ -356,6 +355,25 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     });
     return false;
   });
+
+    form.on('submit(set-blog)', function (data) {
+        var bean = {},columns = ['site', 'git'];
+        columns.forEach(function (value) {
+            bean[value] = data.field[value]
+        });
+
+        $.post("/os/user/update",{
+            bean:JSON.stringify(bean)
+            ,columns:JSON.stringify(columns)
+        },function (res) {
+            if(res.retcode  != 0){
+                layer.msg(res.retinfo);
+                return false;
+            }
+            location.reload();
+        });
+        return false;
+    });
 
 
 

@@ -2,10 +2,8 @@ package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
-import com.lxyer.bbs.base.kit.LxyKit;
-import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
 import org.redkale.net.http.*;
@@ -15,14 +13,12 @@ import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Lxy at 2017/11/26 9:33.
  */
 @RestService(automapping = true, comment = "内容管理")
-public class ContentService extends BaseService{
+public class ContentService extends BaseService<Content,ContentInfo>{
 
     @Resource
     protected UserService userService;
@@ -36,22 +32,9 @@ public class ContentService extends BaseService{
     public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, filterNode);
 
-        int[] userids = contents.stream().mapToInt(x -> x.getUserId()).distinct().toArray();
+        Sheet<ContentInfo> infos = createInfo(contents);
+        setIUser(infos);
 
-        Sheet<ContentInfo> infos = new Sheet<>();
-        List<ContentInfo> list = new ArrayList<>();
-
-        List<User> users = source.queryList(User.class, SelectColumn.createIncludes("userId","avatar", "nickname"), FilterNode.create("userId", FilterExpress.IN, userids));
-        contents.forEach(x->{
-            ContentInfo contentInfo = x.createContentInfo();
-            User user = users.stream().filter(k -> k.getUserId() == x.getUserId()).findFirst().orElse(new User());
-            contentInfo.setAvatar(user.getAvatar());
-            contentInfo.setNickname(user.getNickname());
-            list.add(contentInfo);
-        });
-
-        infos.setRows(list);
-        infos.setTotal(contents.getTotal());
         return infos;
     }
 
@@ -79,15 +62,7 @@ public class ContentService extends BaseService{
     public Sheet<ContentInfo> queryByBean(Flipper flipper, FilterBean bean){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, bean);
 
-        Sheet<ContentInfo> infos = new Sheet<>();
-        List<ContentInfo> list = new ArrayList<>();
-
-        contents.forEach(x->{
-            list.add(x.createContentInfo());
-        });
-
-        infos.setRows(list);
-        infos.setTotal(contents.getTotal());
+        Sheet<ContentInfo> infos = createInfo(contents);
 
         return infos;
     }
@@ -122,10 +97,7 @@ public class ContentService extends BaseService{
         Content content = source.find(Content.class, contentid);
         if (content == null) return null;
 
-        ContentInfo contentInfo = content.createContentInfo();
-        User user = source.find(User.class, content.getUserId());
-        contentInfo.setAvatar(user.getAvatar());
-        contentInfo.setNickname(user.getNickname());
+        ContentInfo contentInfo = setIUser(content.createInfo());
 
         //收藏状态
         if (userId > 0){
@@ -171,20 +143,7 @@ public class ContentService extends BaseService{
         int[] contentids = actLogs.stream().mapToInt(x -> x.getTid()).toArray();
         Sheet<Content> contents = source.querySheet(Content.class, SelectColumn.createIncludes("contentId", "title"), flipper.sort(null), FilterNode.create("contentId", FilterExpress.IN, contentids));
 
-        Sheet<ContentInfo> infos = new Sheet<>();
-        ArrayList<ContentInfo> list = new ArrayList<>();
-
-        actLogs.forEach(x->{
-            Content content = contents.stream().filter(k -> k.getContentId() == x.getTid()).findFirst().orElse(null);
-            if (content != null){
-                ContentInfo info = content.createContentInfo();
-                info.setCreateTime(LxyKit.dateFmt(x.getCreateTime()));
-                list.add(info);
-            }
-        });
-
-        infos.setRows(list);
-        infos.setTotal(actLogs.getTotal());
+        Sheet<ContentInfo> infos = createInfo(contents);
 
         return infos;
     }

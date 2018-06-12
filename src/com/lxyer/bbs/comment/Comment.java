@@ -1,9 +1,11 @@
 package com.lxyer.bbs.comment;
 
+import com.lxyer.bbs.base.UF;
 import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  *
@@ -11,7 +13,7 @@ import javax.persistence.*;
  */
 @Cacheable(interval = 5*60)
 @Table(catalog = "redbbs", name = "comment", comment = "[评论表]")
-public class Comment implements java.io.Serializable {
+public class Comment implements UF<CommentInfo>,Serializable {
 
     @Id
     @GeneratedValue
@@ -119,7 +121,7 @@ public class Comment implements java.io.Serializable {
         return JsonConvert.root().convertTo(this);
     }
 
-    public CommentInfo createCommentInfo(){
+    public CommentInfo createInfo(){
         CommentInfo info = new CommentInfo();
         info.setCommentId(commentId);
         info.setUserId(userId);

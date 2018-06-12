@@ -1,17 +1,22 @@
 package com.lxyer.bbs.content;
 
+import com.lxyer.bbs.base.UI;
+import com.lxyer.bbs.base.user.User;
+import org.redkale.convert.ConvertColumn;
+
 import java.io.Serializable;
 
 /**
  * Created by Lxy at 2017/11/26 20:52.
  */
-public class ContentInfo implements Serializable {
+public class ContentInfo implements UI<ContentInfo>,Serializable {
 
     private int contentId;
     private int userId;
     private String title = "";
     private String digest = "";
     private String content = "";
+    private String createTime;
     private int cate;
     private int type;
     private int replyNum;
@@ -21,10 +26,7 @@ public class ContentInfo implements Serializable {
     private int solved;
     private int status = 1;
 
-    private String createTime;
     private String typeName;
-    private String nickname = "";
-    private String avatar = "";
     private int hadCollect = -1;
 
     public int getContentId() {
@@ -147,27 +149,26 @@ public class ContentInfo implements Serializable {
         this.typeName = typeName;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     public int getHadCollect() {
         return hadCollect;
     }
 
     public void setHadCollect(int hadCollect) {
         this.hadCollect = hadCollect;
+    }
+
+
+    //-----------
+    private User user;
+    @ConvertColumn(ignore = true)
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public ContentInfo setUser(User user) {
+        this.user = user;
+        return this;
     }
 }

@@ -20,6 +20,9 @@
                 <li class="layui-this" lay-id="info">我的资料</li>
                 <li lay-id="avatar">头像</li>
                 <li lay-id="pass">密码</li>
+                #if(mine.roleId == 1)
+                <li lay-id="blog">博客地址</li>
+                #end
                 <!--<li lay-id="bind">帐号绑定</li>-->
             </ul>
             <div class="layui-tab-content" style="padding: 20px 0;">
@@ -48,7 +51,7 @@
                         <div class="layui-form-item">
                             <label for="L_city" class="layui-form-label">城市</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="L_city" name="city" autocomplete="off" value="" class="layui-input">
+                                <input type="text" id="L_city" name="city" autocomplete="off" value="#(mine.city)" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item layui-form-text">
@@ -101,6 +104,27 @@
                         </div>
                         <div class="layui-form-item">
                             <button class="layui-btn" key="set-mine" lay-filter="set-changepwd" lay-submit>确认修改</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!--博客/码云-->
+                <div class="layui-form layui-form-pane layui-tab-item">
+                    <form method="post">
+                        <div class="layui-form-item">
+                            <label for="L_nowpass" class="layui-form-label">个人博客地址</label>
+                            <div class="layui-input-inline">
+                                <input type="input" id="L_site" name="site" value="#(mine.site??)"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_nowpass" class="layui-form-label">码云/GitHub</label>
+                            <div class="layui-input-inline">
+                                <input type="input" id="L_git" name="git" value="#(mine.git??)"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn" key="set-mine" lay-filter="set-blog" lay-submit>确认修改</button>
                         </div>
                     </form>
                 </div>

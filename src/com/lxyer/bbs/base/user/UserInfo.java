@@ -26,6 +26,8 @@ public class UserInfo implements java.io.Serializable {
     private String relaname = "";
     private String email = "";
     private int roleId = 0;
+    private String site = "";
+    private String git = "";
     private long createTime;
     private String sign = "";
     private String city = "";
@@ -111,6 +113,22 @@ public class UserInfo implements java.io.Serializable {
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getGit() {
+        return git;
+    }
+
+    public void setGit(String git) {
+        this.git = git;
     }
 
     public void setCreateTime(long createTime) {

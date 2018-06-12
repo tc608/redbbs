@@ -52,6 +52,12 @@ public class User implements java.io.Serializable {
     @Column(length = 2, comment = "[用户角色]")
     private int roleId = 0;
 
+    @Column(length = 128, comment = "[个人博客地址]")
+    private String site = "";
+
+    @Column(length = 128, comment = "[码云/GitHub]")
+    private String git = "";
+
     @Column(comment = "[创建时间]", updatable = false)
     private long createTime;
 
@@ -164,6 +170,22 @@ public class User implements java.io.Serializable {
         this.roleId = roleId;
     }
 
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getGit() {
+        return git;
+    }
+
+    public void setGit(String git) {
+        this.git = git;
+    }
+
     public long getCreateTime() {
         return createTime;
     }
@@ -213,6 +235,8 @@ public class User implements java.io.Serializable {
         userInfo.setRelaname(realname);
         userInfo.setEmail(email);
         userInfo.setRoleId(roleId);
+        userInfo.setSite(site);
+        userInfo.setGit(git);
         userInfo.setCreateTime(createTime);
         userInfo.setSign(sign);
         userInfo.setCity(city);

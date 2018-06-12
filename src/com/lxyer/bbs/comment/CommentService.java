@@ -1,10 +1,9 @@
 package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.BaseService;
+import com.lxyer.bbs.base.entity.ActLog;
 import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.kit.RetCodes;
-import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.base.user.User;
 import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
 import org.redkale.net.http.RestMapping;
@@ -28,7 +27,7 @@ import static com.lxyer.bbs.base.kit.RetCodes.RET_COMMENT_PARA_ILLEGAL;
  * Created by Lxy at 2017/11/29 10:00.
  */
 @RestService(automapping = true, comment = "评论服务")
-public class CommentService extends BaseService {
+public class CommentService extends BaseService<Comment, CommentInfo> {
 
     @Resource
     private UserService userService;
@@ -62,36 +61,20 @@ public class CommentService extends BaseService {
         flipper.setSort("supportNum DESC,commentId ASC");
         Sheet<Comment> comments = source.querySheet(Comment.class, flipper, FilterNode.create("contentId", contentId));
 
-        Sheet<CommentInfo> infos = new Sheet<>();
-        List<CommentInfo> list = new ArrayList<>();
-
-        if (comments.getRows() == null) return infos;
-
-        //映射用户信息
-        int[] userids = comments.stream().mapToInt(x -> x.getUserId()).toArray();
-        List<User> users = source.queryList(User.class, SelectColumn.createIncludes("userId","avatar", "nickname"), FilterNode.create("userId", FilterExpress.IN, userids));
+        Sheet<CommentInfo> infos = createInfo(comments);
+        setIUser(infos);
 
         //用户点赞的评论
-        List<Integer> hadSupport = new ArrayList<>();
         if (userId > 0){
-            FilterNode node = FilterNode.create("cate", 1).and("status", 1).and("userId", userId);
-            List<ActLog> actLogs = source.queryList(ActLog.class, SelectColumn.createIncludes("tid"), node);
-            actLogs.forEach(x->hadSupport.add(x.getTid()));
+            int[] commentIds = comments.stream().mapToInt(Comment::getCommentId).toArray();
+            FilterNode node = FilterNode.create("cate", 1).and("status", 1).and("userId", userId).and("tid", FilterExpress.IN, commentIds);
+            List<Integer> hadSupport = source.queryColumnList("tid", ActLog.class, node);
+
+            infos.forEach(x->{
+                x.setHadSupport(hadSupport.contains(x.getCommentId()) ? 1 : -1);//
+            });
         }
 
-        comments.forEach(x->{
-            CommentInfo info = x.createCommentInfo();
-            User user = users.stream().filter(k -> k.getUserId() == x.getUserId()).findFirst().orElse(new User());
-            info.setAvatar(user.getAvatar());
-            info.setNickname(user.getNickname());
-
-            info.setHadSupport(hadSupport.contains(x.getCommentId()) ? 1 : -1);//
-
-            list.add(info);
-        });
-
-        infos.setRows(list);
-        infos.setTotal(comments.getTotal());
         return infos;
     }
 
@@ -106,7 +89,7 @@ public class CommentService extends BaseService {
         List<CommentInfo> list = new ArrayList<>();
 
         comments.forEach(x->{
-            CommentInfo info = x.createCommentInfo();
+            CommentInfo info = x.createInfo();
             Content content = contents.stream().filter(k -> k.getContentId() == x.getContentId()).findFirst().orElse(new Content());
             info.setTitle(content.getTitle());
             list.add(info);

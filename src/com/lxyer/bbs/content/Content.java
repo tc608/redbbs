@@ -1,6 +1,7 @@
 package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
+import com.lxyer.bbs.base.UF;
 import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.JsonConvert;
 
@@ -12,7 +13,7 @@ import javax.persistence.*;
  */
 @Cacheable(interval = 5*60)
 @Table(catalog = "redbbs", name = "content", comment = "[内容表]")
-public class Content implements java.io.Serializable {
+public class Content implements UF<ContentInfo>,java.io.Serializable {
 
     @Id
     @GeneratedValue
@@ -177,7 +178,9 @@ public class Content implements java.io.Serializable {
     }
 
     private static final Kv types = Kv.by(10, "求助").set(20, "分享").set(30, "讨论").set(40, "公告").set(50, "动态");
-    public ContentInfo createContentInfo(){
+
+    @Override
+    public ContentInfo createInfo() {
         ContentInfo info = new ContentInfo();
         info.setContentId(contentId);
         info.setUserId(userId);

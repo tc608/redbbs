@@ -79,6 +79,17 @@
 	        </div>
 	        <div class="detail-body photos">
 				#(bean.content??)
+
+                #if(bean.site?? || bean.git??)
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                    #if(bean.site??)
+                    <b>个人博客地址：<a href="#(bean.site??)" target="_blank">#(bean.site??)</a></b>
+                    #end
+                    #if(bean.git??)
+                    <b>码云/GitHub:<a href="#(bean.git??)" target="_blank">#(bean.git??)</a></b>
+                    #end
+                    </blockquote>
+                #end
 	        </div>
 		</div>
 

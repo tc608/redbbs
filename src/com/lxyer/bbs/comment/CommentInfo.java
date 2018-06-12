@@ -1,14 +1,17 @@
 package com.lxyer.bbs.comment;
 
+import com.lxyer.bbs.base.UI;
+import com.lxyer.bbs.base.user.User;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 
 /**
  *
  * @author lxyer
  */
-public class CommentInfo implements java.io.Serializable {
+public class CommentInfo implements UI<CommentInfo>,Serializable {
 
     @Column(comment = "[评论id]")
     private int commentId;
@@ -38,8 +41,6 @@ public class CommentInfo implements java.io.Serializable {
     private String createTime;
 
     private CommentInfo pCommentInfo;
-    private String nickname = "";
-    private String avatar = "";
 
     private String title;
     private int hadSupport = -1;
@@ -124,22 +125,6 @@ public class CommentInfo implements java.io.Serializable {
         this.pCommentInfo = pCommentInfo;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -159,5 +144,19 @@ public class CommentInfo implements java.io.Serializable {
     @Override
     public String toString() {
         return JsonConvert.root().convertTo(this);
+    }
+
+    //----
+    private User user;
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public CommentInfo setUser(User user) {
+        this.user = user;
+        return this;
     }
 }
