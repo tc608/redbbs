@@ -110,7 +110,9 @@ public class BaseServlet extends HttpServlet {
     }
 
     public void finish(String view, Kv kv) {
-        if (request.currentUser() != null) kv.set("mine", request.currentUser());
+        if (request.currentUser() != null){
+            kv.set("mine", request.currentUser());
+        }
 
         Template template = engine.getTemplate(view);
         String str = template.renderToString(kv);

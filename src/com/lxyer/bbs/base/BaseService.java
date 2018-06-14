@@ -38,38 +38,38 @@ public class BaseService<F extends UF,I extends UI> implements Service {
 
 
     protected Sheet<I> createInfo(Sheet<F> fSheet){
+        Sheet<I> sheet = new Sheet<>();
+
         if (fSheet == null || fSheet.getTotal() < 1){
-            Sheet<I> sheet = new Sheet<>();
             sheet.setTotal(0);
             sheet.setRows(new ArrayList<>());
-            return sheet;
-        }
-        List<I> list = new ArrayList<>((int)fSheet.getTotal());
-        fSheet.forEach(x->{
-            list.add((I)x.createInfo());
-        });
+        }else {
+            int total = (int)fSheet.getTotal();
+            List<I> rows = new ArrayList<>(total);
+            fSheet.forEach(x->rows.add((I)x.createInfo()));
 
-        Sheet<I> sheet = new Sheet<>();
-        sheet.setTotal(fSheet.getTotal());
-        sheet.setRows(list);
+            sheet.setTotal(total);
+            sheet.setRows(rows);
+        }
+
         return sheet;
     }
 
+    /**
+     * 批量设置用户信息
+     * @param ufSheet
+     * @param <I>
+     * @return
+     */
     protected <I extends UI> Sheet<I> setIUser(Sheet<I> ufSheet){
         int[] userIds = ufSheet.stream().mapToInt(I::getUserId).toArray();
-        List<User> users = source.queryList(User.class, FilterNode.create("userId", FilterExpress.IN, userIds));
-        List<I> infos = new ArrayList((int) ufSheet.getTotal());
 
+        List<User> users = source.queryList(User.class, FilterNode.create("userId", FilterExpress.IN, userIds));
         ufSheet.forEach(x->{
             User user = users.stream().filter(u -> u.getUserId() == x.getUserId()).findAny().orElse(null);
-            infos.add((I) x.setUser(user));
+            x.setUser(user);
         });
-
-        Sheet<I> sheet = new Sheet<>();
-        sheet.setTotal(ufSheet.getTotal());
-        sheet.setRows(infos);
-
-        return sheet;
+        return ufSheet;
     }
 
     /**
