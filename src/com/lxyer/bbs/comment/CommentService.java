@@ -36,13 +36,20 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
     public RetResult commentSave(@RestSessionid String sessionid, @RestParam(name = "bean") Comment comment){
         int contentId = comment.getContentId();
 
-        if (contentId < 1) return RetCodes.retResult(RET_COMMENT_PARA_ILLEGAL, "评论参数无效");
-        if (comment.getContent() == null) return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
+        //数据校验
+        if (contentId < 1)
+            return RetCodes.retResult(RET_COMMENT_PARA_ILLEGAL, "评论参数无效");
+        if (comment.getContent() == null)
+            return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
+        String content = LxyKit.delHTMLTag(comment.getContent());
+        if (content.isEmpty())
+            return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
 
         if (comment.getCommentId() < 1) {
             int userId = userService.currentUserId(sessionid);
             comment.setUserId(userId);
             comment.setCreateTime(System.currentTimeMillis());
+            //todo:@用户处理
             source.insert(comment);
 
             //update replyNum

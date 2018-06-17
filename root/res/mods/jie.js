@@ -156,12 +156,14 @@ layui.define(['fly','laypage'], function(exports){
       });
     }
     ,reply: function(li){ //回复
-      var val = dom.content.val();
-      var aite = '@'+ li.find('.fly-detail-user cite').text().replace(/\s/g, '');
-      dom.content.focus()
-      if(val.indexOf(aite) !== -1) return;
-      dom.content.val(aite +' ' + val);
+      //var val = dom.content.val();
+      var aite = '@'+ li.find('.fly-detail-user cite').text().replace(/\s/g, '') + '&nbsp;';
+      //dom.content.focus()
+      //if(val.indexOf(aite) !== -1) return;
+      //dom.content.val(aite +' ' + val);
       $("input[name='pid']").val(li.data('id'));
+      editor.cmd.do('insertHTML', "<p class='at_user'>"+aite+"</p>");
+      //editor.txt.append();
     }
     ,accept: function(li){ //采纳
       var othis = $(this);
