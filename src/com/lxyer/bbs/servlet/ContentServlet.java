@@ -2,7 +2,7 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.comment.CommentInfo;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.*;
@@ -28,8 +28,8 @@ public class ContentServlet extends BaseServlet {
         int curr = request.getIntParameter("curr", 1);
 
         //分页帖子列表
-        Flipper flipper = new Flipper().offset((curr-1)*15).limit(15).sort("top DESC,createTime DESC");
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived, currentId);
+        Flipper flipper = new Flipper().offset((curr-1)*15).limit(15).sort("top DESC,createtime DESC");
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived, currentid);
 
         Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI())
                 .set("actived", actived).set("curr", curr);
@@ -61,15 +61,15 @@ public class ContentServlet extends BaseServlet {
         //Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId);
+        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
 
         //更新
         CompletableFuture.supplyAsync(new Supplier<String>() {
             @Override
             public String get() {
-                User user = request.currentUser();
-                if (user == null || user.getUserId() > 10_0003)
+                UserRecord user = request.currentUser();
+                if (user == null || user.getUserid() > 10_0003)
                     contentService.incrViewNum(contentid);
                 return "";
             }
@@ -88,17 +88,17 @@ public class ContentServlet extends BaseServlet {
 
         Kv column = Kv.by("qz", 10).set("fx", 20).set("jy", 30).set("gg", 40).set("dt", 50);//栏目
 
-        Flipper flipper = new Flipper().offset((curr-1) * 20).limit(20).sort("top DESC,createTime DESC");
+        Flipper flipper = new Flipper().offset((curr-1) * 20).limit(20).sort("top DESC,createtime DESC");
         //帖子列表
         FilterNode filterNode = FilterNode.create("status", NOTEQUAL, -1).and("type", column.getAs(para));
-        if (solved > -1) filterNode.and("solved", solved);
-        if (wonderful > -1) filterNode.and("wonderful", wonderful);
+        if (solved > 0) filterNode.and("solved", 20);
+        if (wonderful > 0) filterNode.and("wonderful", 20);
 
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(filterNode));
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId);
+        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
 
 
         Kv kv = Kv.by("contents", contents).set("hotReply", hotReply)

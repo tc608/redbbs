@@ -10,7 +10,7 @@
         </source>
     </resources>
         
-    <server protocol="HTTP" host="0.0.0.0" port="6060" root="root">
+    <server protocol="HTTP" host="0.0.0.0" port="80" root="root">
               
         <services autoload="true"/>
         

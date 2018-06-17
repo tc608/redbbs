@@ -15,7 +15,7 @@ public class UserInfo implements java.io.Serializable {
 
     @Id
     @Column(comment = "[用户id]")
-    private int userId;
+    private int userid;
 
     private String username = "";
     private int sex = 1;
@@ -25,21 +25,21 @@ public class UserInfo implements java.io.Serializable {
     private String avatar = "";
     private String relaname = "";
     private String email = "";
-    private int roleId = 0;
+    private int roleid = 0;
     private String site = "";
     private String git = "";
-    private long createTime;
+    private long createtime;
     private String sign = "";
     private String city = "";
     private int status = 1;
     private String time = "";
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public int getUserId() {
-        return this.userId;
+    public int getUserid() {
+        return this.userid;
     }
 
     public void setUsername(String username) {
@@ -107,12 +107,12 @@ public class UserInfo implements java.io.Serializable {
         return this.email == null || this.email.isEmpty() ? "" : this.email;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public int getRoleid() {
+        return roleid;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRoleid(int roleid) {
+        this.roleid = roleid;
     }
 
     public String getSite() {
@@ -131,12 +131,12 @@ public class UserInfo implements java.io.Serializable {
         this.git = git;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
     }
 
-    public long getCreateTime() {
-        return this.createTime;
+    public long getCreatetime() {
+        return this.createtime;
     }
 
     public String getSign() {

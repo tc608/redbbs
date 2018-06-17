@@ -9,9 +9,14 @@
     -->
     <h1>
         #(user.nickname??)
+        #if(user.sex == 10)
         <i class="iconfont icon-nan"></i>
-        <!--
+        #elseif(user.sex == 20)
         <i class="iconfont icon-nv"></i>
+        #else
+
+        #end
+        <!--
         <i class="layui-badge fly-badge-vip">VIP3</i>
         <span style="color:#c00;">（管理员）</span>
         <span style="color:#5FB878;">（社区之光）</span>
@@ -27,7 +32,7 @@
         <!--
         <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>
         -->
-        <i class="iconfont icon-shijian"></i><span>#(EJ.date(user.createTime??,"yyyy-MM-dd")) 加入</span>
+        <i class="iconfont icon-shijian"></i><span>#(EJ.date(user.createtime??,"yyyy-MM-dd")) 加入</span>
         <i class="iconfont icon-chengshi"></i><span>来自#(user.city?? "火星")</span>
     </p>
 
@@ -53,9 +58,9 @@
                         #if(x.wonderful == 1)
                         <span class="fly-jing">精</span>
                         #end
-                        <a href="/jie/detail/#(x.contentId)" class="jie-title">#(x.title)</a>
-                        <i>#(x.createTime)</i>
-                        <em class="layui-hide-xs">#(x.viewNum)阅/#(x.replyNum)答</em>
+                        <a href="/jie/detail/#(x.contentid)" class="jie-title">#(x.title)</a>
+                        <i>#(x.createtime)</i>
+                        <em class="layui-hide-xs">#(x.viewnum)阅/#(x.replynum)答</em>
                     </li>
                     #end
                     <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
@@ -70,8 +75,8 @@
                     #for(x : comments.rows??)
                     <li>
                         <p>
-                            <span>#(x.createTime)</span>
-                            在<a href="/jie/detail/#(x.contentId)" target="_blank">#(x.title)</a>中回答：
+                            <span>#(x.createtime)</span>
+                            在<a href="/jie/detail/#(x.contentid)" target="_blank">#(x.title)</a>中回答：
                         </p>
                         <div class="home-dacontent">
                             #(x.content)

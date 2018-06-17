@@ -1,7 +1,7 @@
 package com.lxyer.bbs.content;
 
 import com.lxyer.bbs.base.UI;
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserRecord;
 import org.redkale.convert.ConvertColumn;
 
 import java.io.Serializable;
@@ -11,38 +11,38 @@ import java.io.Serializable;
  */
 public class ContentInfo implements UI<ContentInfo>,Serializable {
 
-    private int contentId;
-    private int userId;
+    private int contentid;
+    private int userid;
     private String title = "";
     private String digest = "";
     private String content = "";
-    private String createTime;
+    private String createtime;
     private int cate;
     private int type;
-    private int replyNum;
-    private int viewNum;
+    private int replynum;
+    private int viewnum;
     private int wonderful;
     private int top;
     private int solved;
-    private int status = 1;
+    private int status = 10;
 
-    private String typeName;
-    private int hadCollect = -1;
+    private String typename;
+    private int hadcollect = -1;
 
-    public int getContentId() {
-        return contentId;
+    public int getContentid() {
+        return contentid;
     }
 
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
+    public void setContentid(int contentid) {
+        this.contentid = contentid;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getUserid() {
+        return userid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public String getTitle() {
@@ -85,20 +85,20 @@ public class ContentInfo implements UI<ContentInfo>,Serializable {
         this.type = type;
     }
 
-    public int getReplyNum() {
-        return replyNum;
+    public int getReplynum() {
+        return replynum;
     }
 
-    public void setReplyNum(int replyNum) {
-        this.replyNum = replyNum;
+    public void setReplynum(int replynum) {
+        this.replynum = replynum;
     }
 
-    public int getViewNum() {
-        return viewNum;
+    public int getViewnum() {
+        return viewnum;
     }
 
-    public void setViewNum(int viewNum) {
-        this.viewNum = viewNum;
+    public void setViewnum(int viewnum) {
+        this.viewnum = viewnum;
     }
 
     public int getStatus() {
@@ -133,41 +133,41 @@ public class ContentInfo implements UI<ContentInfo>,Serializable {
         this.solved = solved;
     }
 
-    public String getCreateTime() {
-        return createTime;
+    public String getCreatetime() {
+        return createtime;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public String getTypename() {
+        return typename;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setTypename(String typename) {
+        this.typename = typename;
     }
 
-    public int getHadCollect() {
-        return hadCollect;
+    public int getHadcollect() {
+        return hadcollect;
     }
 
-    public void setHadCollect(int hadCollect) {
-        this.hadCollect = hadCollect;
+    public void setHadcollect(int hadcollect) {
+        this.hadcollect = hadcollect;
     }
 
 
     //-----------
-    private User user;
+    private UserRecord user;
     @ConvertColumn(ignore = true)
     @Override
-    public User getUser() {
+    public UserRecord getUser() {
         return user;
     }
 
     @Override
-    public ContentInfo setUser(User user) {
+    public ContentInfo setUser(UserRecord user) {
         this.user = user;
         return this;
     }

@@ -31,10 +31,10 @@
                     <ul class="mine-view jie-row">
                         #for(x : contents.rows)
                         <li>
-                            <a class="jie-title" href="/jie/detail/#(x.contentId)" target="_blank">#(x.title)</a>
-                            <i>#(x.createTime) </i>
-                            <a class="mine-edit" href="/jie/add/#(x.contentId)">编辑</a>
-                            <em>#(x.viewNum)阅/#(x.replyNum)答</em>
+                            <a class="jie-title" href="/jie/detail/#(x.contentid)" target="_blank">#(x.title)</a>
+                            <i>#(x.createtime) </i>
+                            <a class="mine-edit" href="/jie/add/#(x.contentid)">编辑</a>
+                            <em>#(x.viewnum)阅/#(x.replynum)答</em>
                         </li>
                         #end
                     </ul>
@@ -44,8 +44,8 @@
                     <ul class="mine-view jie-row">
                         #for(x : collects.rows??)
                         <li>
-                            <a class="jie-title" href="/jie/detail/#(x.contentId)" target="_blank">#(x.title)</a>
-                            <i>收藏于#(x.createTime)</i>
+                            <a class="jie-title" href="/jie/detail/#(x.contentid)" target="_blank">#(x.title)</a>
+                            <i>收藏于#(x.createtime)</i>
                         </li>
                         #end
                     </ul>

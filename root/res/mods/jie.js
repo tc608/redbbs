@@ -22,8 +22,8 @@ layui.define(['fly','laypage'], function(exports){
   };
 
   var jie = {
-      createEditer : function(){
-          editor = fly.editer();
+      createEditer : function(key){
+          editor = fly.editer(key);
       }
   }
 
@@ -86,7 +86,7 @@ layui.define(['fly','laypage'], function(exports){
         layer.close(index);
         fly.json('/os/content/set', {
             id: div.data('id')
-            ,v: -1
+            ,v: -10
             ,field:"status"
         }, function(res){
             location.href= "/";
@@ -147,7 +147,7 @@ layui.define(['fly','laypage'], function(exports){
     zan: function(li){ //赞
       var othis = $(this), ok = othis.hasClass('zanok');
       fly.json('/os/comment/support', {
-          commentId: li.data('id')
+          commentid: li.data('id')
           ,ok: ok?-1:1
       }, function(res){
           var zans = othis.find('em').html()|0;
@@ -239,7 +239,7 @@ layui.define(['fly','laypage'], function(exports){
 
   form.on('submit(jie-add)', function(data){
       var bean = {};
-      ["contentId","title", "content", "type", "status"].forEach(function (value) {
+      ["contentid","title", "content", "type", "status"].forEach(function (value) {
         bean[value] = data.field[value];
       });
       bean["content"] = editor.txt.html();
@@ -249,7 +249,7 @@ layui.define(['fly','laypage'], function(exports){
           bean:JSON.stringify(bean)
       },function (res) {
           layer.msg("发布成功",{time:2000},function () {
-              var cache_key = "content_" + $("input[name='contentId']").val();
+              var cache_key = "content_" + $("input[name='contentid']").val();
               localStorage.removeItem(cache_key);
               location.href = "/user";
           });
@@ -258,7 +258,7 @@ layui.define(['fly','laypage'], function(exports){
   });
   form.on('submit(jie-reply)', function(data){
       var bean = {};
-      ["contentId","pid", "content"].forEach(function (value) {
+      ["contentid","pid", "content"].forEach(function (value) {
         bean[value] = data.field[value];
       });
       bean["content"] = editor.txt.html();
@@ -269,6 +269,8 @@ layui.define(['fly','laypage'], function(exports){
       },function (res) {
           layer.msg("回复成功",{time:2000},function () {
               //location.href = "/";
+              var cache_key = "comment_" + $("input[name='contentid']").val();
+              localStorage.removeItem(cache_key);
               location.reload();
           });
       });

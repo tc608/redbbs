@@ -12,15 +12,15 @@ import javax.persistence.Table;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "redbbs", name = "dyna_attr", comment = "[动态属性表]")
-public class DynaAttr implements java.io.Serializable {
+@Table(catalog = "redbbs", name = "sys_dynattr", comment = "[动态属性表]")
+public class DynAttr implements java.io.Serializable {
 
     @Id
     @Column(comment = "[目标数据id]")
     private int tid;
 
     @Column(comment = "[类型]1文章, 2xx, 3...,")
-    private int cate;
+    private short cate;
 
     @Column(length = 32, comment = "")
     private String attr = "";
@@ -36,11 +36,11 @@ public class DynaAttr implements java.io.Serializable {
         return this.tid;
     }
 
-    public void setCate(int cate) {
+    public void setCate(short cate) {
         this.cate = cate;
     }
 
-    public int getCate() {
+    public short getCate() {
         return this.cate;
     }
 

@@ -32,7 +32,7 @@ public class BaseServlet extends HttpServlet {
     private static final Kv _kv = Kv.create();
     private static Engine engine;
     protected String sessionid;
-    protected int currentId;//登录人id
+    protected int currentid;//登录人id
 
     protected static final boolean winos = System.getProperty("os.name").contains("Window");
 
@@ -69,7 +69,7 @@ public class BaseServlet extends HttpServlet {
         sessionid = request.getSessionid(false);
         if (sessionid != null) {
             request.setCurrentUser(userService.current(sessionid));
-            currentId = userService.currentUserId(sessionid);
+            currentid = userService.currentUserId(sessionid);
             _kv.set("mine", request.currentUser());
         }
 
@@ -179,10 +179,10 @@ public class BaseServlet extends HttpServlet {
     protected FilterNode setPrivate(FilterNode node){
         UserInfo userInfo = request.currentUser();
         if (userInfo == null){
-            node.and("status", FilterExpress.NOTEQUAL, 3);
-        }else if (!userService.isAdmin(currentId)){
-            //select * from content c where c.status != -1 and (c.status!=3 or (c.status=3 and c.userId=100001))
-            node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", userInfo.getUserId())));
+            node.and("status", FilterExpress.NOTEQUAL, 30);
+        }else if (!userService.isAdmin(currentid)){
+            //select * from content c where c.status != -1 and (c.status!=30 or (c.status=30 and c.userid=100001))
+            node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", userInfo.getUserid())));
         }
 
         return node;

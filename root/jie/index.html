@@ -33,40 +33,40 @@
                     #for(x : contents.rows)
                     <li>
 
-                        <a href="/user/#(x.userId)" class="fly-avatar">
+                        <a href="/user/#(x.userid)" class="fly-avatar">
                             <img src="#(x.avatar??)" alt="#(x.nickname)">
                         </a>
                         <h2>
-                            #if(x.status == 3)
+                            #if(x.status == 30)
                             <a class="layui-badge">私密</a>
                             #else
-                            <a class="layui-badge">#(x.typeName)</a>
+                            <a class="layui-badge">#(x.typename)</a>
                             #end
-                            <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
+                            <a href="/jie/detail/#(x.contentid)">#(x.title)</a>
                         </h2>
                         <div class="fly-list-info">
-                            <a href="user/#(x.userId)" link>
+                            <a href="user/#(x.userid)" link>
                                 <cite>#(x.nickname)</cite>
                                 <!--
                                 <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                 <i class="layui-badge fly-badge-vip">VIP3</i>
                                 -->
                             </a>
-                            <span>#(x.createTime)</span>
+                            <span>#(x.createtime)</span>
 
                             <!--
                             <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
                             <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                             -->
                             <span class="fly-list-nums">
-                                <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replyNum??0)
+                                <i class="iconfont icon-pinglun1" title="回答"></i> #(x.replynum??0)
                             </span>
                         </div>
                         <div class="fly-list-badge">
-                            #if(x.top > 0)
+                            #if(x.top >= 20)
                             <span class="layui-badge layui-bg-black">置顶</span>
                             #end
-                            #if(x.wonderful == 1)
+                            #if(x.wonderful >= 20)
                             <span class="layui-badge layui-bg-red">精帖</span>
                             #end
                         </div>
@@ -87,8 +87,8 @@
                 <dt class="fly-panel-title">本周热议</dt>
                 #for(x : hotReply.rows??)
                 <dd>
-                    <a href="/jie/detail/#(x.contentId)">#(x.title)</a>
-                    <span><i class="iconfont icon-pinglun1"></i> #(x.replyNum)</span>
+                    <a href="/jie/detail/#(x.contentid)">#(x.title)</a>
+                    <span><i class="iconfont icon-pinglun1"></i> #(x.replynum)</span>
                 </dd>
                 #else
                 <div class="fly-none">没有相关数据</div>

@@ -2,7 +2,7 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.base.user.UserBean;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.comment.CommentInfo;
@@ -58,9 +58,9 @@ public class UserServlet extends BaseServlet {
             }
 
             //创建的帖子
-            Flipper flipper = new Flipper().limit(8).sort("createTime DESC");
+            Flipper flipper = new Flipper().limit(8).sort("createtime DESC");
             ContentBean bean = new ContentBean();
-            bean.setUserId(user.getUserId());
+            bean.setUserid(user.getUserid());
             Sheet<ContentInfo> contents = contentService.queryByBean(flipper, bean);
 
             //收藏的帖子
@@ -72,30 +72,30 @@ public class UserServlet extends BaseServlet {
         }
 
         //-------用户主页------
-        int userId = 0;
+        int userid = 0;
         if ("nick".equals(para)){//通过@ 点击跳转
             String nickname = request.getParameter("nickname");
             UserBean userBean = new UserBean();
             userBean.setNickname(nickname);
-            Sheet<User> users = userService.queryUser(new Flipper().limit(1), userBean);
+            Sheet<UserRecord> users = userService.queryUser(new Flipper().limit(1), userBean);
             if (users.getTotal() > 0){
-                userId = users.stream().findFirst().orElse(null).getUserId();
+                userid = users.stream().findFirst().orElse(null).getUserid();
             }
         }else {//直接访问
-            userId = getParaToInt(0);
+            userid = getParaToInt(0);
         }
 
         //用户信息
-        UserInfo user = userService.findUserInfo(userId);
+        UserInfo user = userService.findUserInfo(userid);
 
         //帖子
-        Flipper flipper = new Flipper().limit(8).sort("createTime DESC");
+        Flipper flipper = new Flipper().limit(8).sort("createtime DESC");
         ContentBean bean = new ContentBean();
-        bean.setUserId(userId);
+        bean.setUserid(userid);
         Sheet<ContentInfo> contents = contentService.queryByBean(flipper, bean);
 
         //回复
-        Sheet<CommentInfo> comments = commentService.queryByUserid(userId);
+        Sheet<CommentInfo> comments = commentService.queryByUserid(userid);
 
         Kv kv = Kv.by("contents", contents).set("user", user).set("comments", comments);
         finish("/user/home.html", kv);

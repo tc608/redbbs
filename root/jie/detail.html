@@ -13,67 +13,67 @@
 	        <h1>#(bean.title)</h1>
 	        <div class="fly-detail-info">
                 <!-- <span class="layui-badge">审核中</span> -->
-				#if(bean.status == 3)
+				#if(bean.status == 30)
                 <span class="layui-badge layui-bg-green fly-detail-column">私密</span>
 				#else
-				<span class="layui-badge layui-bg-green fly-detail-column">#(bean.typeName)</span>
+				<span class="layui-badge layui-bg-green fly-detail-column">#(bean.typename)</span>
 				#end
 
                 <span class="layui-badge" style="background-color: #999;">未结</span>
                 <!-- <span class="layui-badge" style="background-color: #5FB878;">已结</span> -->
-				#if(bean.top == 1)
+				#if(bean.top == 10)
                 <span class="layui-badge layui-bg-black">置顶</span>
 				#end
-				#if(bean.wonderful == 1)
+				#if(bean.wonderful == 10)
                 <span class="layui-badge layui-bg-red">精帖</span>
 				#end
-				#if(mine.roleId?? == 1)
-                <div class="fly-admin-box" data-id="#(bean.contentId)">
+				#if(mine.roleid?? == 1)
+                <div class="fly-admin-box" data-id="#(bean.contentid)">
                     <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
-					#if(bean.top == 1)
-                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="top" v="0" style="background-color:#ccc;">取消置顶</span>
+					#if(bean.top >= 20)
+                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="top" v="10" style="background-color:#ccc;">取消置顶</span>
 					#else
-                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="top" v="1">置顶</span>
+                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="top" v="20">置顶</span>
 					#end
 
-					#if(bean.wonderful == 1)
-                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="wonderful" v="0" style="background-color:#ccc;">取消加精</span>
+					#if(bean.wonderful >= 20)
+                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="wonderful" v="10" style="background-color:#ccc;">取消加精</span>
 					#else
-                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="wonderful" v="1">加精</span>
+                    <span class="layui-btn layui-btn-xs jie-admin" type="set" field="wonderful" v="20">加精</span>
 					#end
 
-					#if(bean.status != 3)
-					<span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" v="3">设为私密</span>
+					#if(bean.status != 30)
+					<span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" v="30">设为私密</span>
 					#else
-					<span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" v="1">设为公开</span>
+					<span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" v="10">设为公开</span>
 					#end
                 </div>
 				#end
                 <span class="fly-list-nums">
-                    <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> #(bean.replyNum??0)</a>
-                    <i class="iconfont" title="人气">&#xe60b;</i> #(bean.viewNum??1)
+                    <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> #(bean.replynum??0)</a>
+                    <i class="iconfont" title="人气">&#xe60b;</i> #(bean.viewnum??1)
                 </span>
 	        </div>
 	        <div class="detail-about">
-				<a class="fly-avatar" href="/user/#(bean.userId)">
+				<a class="fly-avatar" href="/user/#(bean.userid)">
 					<img src="#(bean.avatar)" alt="#(bean.nickname)">
 				</a>
 				<div class="fly-detail-user">
-					<a href="/user/#(bean.userId)" class="fly-link">
+					<a href="/user/#(bean.userid)" class="fly-link">
 					<cite>#(bean.nickname)</cite>
 					<!--
 					<i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
 					<i class="layui-badge fly-badge-vip">VIP3</i>
 					-->
 					</a>
-					<span>#(bean.createTime??)</span>
+					<span>#(bean.createtime??)</span>
 				</div>
 				<div class="detail-hits" id="LAY_jieAdmin" data-id="123">
 					<!--
 					<span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
 					-->
-					#if(bean.userId == mine.userId?? || mine.roleId?? == 1)
-					<span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/jie/add/#(bean.contentId)">编辑此贴</a></span>
+					#if(bean.userid == mine.userid?? || mine.roleid?? == 1)
+					<span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/jie/add/#(bean.contentid)">编辑此贴</a></span>
 					#end
 				</div>
 	        </div>
@@ -101,10 +101,10 @@
 
         	<ul class="jieda" id="jieda">
 			#for(x : comments.rows??)
-				<li data-id="#(x.commentId)" class="jieda-daan">
+				<li data-id="#(x.commentid)" class="jieda-daan">
 					<a name="item-1111111111"></a>
 						<div class="detail-about detail-about-reply">
-						<a class="fly-avatar" href="/user/#(x.userId)">
+						<a class="fly-avatar" href="/user/#(x.userid)">
 							<img src="#(x.avatar)" alt="#(x.nickname)">
 						</a>
 						<div class="fly-detail-user">
@@ -113,7 +113,7 @@
 							<!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
 							<i class="layui-badge fly-badge-vip">VIP3</i>-->
 						</a>
-						#if(x.userId == bean.userId??)
+						#if(x.userid == bean.userid??)
 						<span>(楼主)</span>
 						#end
 		                <!--
@@ -123,7 +123,7 @@
 		                -->
               			</div>
 
-						<div class="detail-hits"><span>#(x.createTime??)</span></div>
+						<div class="detail-hits"><span>#(x.createtime??)</span></div>
 						#if(1>2)
 						<i class="iconfont icon-caina" title="最佳答案"></i>
 						#end
@@ -132,18 +132,18 @@
 							#(x.content)
 			            </div>
 						<div class="jieda-reply">
-							#if(x.hadSupport == 1)
-							<span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportNum)</em></span>
+							#if(x.hadsupport == 1)
+							<span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportnum)</em></span>
 							#else
-							<span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportNum)</em></span>
+							<span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportnum)</em></span>
 							#end
 							<span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
 							<div class="jieda-admin">
-								#if(x.userId == mine.userId?? && false)
+								#if(x.userid == mine.userid?? && false)
 								<span type="edit">编辑</span>
 								<span type="del">删除</span>
 								#end
-								#if(bean.userId == mine.userId??)
+								#if(bean.userid == mine.userid??)
 								<span class="jieda-accept" type="accept">采纳</span>
 								#end
 							</div>
@@ -164,7 +164,7 @@
 							<div id="editor"></div>
 						</div>
 						<div class="layui-form-item">
-							<input type="hidden" name="contentId" value="#(bean.contentId??)">
+							<input type="hidden" name="contentid" value="#(bean.contentid??)">
 							<input type="hidden" name="pid" value="0">
 							<button class="layui-btn" lay-filter="jie-reply" lay-submit>提交回复</button>
 						</div>
@@ -178,8 +178,8 @@
 		<dt class="fly-panel-title">本周热议</dt>
 			#for(x : hotReply.rows)
 			<dd>
-				<a href="/jie/detail/#(x.contentId)">#(x.title)</a>
-				<span><i class="iconfont icon-pinglun1"></i> #(x.replyNum)</span>
+				<a href="/jie/detail/#(x.contentid)">#(x.title)</a>
+				<span><i class="iconfont icon-pinglun1"></i> #(x.replynum)</span>
 			</dd>
 			#else
 			<div class="fly-none">没有相关数据</div>
@@ -232,7 +232,7 @@
           othis.html(fly.content(html));
         });*/
 
-        jie.createEditer();
+        jie.createEditer("comment");
     });
 </script>
 #end

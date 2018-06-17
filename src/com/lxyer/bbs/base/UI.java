@@ -1,6 +1,6 @@
 package com.lxyer.bbs.base;
 
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserRecord;
 
 /**
  * Created by liangxianyou at 2018/6/9 13:45.
@@ -8,9 +8,9 @@ import com.lxyer.bbs.base.user.User;
 public interface UI<I extends UI> {
 
     //抽象方法
-    int getUserId();
-    User getUser();
-    I setUser(User user);
+    int getUserid();
+    UserRecord getUser();
+    I setUser(UserRecord user);
 
     //默认实现方法
     default String getRealname(){

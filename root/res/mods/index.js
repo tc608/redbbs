@@ -250,12 +250,12 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
       
     }
 
-    ,editer: function(){
+    ,editer: function(key){
           var E = window.wangEditor;
           var editor = new E('#editor');
           editor.customConfig.uploadImgServer = '/upload/img';
 
-          var cache_key = "content_" + $("input[name='contentId']").val();
+          var cache_key = key+"_" + $("input[name='contentid']").val();
           var html = localStorage.getItem(cache_key);
 
           editor.customConfig.onblur = function (html) {

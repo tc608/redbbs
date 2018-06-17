@@ -27,7 +27,7 @@ public class LoginBean implements FilterBean {
     }
 
     public String getPassword() {
-        return User.md5IfNeed(password);
+        return UserRecord.md5IfNeed(password);
     }
 
     public void setPassword(String password) {

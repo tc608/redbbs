@@ -1,10 +1,11 @@
 package com.lxyer.bbs.comment;
 
+import javax.persistence.*;
+
 import com.lxyer.bbs.base.UF;
 import com.lxyer.bbs.base.kit.LxyKit;
-import org.redkale.convert.json.JsonConvert;
+import org.redkale.convert.json.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -12,107 +13,107 @@ import java.io.Serializable;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "redbbs", name = "comment", comment = "[评论表]")
-public class Comment implements UF<CommentInfo>,Serializable {
+@Table(catalog = "redbbs", name = "sys_comment", comment = "[评论表]")
+public class Comment implements Serializable, UF {
 
     @Id
     @GeneratedValue
     @Column(comment = "[评论id]")
-    private int commentId;
+    private int commentid;
 
     @Column(comment = "[评论用户id]")
-    private int userId;
+    private int userid;
 
     @Column(comment = "[评论父id]")
     private int pid;
 
     @Column(comment = "[评论的类型]")
-    private int cate;
+    private short cate = 1;
 
     @Column(comment = "[被评论内容的id]")
-    private int contentId;
+    private int contentid;
 
     @Column(comment = "[评论内容]")
     private String content = "";
 
-    @Column(comment = "[创建时间]")
-    private long createTime;
+    @Column(updatable = false, comment = "[创建时间]")
+    private long createtime;
 
     @Column(comment = "[支持数]")
-    private int supportNum;
+    private int supportnum;
 
     @Column(comment = "[状态]1正常，-1删除")
-    private int status = 1;
+    private short status = 10;
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setCommentid(int commentid) {
+        this.commentid = commentid;
     }
 
-    public int getCommentId() {
-        return this.commentId;
+    public int getCommentid() {
+        return this.commentid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public int getUserId() {
-        return this.userId;
-    }
-
-    public int getPid() {
-        return pid;
+    public int getUserid() {
+        return this.userid;
     }
 
     public void setPid(int pid) {
         this.pid = pid;
     }
 
-    public int getCate() {
-        return cate;
+    public int getPid() {
+        return this.pid;
     }
 
-    public void setCate(int cate) {
+    public void setCate(short cate) {
         this.cate = cate;
     }
 
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
+    public short getCate() {
+        return this.cate;
     }
 
-    public int getContentId() {
-        return this.contentId;
+    public void setContentid(int contentid) {
+        this.contentid = contentid;
     }
 
-    public String getContent() {
-        return content;
+    public int getContentid() {
+        return this.contentid;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public String getContent() {
+        return this.content;
     }
 
-    public long getCreateTime() {
-        return this.createTime;
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
     }
 
-    public int getSupportNum() {
-        return supportNum;
+    public long getCreatetime() {
+        return this.createtime;
     }
 
-    public void setSupportNum(int supportNum) {
-        this.supportNum = supportNum;
+    public void setSupportnum(int supportnum) {
+        this.supportnum = supportnum;
     }
 
-    public void setStatus(int status) {
+    public int getSupportnum() {
+        return this.supportnum;
+    }
+
+    public void setStatus(short status) {
         this.status = status;
     }
 
-    public int getStatus() {
+    public short getStatus() {
         return this.status;
     }
 
@@ -123,16 +124,16 @@ public class Comment implements UF<CommentInfo>,Serializable {
 
     public CommentInfo createInfo(){
         CommentInfo info = new CommentInfo();
-        info.setCommentId(commentId);
-        info.setUserId(userId);
+        info.setCommentid(commentid);
+        info.setUserid(userid);
         info.setPid(pid);
         info.setCate(cate);
-        info.setContentId(contentId);
+        info.setContentid(contentid);
         info.setContent(content);
-        info.setSupportNum(supportNum);
+        info.setSupportnum(supportnum);
         info.setStatus(status);
 
-        info.setCreateTime(LxyKit.dateFmt(createTime));
+        info.setCreatetime(LxyKit.dateFmt(createtime));
         return info;
     }
 }

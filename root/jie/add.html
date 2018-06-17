@@ -24,7 +24,7 @@
                                             <option value="20" #if(bean.type?? == 20) selected #end>分享</option>
                                             <option value="30" #if(bean.type?? == 30) selected #end>讨论</option>
                                             <!--高级权限开放类别-->
-                                            #if(mine.roleId?? == 1)
+                                            #if(mine.roleid?? == 1)
                                             <option value="40" #if(bean.type?? == 40) selected #end>公告</option>
                                             <option value="50" #if(bean.type?? == 50) selected #end>动态</option>
                                             #end
@@ -34,7 +34,7 @@
                                 <div class="layui-col-md6">
                                     <label for="L_title" class="layui-form-label">标题</label>
                                     <div class="layui-input-block">
-                                        <input type="hidden" name="contentId" value="#(bean.contentId??)">
+                                        <input type="hidden" name="contentid" value="#(bean.contentid??)">
                                         <input type="text" id="L_title" name="title" value="#(bean.title??)" required lay-verify="required" autocomplete="off" class="layui-input">
                                         <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
                                     </div>
@@ -140,7 +140,7 @@
         fly: 'index'
     }).use(['fly','jie'], function () {
         var jie = layui.jie;
-        jie.createEditer();
+        jie.createEditer("content");
     });
 </script>
 #end

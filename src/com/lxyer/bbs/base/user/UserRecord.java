@@ -1,14 +1,9 @@
 package com.lxyer.bbs.base.user;
 
-import org.redkale.convert.ConvertColumn;
-import org.redkale.convert.ConvertType;
-import org.redkale.convert.json.JsonConvert;
+import javax.persistence.*;
+import org.redkale.convert.json.*;
 import org.redkale.util.Utility;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -17,22 +12,21 @@ import java.security.NoSuchAlgorithmException;
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "redbbs", name = "user")
-public class User implements java.io.Serializable {
+@Table(catalog = "redbbs", name = "sys_userrecord")
+public class UserRecord implements java.io.Serializable {
 
     @Id
-    //@GeneratedValue
-    @Column(comment = "[用户id]", updatable = false)
-    private int userId;
+    @Column(comment = "[用户id]")
+    private int userid;
 
     @Column(length = 32, comment = "[登录名]")
     private String username = "";
 
-    @Column(comment = "[性别]默认1 1男，2女")
-    private int sex = 1;
-
     @Column(length = 64, comment = "[密码]")
     private String password = "";
+
+    @Column(comment = "[性别]默认 10男，20女")
+    private short sex;
 
     @Column(length = 32, comment = "[电话号码]")
     private String phone = "";
@@ -49,8 +43,8 @@ public class User implements java.io.Serializable {
     @Column(length = 32, comment = "[邮箱]")
     private String email = "";
 
-    @Column(length = 2, comment = "[用户角色]")
-    private int roleId = 0;
+    @Column(comment = "")
+    private int roleid;
 
     @Column(length = 128, comment = "[个人博客地址]")
     private String site = "";
@@ -58,8 +52,8 @@ public class User implements java.io.Serializable {
     @Column(length = 128, comment = "[码云/GitHub]")
     private String git = "";
 
-    @Column(comment = "[创建时间]", updatable = false)
-    private long createTime;
+    @Column(updatable = false, comment = "[创建时间]")
+    private long createtime;
 
     @Column(length = 256, comment = "[签名]")
     private String sign = "";
@@ -67,8 +61,164 @@ public class User implements java.io.Serializable {
     @Column(length = 64, comment = "[所在城市]")
     private String city = "";
 
-    @Column(comment = "[状态]")
-    private int status = 1;
+    @Column(comment = "[状态]-10删除 10正常")
+    private short status = 10;
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    public int getUserid() {
+        return this.userid;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setSex(short sex) {
+        this.sex = sex;
+    }
+
+    public short getSex() {
+        return this.sex;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return this.nickname;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatar() {
+        return this.avatar;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
+    }
+
+    public String getRealname() {
+        return this.realname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setRoleid(int roleid) {
+        this.roleid = roleid;
+    }
+
+    public int getRoleid() {
+        return this.roleid;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getSite() {
+        return this.site;
+    }
+
+    public void setGit(String git) {
+        this.git = git;
+    }
+
+    public String getGit() {
+        return this.git;
+    }
+
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
+    }
+
+    public long getCreatetime() {
+        return this.createtime;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public String getSign() {
+        return this.sign;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setStatus(short status) {
+        this.status = status;
+    }
+
+    public short getStatus() {
+        return this.status;
+    }
+
+    @Override
+    public String toString() {
+        return JsonConvert.root().convertTo(this);
+    }
+
+    //------
+
+    public UserInfo createUserInfo() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserid(userid);
+        userInfo.setUsername(username);
+        userInfo.setSex(sex);
+        userInfo.setPassword(password);
+        userInfo.setPhone(phone);
+        userInfo.setNickname(nickname);
+        userInfo.setAvatar(avatar);
+        userInfo.setRelaname(realname);
+        userInfo.setEmail(email);
+        userInfo.setRoleid(roleid);
+        userInfo.setSite(site);
+        userInfo.setGit(git);
+        userInfo.setCreatetime(createtime);
+        userInfo.setSign(sign);
+        userInfo.setCity(city);
+        userInfo.setStatus(getStatus());
+        return userInfo;
+    }
 
     public String passwordForMd5(){
         return md5IfNeed(password);
@@ -87,160 +237,5 @@ public class User implements java.io.Serializable {
         byte[] bytes = password.trim().getBytes();
         bytes = md5.digest(bytes);
         return new String(Utility.binToHex(bytes));
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
-    }
-
-    @ConvertColumn(ignore = true, type = ConvertType.JSON)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getRealname() {
-        return realname;
-    }
-
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
-
-    public String getEmail() {
-        return (email == null || email.isEmpty()) ? " " : email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    public String getGit() {
-        return git;
-    }
-
-    public void setGit(String git) {
-        this.git = git;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return JsonConvert.root().convertTo(this);
-    }
-
-    public UserInfo createUserInfo() {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(userId);
-        userInfo.setUsername(username);
-        userInfo.setSex(sex);
-        userInfo.setPassword(password);
-        userInfo.setPhone(phone);
-        userInfo.setNickname(nickname);
-        userInfo.setAvatar(avatar);
-        userInfo.setRelaname(realname);
-        userInfo.setEmail(email);
-        userInfo.setRoleId(roleId);
-        userInfo.setSite(site);
-        userInfo.setGit(git);
-        userInfo.setCreateTime(createTime);
-        userInfo.setSign(sign);
-        userInfo.setCity(city);
-        userInfo.setStatus(getStatus());
-        return userInfo;
     }
 }

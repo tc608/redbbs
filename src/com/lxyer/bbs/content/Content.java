@@ -1,27 +1,29 @@
 package com.lxyer.bbs.content;
 
+import javax.persistence.*;
+
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.UF;
 import com.lxyer.bbs.base.kit.LxyKit;
-import org.redkale.convert.json.JsonConvert;
+import org.redkale.convert.json.*;
 
-import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  *
  * @author lxyer
  */
 @Cacheable(interval = 5*60)
-@Table(catalog = "redbbs", name = "content", comment = "[内容表]")
-public class Content implements UF<ContentInfo>,java.io.Serializable {
+@Table(catalog = "redbbs", name = "sys_content", comment = "[内容表]")
+public class Content implements Serializable, UF<ContentInfo> {
 
     @Id
     @GeneratedValue
     @Column(comment = "[内容id]")
-    private int contentId;
+    private int contentid;
 
     @Column(comment = "[用户id]")
-    private int userId;
+    private int userid;
 
     @Column(length = 64, comment = "[标题]")
     private String title = "";
@@ -32,47 +34,47 @@ public class Content implements UF<ContentInfo>,java.io.Serializable {
     @Column(comment = "[内容]")
     private String content = "";
 
-    @Column(comment = "[创建时间]")
-    private long createTime;
+    @Column(updatable = false, comment = "[创建时间]")
+    private long createtime;
 
     @Column(comment = "[类别]")
-    private int cate;
+    private short cate;
 
-    @Column(comment = "[内容类型]1新闻，2作品")
-    private int type;
+    @Column(comment = "[内容栏目]10求助，20分享，30建议，40公告，50动态")
+    private short type;
 
     @Column(comment = "[评论数]")
-    private int replyNum;
+    private int replynum;
 
     @Column(comment = "[阅读量]")
-    private int viewNum;
+    private int viewnum;
 
-    @Column(comment = "[精] 0否，1是")
-    private int wonderful;
+    @Column(comment = "[精] 10否，20是")
+    private short wonderful = 10;
 
-    @Column(comment = "[置顶] 0否，1是")
-    private int top;
+    @Column(comment = "[置顶]10否，20是")
+    private short top = 10;
 
-    @Column(comment = "[结帖]大于0结帖")
-    private int solved;
+    @Column(comment = "[结帖]10否，20是")
+    private short solved = 10;
 
-    @Column(comment = "[状态]")
-    private int status = 1;
+    @Column(comment = "[状态] -10删除 10未结帖 20结帖 30私密")
+    private short status = 10;
 
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
+    public void setContentid(int contentid) {
+        this.contentid = contentid;
     }
 
-    public int getContentId() {
-        return this.contentId;
+    public int getContentid() {
+        return this.contentid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public int getUserId() {
-        return this.userId;
+    public int getUserid() {
+        return this.userid;
     }
 
     public void setTitle(String title) {
@@ -91,84 +93,83 @@ public class Content implements UF<ContentInfo>,java.io.Serializable {
         return this.digest;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public String getContent() {
+        return this.content;
     }
 
-    public long getCreateTime() {
-        return this.createTime;
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
     }
 
-    public int getCate() {
-        return cate;
+    public long getCreatetime() {
+        return this.createtime;
     }
 
-    public void setCate(int cate) {
+    public void setCate(short cate) {
         this.cate = cate;
     }
 
-    public void setType(int type) {
+    public short getCate() {
+        return this.cate;
+    }
+
+    public void setType(short type) {
         this.type = type;
     }
 
-    public int getType() {
+    public short getType() {
         return this.type;
     }
 
-
-    public int getReplyNum() {
-        return replyNum;
+    public void setReplynum(int replynum) {
+        this.replynum = replynum;
     }
 
-    public void setReplyNum(int replyNum) {
-        this.replyNum = replyNum;
+    public int getReplynum() {
+        return this.replynum;
     }
 
-    public int getViewNum() {
-        return viewNum;
+    public void setViewnum(int viewnum) {
+        this.viewnum = viewnum;
     }
 
-    public void setViewNum(int viewNum) {
-        this.viewNum = viewNum;
+    public int getViewnum() {
+        return this.viewnum;
     }
 
-    public int getWonderful() {
-        return wonderful;
-    }
-
-    public void setWonderful(int wonderful) {
+    public void setWonderful(short wonderful) {
         this.wonderful = wonderful;
     }
 
-    public int getTop() {
-        return top;
+    public short getWonderful() {
+        return this.wonderful;
     }
 
-    public void setTop(int top) {
+    public void setTop(short top) {
         this.top = top;
     }
 
-    public int getSolved() {
-        return solved;
+    public short getTop() {
+        return this.top;
     }
 
-    public void setSolved(int solved) {
+    public void setSolved(short solved) {
         this.solved = solved;
     }
 
-    public void setStatus(int status) {
+    public short getSolved() {
+        return this.solved;
+    }
+
+    public void setStatus(short status) {
         this.status = status;
     }
 
-    public int getStatus() {
+    public short getStatus() {
         return this.status;
     }
 
@@ -182,21 +183,21 @@ public class Content implements UF<ContentInfo>,java.io.Serializable {
     @Override
     public ContentInfo createInfo() {
         ContentInfo info = new ContentInfo();
-        info.setContentId(contentId);
-        info.setUserId(userId);
+        info.setContentid(contentid);
+        info.setUserid(userid);
         info.setTitle(title);
         info.setContent(content);
         info.setCate(cate);
         info.setType(type);
-        info.setViewNum(viewNum);
-        info.setReplyNum(replyNum);
+        info.setViewnum(viewnum);
+        info.setReplynum(replynum);
         info.setWonderful(wonderful);
         info.setTop(top);
         info.setSolved(solved);
         info.setStatus(status);
 
-        info.setTypeName(types.getOrDefault(type, "其他").toString());
-        info.setCreateTime(LxyKit.dateFmt(createTime));
+        info.setTypename(types.getOrDefault((int)type, "其他").toString());
+        info.setCreatetime(LxyKit.dateFmt(createtime));
         return info;
     }
 }

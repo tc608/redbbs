@@ -13,6 +13,7 @@ import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
 
 import static org.redkale.source.FilterExpress.GREATERTHAN;
+import static org.redkale.source.FilterExpress.GREATERTHANOREQUALTO;
 import static org.redkale.source.FilterExpress.NOTEQUAL;
 
 
@@ -26,13 +27,13 @@ public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
     public void abc(HttpRequest request, HttpResponse response){
-        Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
+        Flipper flipper = new Flipper().limit(30).sort("top DESC,createtime DESC");
         //置顶贴
-        FilterNode topNode = FilterNode.create("status", NOTEQUAL, -1).and("top", GREATERTHAN, 0);
+        FilterNode topNode = FilterNode.create("status", NOTEQUAL, -10).and("top", GREATERTHANOREQUALTO, 20);
         Sheet<ContentInfo> top = contentService.contentQuery(flipper, setPrivate(topNode));
 
         //非置顶贴
-        FilterNode untopNode = FilterNode.create("status", NOTEQUAL, -1).and("top", 0);
+        FilterNode untopNode = FilterNode.create("status", NOTEQUAL, -10).and("top", 10);
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(untopNode));
 
         //热帖
@@ -40,8 +41,8 @@ public class IndexServlet extends BaseServlet {
         Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentId);
+        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();

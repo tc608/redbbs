@@ -34,10 +34,10 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
 
     @RestMapping(name = "save", comment = "评论保存")
     public RetResult commentSave(@RestSessionid String sessionid, @RestParam(name = "bean") Comment comment){
-        int contentId = comment.getContentId();
+        int contentid = comment.getContentid();
 
         //数据校验
-        if (contentId < 1)
+        if (contentid < 1)
             return RetCodes.retResult(RET_COMMENT_PARA_ILLEGAL, "评论参数无效");
         if (comment.getContent() == null)
             return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
@@ -45,16 +45,16 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
         if (content.isEmpty())
             return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
 
-        if (comment.getCommentId() < 1) {
-            int userId = userService.currentUserId(sessionid);
-            comment.setUserId(userId);
-            comment.setCreateTime(System.currentTimeMillis());
+        if (comment.getCommentid() < 1) {
+            int userid = userService.currentUserId(sessionid);
+            comment.setUserid(userid);
+            comment.setCreatetime(System.currentTimeMillis());
             //todo:@用户处理
             source.insert(comment);
 
             //update replyNum
-            int count = source.getNumberResult(Comment.class, FilterFunc.COUNT, "commentId", FilterNode.create("contentId", contentId)).intValue();
-            source.updateColumn(Content.class, contentId, ColumnValue.create("replyNum", count));
+            int count = source.getNumberResult(Comment.class, FilterFunc.COUNT, "commentid", FilterNode.create("contentid", contentid)).intValue();
+            source.updateColumn(Content.class, contentid, ColumnValue.create("replynum", count));
         }else {
             source.updateColumn(comment, SelectColumn.createIncludes("content"));
         }
@@ -63,22 +63,22 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
 
     @RestMapping(name = "query", auth = false,comment = "查询评论")
     public Sheet<CommentInfo> commentQuery(@RestSessionid String sessionid , int contentId, Flipper flipper){
-        int userId = userService.currentUserId(sessionid);
+        int userid = userService.currentUserId(sessionid);
 
-        flipper.setSort("supportNum DESC,commentId ASC");
-        Sheet<Comment> comments = source.querySheet(Comment.class, flipper, FilterNode.create("contentId", contentId));
+        flipper.setSort("supportnum DESC,commentid ASC");
+        Sheet<Comment> comments = source.querySheet(Comment.class, flipper, FilterNode.create("contentid", contentId));
 
         Sheet<CommentInfo> infos = createInfo(comments);
         setIUser(infos);
 
         //用户点赞的评论
-        if (userId > 0){
-            int[] commentIds = comments.stream().mapToInt(Comment::getCommentId).toArray();
-            FilterNode node = FilterNode.create("cate", 1).and("status", 1).and("userId", userId).and("tid", FilterExpress.IN, commentIds);
+        if (userid > 0){
+            int[] commentids = comments.stream().mapToInt(Comment::getCommentid).toArray();
+            FilterNode node = FilterNode.create("cate", 10).and("status", 10).and("userid", userid).and("tid", FilterExpress.IN, commentids);
             List<Integer> hadSupport = source.queryColumnList("tid", ActLog.class, node);
 
             infos.forEach(x->{
-                x.setHadSupport(hadSupport.contains(x.getCommentId()) ? 1 : -1);//
+                x.setHadsupport(hadSupport.contains(x.getCommentid()) ? 1 : -1);//
             });
         }
 
@@ -86,18 +86,18 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
     }
 
     public Sheet<CommentInfo> queryByUserid(int userid){
-        Sheet<Comment> comments = source.querySheet(Comment.class, new Flipper().sort("createTime DESC"), FilterNode.create("userId", userid));
+        Sheet<Comment> comments = source.querySheet(Comment.class, new Flipper().sort("createtime DESC"), FilterNode.create("userid", userid));
 
-        int[] contentIds = comments.stream().mapToInt(x -> x.getContentId()).toArray();
+        int[] contentIds = comments.stream().mapToInt(x -> x.getCommentid()).toArray();
 
-        List<Content> contents = source.queryList(Content.class, SelectColumn.createIncludes("contentId","title"), FilterNode.create("contentId", FilterExpress.IN, contentIds));
+        List<Content> contents = source.queryList(Content.class, SelectColumn.createIncludes("contentid","title"), FilterNode.create("contentid", FilterExpress.IN, contentIds));
 
         Sheet<CommentInfo> infos = new Sheet<>();
         List<CommentInfo> list = new ArrayList<>();
 
         comments.forEach(x->{
             CommentInfo info = x.createInfo();
-            Content content = contents.stream().filter(k -> k.getContentId() == x.getContentId()).findFirst().orElse(new Content());
+            Content content = contents.stream().filter(k -> k.getContentid() == x.getContentid()).findFirst().orElse(new Content());
             info.setTitle(content.getTitle());
             list.add(info);
         });
@@ -108,23 +108,23 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
     }
 
     @RestMapping(name = "support", comment = "评论点赞")
-    public RetResult support(@RestSessionid String sessionid, int commentId, int ok){
-        int userId = userService.currentUserId(sessionid);
+    public RetResult support(@RestSessionid String sessionid, int commentid, int ok){
+        int userid = userService.currentUserId(sessionid);
 
-        ActLog actLog = source.find(ActLog.class, FilterNode.create("userId", userId).and("tid", commentId).and("cate", 1));
+        ActLog actLog = source.find(ActLog.class, FilterNode.create("userid", userid).and("tid", commentid).and("cate", 10));
         if (actLog == null && ok == 1){
-            actLog = new ActLog().cate(1).tid(commentId).userId(userId);
-            actLog.setCreateTime(System.currentTimeMillis());
+            actLog = new ActLog(10, commentid, userid);
+            actLog.setCreatetime(System.currentTimeMillis());
             source.insert(actLog);
         }else if (actLog != null && actLog.getStatus() != ok){
-            actLog.setStatus(ok);
+            actLog.setStatus((short) -10);
             source.update(actLog);
         }else {
             return RetCodes.retResult(-1, ok == 1 ? "已赞" : "已取消赞");
         }
 
-        int count = source.getNumberResult(ActLog.class, FilterFunc.COUNT, 0, "logid", FilterNode.create("tid", commentId).and("status", 1)).intValue();
-        source.updateColumn(Comment.class, commentId,"supportNum", count);
+        int count = source.getNumberResult(ActLog.class, FilterFunc.COUNT, 0, "logid", FilterNode.create("tid", commentid).and("status", 10)).intValue();
+        source.updateColumn(Comment.class, commentid,"supportnum", count);
 
         return RetResult.success();
     }
@@ -132,9 +132,9 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
     @RestMapping(name = "rankuser", auth = false, comment = "评论榜")
     public Map<String, Number> commentRank(){
         Flipper flipper = new Flipper().limit(8);
-        source.querySheet(Comment.class, flipper, FilterNode.create("userId", FilterExpress.IN));
+        source.querySheet(Comment.class, flipper, FilterNode.create("userid", FilterExpress.IN));
 
-        Map<String, Number> numberMap = source.getNumberMap(Comment.class, FilterFuncColumn.create(FilterFunc.DISTINCTCOUNT, "userId"));
+        Map<String, Number> numberMap = source.getNumberMap(Comment.class, FilterFuncColumn.create(FilterFunc.DISTINCTCOUNT, "userid"));
 
         return numberMap;
     }

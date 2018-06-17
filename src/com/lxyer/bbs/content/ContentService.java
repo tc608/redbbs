@@ -39,20 +39,20 @@ public class ContentService extends BaseService<Content,ContentInfo>{
     }
 
     @RestMapping(name = "query", auth = false, comment = "内容列表")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, int currentId){
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, int currentid){
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
         switch (actived){
-            case "top": filterNode.and("top", 1);break;
-            case "untop": filterNode.and("top", 0);break;
-            case "unsolved": filterNode.and("solved", 0);break;
-            case "solved": filterNode.and("solved", 1);break;
-            case "wonderful": filterNode.and("wonderful", 1);break;
+            case "top": filterNode.and("top", FilterExpress.GREATERTHANOREQUALTO, 20);break;
+            case "untop": filterNode.and("top", 10);break;
+            case "unsolved": filterNode.and("solved", 10);break;
+            case "solved": filterNode.and("solved", 20);break;
+            case "wonderful": filterNode.and("wonderful", FilterExpress.GREATERTHANOREQUALTO, 20);break;
         }
 
-        if (!userService.isAdmin(currentId)){//私密贴：非管理员限制查看
-            filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 3).or(FilterNode.create("status", 3).and("userId", currentId)));
-        }else if (currentId <= 0){//私密贴：未登录限制查看
-            filterNode.and("status", FilterExpress.NOTEQUAL, 3);
+        if (!userService.isAdmin(currentid)){//私密贴：非管理员限制查看
+            filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", currentid)));
+        }else if (currentid <= 0){//私密贴：未登录限制查看
+            filterNode.and("status", FilterExpress.NOTEQUAL, 30);
         }
 
         return contentQuery(flipper, filterNode);
@@ -74,13 +74,13 @@ public class ContentService extends BaseService<Content,ContentInfo>{
             return RetCodes.retResult(-1, "少年你的文章标题太长啦，精简化标题吧，为了更好的SEO长度请少于64个字节");
         }
 
-        if (content.getContentId() < 1){
-            int maxId = source.getNumberResult(Content.class, FilterFunc.MAX,  10_0000, "contentId").intValue();
+        if (content.getContentid() < 1){
+            int maxId = source.getNumberResult(Content.class, FilterFunc.MAX,  10_0000, "contentid").intValue();
             int userId = userService.currentUserId(sessionid);
 
-            content.setContentId(maxId+1);
-            content.setCreateTime(System.currentTimeMillis());
-            content.setUserId(userId);
+            content.setContentid(maxId+1);
+            content.setCreatetime(System.currentTimeMillis());
+            content.setUserid(userId);
 
             source.insert(content);
         }else {
@@ -101,29 +101,29 @@ public class ContentService extends BaseService<Content,ContentInfo>{
 
         //收藏状态
         if (userId > 0){
-            ActLog actLog = source.find(ActLog.class, FilterNode.create("cate", 2).and("tid", contentid).and("status", 1));
-            if (actLog != null) contentInfo.setHadCollect(1);
+            ActLog actLog = source.find(ActLog.class, FilterNode.create("cate", 20).and("tid", contentid).and("status", 10));
+            if (actLog != null) contentInfo.setHadcollect(1);
         }
         return contentInfo;
     }
 
     @RestMapping(name = "upview", comment = "增加文章1个访问量")
     public void incrViewNum(int contentId){
-        source.updateColumn(Content.class, contentId, ColumnValue.inc("viewNum", 1));
+        source.updateColumn(Content.class, contentId, ColumnValue.inc("viewnum", 1));
     }
 
     @RestMapping(name = "collect", comment = "内容收藏")
-    public RetResult collect(@RestSessionid String sessionid, int contentId, int ok){
-        int userId = userService.currentUserId(sessionid);//不会为空
+    public RetResult collect(@RestSessionid String sessionid, int contentid, int ok){
+        int userid = userService.currentUserId(sessionid);//不会为空
 
-        ActLog actLog = source.find(ActLog.class, FilterNode.create("userId", userId).and("tid", contentId).and("cate", 2));
+        ActLog actLog = source.find(ActLog.class, FilterNode.create("userid", userid).and("tid", contentid).and("cate", 20));
         if (actLog == null && ok == 1){
-            actLog = new ActLog().cate(2).tid(contentId).userId(userId);
-            actLog.setCreateTime(System.currentTimeMillis());
+            actLog = new ActLog(20, contentid, userid);//.cate(2).tid(contentId).userId(userId);
+            actLog.setCreatetime(System.currentTimeMillis());
             source.insert(actLog);
         }else if (actLog != null && actLog.getStatus() != ok){
-            actLog.setStatus(ok);
-            actLog.setCreateTime(System.currentTimeMillis());
+            actLog.setStatus((short) ok);
+            actLog.setCreatetime(System.currentTimeMillis());
             source.update(actLog);
         }else {
             return RetCodes.retResult(-1, ok == 1 ? "已收藏" : "已取消收藏");
@@ -134,14 +134,14 @@ public class ContentService extends BaseService<Content,ContentInfo>{
 
     @RestMapping(name = "collectquery", comment = "收藏列表")
     public Sheet<ContentInfo> collectQuery(@RestSessionid String sessionid){
-        int userId = userService.currentUserId(sessionid);
+        int userid = userService.currentUserId(sessionid);
 
-        Flipper flipper = new Flipper().sort("createTime DESC");
-        FilterNode filterNode = FilterNode.create("cate", 2).and("status", 1).and("userId", userId);
-        Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.createIncludes("tid", "createTime"), flipper, filterNode);
+        Flipper flipper = new Flipper().sort("createtime DESC");
+        FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", userid);
+        Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.createIncludes("tid", "createtime"), flipper, filterNode);
 
         int[] contentids = actLogs.stream().mapToInt(x -> x.getTid()).toArray();
-        Sheet<Content> contents = source.querySheet(Content.class, SelectColumn.createIncludes("contentId", "title"), flipper.sort(null), FilterNode.create("contentId", FilterExpress.IN, contentids));
+        Sheet<Content> contents = source.querySheet(Content.class, SelectColumn.createIncludes("contentid", "title"), flipper.sort(null), FilterNode.create("contentid", FilterExpress.IN, contentids));
 
         Sheet<ContentInfo> infos = createInfo(contents);
 
@@ -149,7 +149,7 @@ public class ContentService extends BaseService<Content,ContentInfo>{
     }
 
     @RestMapping(name = "set", comment = "内容操作")
-    public RetResult contentSet(int id, String field, int v){
+    public RetResult contentSet(int id, String field, short v){
         source.updateColumn(Content.class, id, field, v);
         return RetResult.success();
     }
@@ -157,13 +157,13 @@ public class ContentService extends BaseService<Content,ContentInfo>{
     @RestMapping(name = "t",auth = false, comment = "测试HttpScope 模板使用")
     public HttpScope t(){
         ContentService contentService = this;
-        Flipper flipper = new Flipper().limit(30).sort("top DESC,createTime DESC");
+        Flipper flipper = new Flipper().limit(30).sort("top DESC,createtime DESC");
         //置顶贴
-        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", FilterExpress.GREATERTHAN, 0);
+        FilterNode topNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -10).and("top", FilterExpress.GREATERTHANOREQUALTO, 20);
         Sheet<ContentInfo> top = contentService.contentQuery(flipper, topNode);
 
         //非置顶贴
-        FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1).and("top", 0);
+        FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -10).and("top", 0);
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, untopNode);
 
         //热帖
@@ -171,13 +171,16 @@ public class ContentService extends BaseService<Content,ContentInfo>{
         Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replyNum DESC");
+        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", 0);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
 
-        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg);
+        Kv kv = Kv.by("top", top)
+                .set("contents", contents)
+                .set("hotReply", hotReply)
+                .set("lastReg", lastReg);
 
         return HttpScope.refer("index.html").attr(kv);
     }

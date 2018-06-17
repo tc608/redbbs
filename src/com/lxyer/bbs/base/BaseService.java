@@ -1,6 +1,6 @@
 package com.lxyer.bbs.base;
 
-import com.lxyer.bbs.base.user.User;
+import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.base.user.UserInfo;
 import org.redkale.service.Service;
 import org.redkale.source.CacheSource;
@@ -62,11 +62,11 @@ public class BaseService<F extends UF,I extends UI> implements Service {
      * @return
      */
     protected <I extends UI> Sheet<I> setIUser(Sheet<I> ufSheet){
-        int[] userIds = ufSheet.stream().mapToInt(I::getUserId).toArray();
+        int[] userIds = ufSheet.stream().mapToInt(I::getUserid).toArray();
 
-        List<User> users = source.queryList(User.class, FilterNode.create("userId", FilterExpress.IN, userIds));
+        List<UserRecord> users = source.queryList(UserRecord.class, FilterNode.create("userId", FilterExpress.IN, userIds));
         ufSheet.forEach(x->{
-            User user = users.stream().filter(u -> u.getUserId() == x.getUserId()).findAny().orElse(null);
+            UserRecord user = users.stream().filter(u -> u.getUserid() == x.getUserid()).findAny().orElse(null);
             x.setUser(user);
         });
         return ufSheet;
@@ -78,7 +78,7 @@ public class BaseService<F extends UF,I extends UI> implements Service {
      * @return
      */
     protected I setIUser(I uf){
-        User user = source.find(User.class, uf.getUserId());
+        UserRecord user = source.find(UserRecord.class, uf.getUserid());
 
         return (I) uf.setUser(user);
     }

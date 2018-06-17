@@ -18,10 +18,10 @@ public class ContentBean implements FilterBean,java.io.Serializable {
     @Id
     @GeneratedValue
     @Column(comment = "[内容id]")
-    private int contentId;
+    private int contentid;
 
     @Column(comment = "[用户id]")
-    private int userId;
+    private int userid;
 
     @Column(length = 64, comment = "[标题]")
     private String title = "";
@@ -33,7 +33,7 @@ public class ContentBean implements FilterBean,java.io.Serializable {
     private String content = "";
 
     @Column(comment = "[创建时间]")
-    private long createTime;
+    private long createtime;
 
     @Column(comment = "[类别]")
     private int cate;
@@ -42,10 +42,10 @@ public class ContentBean implements FilterBean,java.io.Serializable {
     private int type;
 
     @Column(comment = "[评论数]")
-    private int replyNum;
+    private int replynum;
 
     @Column(comment = "[阅读量]")
-    private int viewNum;
+    private int viewnum;
 
 /*    @Column(comment = "[精] 0否，1是")
     private int wonderful;
@@ -59,20 +59,20 @@ public class ContentBean implements FilterBean,java.io.Serializable {
     @Column(comment = "[状态]")
     private int status = 1;*/
 
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
+    public void setContentid(int contentid) {
+        this.contentid = contentid;
     }
 
-    public int getContentId() {
-        return this.contentId;
+    public int getContentid() {
+        return this.contentid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public int getUserId() {
-        return this.userId;
+    public int getUserid() {
+        return this.userid;
     }
 
     public void setTitle(String title) {
@@ -99,12 +99,12 @@ public class ContentBean implements FilterBean,java.io.Serializable {
         this.content = content;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
     }
 
-    public long getCreateTime() {
-        return this.createTime;
+    public long getCreatetime() {
+        return this.createtime;
     }
 
     public int getCate() {
@@ -123,20 +123,20 @@ public class ContentBean implements FilterBean,java.io.Serializable {
         return this.type;
     }
 
-    public int getReplyNum() {
-        return replyNum;
+    public int getReplynum() {
+        return replynum;
     }
 
-    public void setReplyNum(int replyNum) {
-        this.replyNum = replyNum;
+    public void setReplynum(int replynum) {
+        this.replynum = replynum;
     }
 
-    public int getViewNum() {
-        return viewNum;
+    public int getViewnum() {
+        return viewnum;
     }
 
-    public void setViewNum(int viewNum) {
-        this.viewNum = viewNum;
+    public void setViewnum(int viewnum) {
+        this.viewnum = viewnum;
     }
 
     @Override
