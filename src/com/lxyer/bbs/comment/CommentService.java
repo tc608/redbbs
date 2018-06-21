@@ -2,6 +2,8 @@ package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.entity.ActLog;
+import com.lxyer.bbs.base.iface.UI;
+import com.lxyer.bbs.base.iface.UIService;
 import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserService;
@@ -27,10 +29,10 @@ import static com.lxyer.bbs.base.kit.RetCodes.RET_COMMENT_PARA_ILLEGAL;
  * Created by Lxy at 2017/11/29 10:00.
  */
 @RestService(automapping = true, comment = "评论服务")
-public class CommentService extends BaseService<Comment, CommentInfo> {
+public class CommentService extends BaseService implements UIService<CommentInfo> {
 
-    @Resource
-    private UserService userService;
+    /*@Resource
+    private UserService userService;*/
 
     @RestMapping(name = "save", comment = "评论保存")
     public RetResult commentSave(@RestSessionid String sessionid, @RestParam(name = "bean") Comment comment){
@@ -46,7 +48,7 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
             return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
 
         if (comment.getCommentid() < 1) {
-            int userid = userService.currentUserId(sessionid);
+            int userid = currentUserId(sessionid);
             comment.setUserid(userid);
             comment.setCreatetime(System.currentTimeMillis());
             //todo:@用户处理
@@ -63,7 +65,7 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
 
     @RestMapping(name = "query", auth = false,comment = "查询评论")
     public Sheet<CommentInfo> commentQuery(@RestSessionid String sessionid , int contentId, Flipper flipper){
-        int userid = userService.currentUserId(sessionid);
+        int userid = currentUserId(sessionid);
 
         flipper.setSort("supportnum DESC,commentid ASC");
         Sheet<Comment> comments = source.querySheet(Comment.class, flipper, FilterNode.create("contentid", contentId));
@@ -89,42 +91,35 @@ public class CommentService extends BaseService<Comment, CommentInfo> {
         Sheet<Comment> comments = source.querySheet(Comment.class, new Flipper().sort("createtime DESC"), FilterNode.create("userid", userid));
 
         int[] contentIds = comments.stream().mapToInt(x -> x.getCommentid()).toArray();
-
         List<Content> contents = source.queryList(Content.class, SelectColumn.createIncludes("contentid","title"), FilterNode.create("contentid", FilterExpress.IN, contentIds));
 
-        Sheet<CommentInfo> infos = new Sheet<>();
-        List<CommentInfo> list = new ArrayList<>();
-
-        comments.forEach(x->{
-            CommentInfo info = x.createInfo();
+        Sheet<CommentInfo> infos = createInfo(comments);
+        infos.forEach(x->{
             Content content = contents.stream().filter(k -> k.getContentid() == x.getContentid()).findFirst().orElse(new Content());
-            info.setTitle(content.getTitle());
-            list.add(info);
+            x.setTitle(content.getTitle());
         });
-
-        infos.setRows(list);
-        infos.setTotal(comments.getTotal());
         return infos;
     }
 
     @RestMapping(name = "support", comment = "评论点赞")
     public RetResult support(@RestSessionid String sessionid, int commentid, int ok){
-        int userid = userService.currentUserId(sessionid);
+        int userid = currentUserId(sessionid);
 
-        ActLog actLog = source.find(ActLog.class, FilterNode.create("userid", userid).and("tid", commentid).and("cate", 10));
-        if (actLog == null && ok == 1){
-            actLog = new ActLog(10, commentid, userid);
-            actLog.setCreatetime(System.currentTimeMillis());
-            source.insert(actLog);
-        }else if (actLog != null && actLog.getStatus() != ok){
-            actLog.setStatus((short) -10);
-            source.update(actLog);
-        }else {
-            return RetCodes.retResult(-1, ok == 1 ? "已赞" : "已取消赞");
-        }
+        source.findAsync(ActLog.class, FilterNode.create("userid", userid).and("tid", commentid).and("cate", 10)).thenAccept(actLog -> {
+            if (actLog == null && ok == 1){
+                actLog = new ActLog(10, commentid, userid);
+                actLog.setCreatetime(System.currentTimeMillis());
+                source.insert(actLog);
+            }else if (actLog != null && actLog.getStatus() != ok){
+                actLog.setStatus((short) -10);
+                source.update(actLog);
+            }/*else {
+                return RetCodes.retResult(-1, ok == 1 ? "已赞" : "已取消赞");
+            }*/
 
-        int count = source.getNumberResult(ActLog.class, FilterFunc.COUNT, 0, "logid", FilterNode.create("tid", commentid).and("status", 10)).intValue();
-        source.updateColumn(Comment.class, commentid,"supportnum", count);
+            int count = source.getNumberResult(ActLog.class, FilterFunc.COUNT, 0, "logid", FilterNode.create("tid", commentid).and("status", 10)).intValue();
+            source.updateColumn(Comment.class, commentid,"supportnum", count);
+        });
 
         return RetResult.success();
     }

@@ -1,12 +1,11 @@
 package com.lxyer.bbs.content;
 
-import javax.persistence.*;
-
 import com.jfinal.kit.Kv;
-import com.lxyer.bbs.base.UF;
+import com.lxyer.bbs.base.iface.C;
 import com.lxyer.bbs.base.kit.LxyKit;
-import org.redkale.convert.json.*;
+import org.redkale.convert.json.JsonConvert;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -15,7 +14,7 @@ import java.io.Serializable;
  */
 @Cacheable(interval = 5*60)
 @Table(catalog = "redbbs", name = "sys_content", comment = "[内容表]")
-public class Content implements Serializable, UF<ContentInfo> {
+public class Content implements Serializable, C<ContentInfo> {
 
     @Id
     @GeneratedValue

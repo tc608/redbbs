@@ -1,0 +1,258 @@
+<!--项目首页-->
+<!--- Created by JUECHENG at 2018/4/5 20:55. --->
+#set(title=bean.title)
+#set(keywords=bean.title)
+#set(description=bean.title)
+
+#@layout()
+#define css()
+    <style>
+        .fly-panel{margin-right: 15px}
+    </style>
+#end
+
+#define main()
+<div class="layui-container">
+
+    <div class="layui-row">
+        <div class="layui-col-md8" style="padding-top: 20px;">
+            <!--内容-->
+            <div class="fly-panel detail-box">
+                <h1>#(bean.title)</h1>
+                <hr>
+                <div class="detail-body photos">
+                    #(bean.content??)
+
+                    #if(bean.site?? || bean.git??)
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        #if(bean.site??)
+
+                        #end
+                        #if(bean.git??)
+
+                        #end
+                    </blockquote>
+                    #end
+                </div>
+            </div>
+            <!--评论-->
+            <div class="fly-panel detail-box" id="flyReply">
+                <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
+                    <legend>回帖</legend>
+                </fieldset>
+
+                <ul class="jieda" id="jieda">
+                    #for(x : comments.rows??)
+                    <li data-id="#(x.commentid)" class="jieda-daan">
+                        <a name="item-1111111111"></a>
+                        <div class="detail-about detail-about-reply">
+                            <a class="fly-avatar" href="/user/#(x.userid)">
+                                <img src="#(x.avatar)" alt="#(x.nickname)">
+                            </a>
+                            <div class="fly-detail-user">
+                                <a href="" class="fly-link">
+                                    <cite>#(x.nickname)</cite>
+                                    <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+                                    <i class="layui-badge fly-badge-vip">VIP3</i>-->
+                                </a>
+                                #if(x.userid == bean.userid??)
+                                <span>(楼主)</span>
+                                #end
+                                <!--
+                                <span style="color:#5FB878">(管理员)</span>
+                                <span style="color:#FF9E3F">（社区之光）</span>
+                                <span style="color:#999">（该号已被封）</span>
+                                -->
+                            </div>
+
+                            <div class="detail-hits"><span>#(x.createtime??)</span></div>
+                            #if(1>2)
+                            <i class="iconfont icon-caina" title="最佳答案"></i>
+                            #end
+                        </div>
+                        <div class="detail-body jieda-body photos">
+                            #(x.content)
+                        </div>
+                        <div class="jieda-reply">
+                            #if(x.hadsupport == 1)
+                            <span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportnum)</em></span>
+                            #else
+                            <span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em>#(x.supportnum)</em></span>
+                            #end
+                            <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
+                            <div class="jieda-admin">
+                                #if(x.userid == mine.userid?? && false)
+                                <span type="edit">编辑</span>
+                                <span type="del">删除</span>
+                                #end
+                                #if(bean.userid == mine.userid??)
+                                <span class="jieda-accept" type="accept">采纳</span>
+                                #end
+                            </div>
+                        </div>
+                    </li>
+                    #else
+                    <li class="fly-none">消灭零回复</li>
+                    #end
+                </ul>
+
+                <div class="layui-form layui-form-pane">
+                    <form action="/jie/reply/" method="post">
+                        <div class="layui-form-item layui-form-text">
+                            <a name="comment"></a>
+                            <!--<div class="layui-input-block">
+                                <textarea id="mytextarea">Hello, World!</textarea>
+                            </div>-->
+                            <div id="editor"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <input type="hidden" name="contentid" value="#(bean.contentid??)">
+                            <input type="hidden" name="pid" value="0">
+                            <button class="layui-btn" lay-filter="jie-reply" lay-submit>提交回复</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md4">
+            <div class="fly-panel detail-box">
+                <div class="detail-about">
+                    <a class="fly-avatar" href="/user/#(bean.userid)">
+                        <img src="#(bean.avatar)" alt="#(bean.nickname)">
+                    </a>
+                    <div class="fly-detail-user">
+                        <a href="/user/#(bean.userid)" class="fly-link">
+                            <cite>#(bean.nickname)</cite>
+                            <!--
+                            <i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
+                            <i class="layui-badge fly-badge-vip">VIP3</i>
+                            -->
+                        </a>
+                        <span>#(bean.createtime??)</span>
+                    </div>
+                    <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
+                        态度决定高度！
+                    </div>
+                </div>
+
+                <script src='https://gitee.com/tc608/redbbs/widget_preview'></script>
+                <style>
+                    .pro_name a{color: #4183c4;}
+                    .osc_git_title{background-color: #fff;}
+                    .osc_git_box{background-color: #fff;}
+                    .osc_git_box{border-color: #E3E9ED;}
+                    .osc_git_info{color: #666;}
+                    .osc_git_main a{color: #9B9B9B;}
+                </style>
+                <!--
+
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="fly-panel" style="padding: 10px">
+                    <h2>这里是一个标题这里是一个标题这里是一个标题</h2>
+                    <div>
+                        这里是内容摘要，这里是内容摘要，这里是内容摘要，这里是内容摘要，
+                    </div>
+                </div>
+            </div>-->
+            </div>
+    </div>
+
+</div>
+
+#end
+
+#define js()
+<script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+<script>
+    layui.cache.page = 'jie';
+    layui.cache.user = {
+        username: '游客'
+        ,uid: -1
+        ,avatar: '../../res/images/avatar/00.jpg'
+        ,experience: 83
+        ,sex: '男'
+    };
+    layui.config({
+        version: false
+        ,base: '../../res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['fly', 'jie'], function(){
+        var $ = layui.jquery, fly = layui.fly;
+        var jie = layui.jie;
+        //如果你是采用模版自带的编辑器，你需要开启以下语句来解析。
+        /*$('.detail-body').each(function(){
+          var othis = $(this), html = othis.html();
+          othis.html(fly.content(html));
+        });*/
+
+        jie.createEditer("comment");
+    });
+</script>
+#end

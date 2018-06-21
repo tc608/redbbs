@@ -69,7 +69,7 @@ public class ContentServlet extends BaseServlet {
             @Override
             public String get() {
                 UserRecord user = request.currentUser();
-                if (user == null || user.getUserid() > 10_0003)
+                if (user == null || user.getRoleid() != 0)
                     contentService.incrViewNum(contentid);
                 return "";
             }

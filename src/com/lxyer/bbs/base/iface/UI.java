@@ -1,4 +1,4 @@
-package com.lxyer.bbs.base;
+package com.lxyer.bbs.base.iface;
 
 import com.lxyer.bbs.base.user.UserRecord;
 

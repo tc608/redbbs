@@ -1,6 +1,7 @@
 package com.lxyer.bbs.content;
 
-import com.lxyer.bbs.base.UI;
+import com.lxyer.bbs.base.iface.CI;
+import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.user.UserRecord;
 import org.redkale.convert.ConvertColumn;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
 /**
  * Created by Lxy at 2017/11/26 20:52.
  */
-public class ContentInfo implements UI<ContentInfo>,Serializable {
+public class ContentInfo implements UI<ContentInfo>,Serializable, CI {
 
     private int contentid;
     private int userid;

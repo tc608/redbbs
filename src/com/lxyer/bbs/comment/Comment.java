@@ -3,6 +3,8 @@ package com.lxyer.bbs.comment;
 import javax.persistence.*;
 
 import com.lxyer.bbs.base.UF;
+import com.lxyer.bbs.base.iface.C;
+import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.*;
 
@@ -14,7 +16,7 @@ import java.io.Serializable;
  */
 @Cacheable(interval = 5*60)
 @Table(catalog = "redbbs", name = "sys_comment", comment = "[评论表]")
-public class Comment implements Serializable, UF {
+public class Comment implements Serializable, C<CommentInfo> {
 
     @Id
     @GeneratedValue

@@ -3,6 +3,7 @@ package com.lxyer.bbs.servlet;
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
 import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.comment.CommentInfo;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.HttpMapping;
 import org.redkale.net.http.HttpRequest;
@@ -12,7 +13,6 @@ import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
 
-import static org.redkale.source.FilterExpress.GREATERTHAN;
 import static org.redkale.source.FilterExpress.GREATERTHANOREQUALTO;
 import static org.redkale.source.FilterExpress.NOTEQUAL;
 
@@ -20,14 +20,14 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet({"/"
+@WebServlet({"/","/project"
         /* ,"/article","/article/*" */
 })
 public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
     public void abc(HttpRequest request, HttpResponse response){
-        Flipper flipper = new Flipper().limit(30).sort("top DESC,createtime DESC");
+        Flipper flipper = new Flipper().limit(15).sort("top DESC,createtime DESC");
         //置顶贴
         FilterNode topNode = FilterNode.create("status", NOTEQUAL, -10).and("top", GREATERTHANOREQUALTO, 20);
         Sheet<ContentInfo> top = contentService.contentQuery(flipper, setPrivate(topNode));
@@ -66,4 +66,16 @@ public class IndexServlet extends BaseServlet {
 
         finish("/article/index.html");
     }*/
+
+    //====================================项目相关====================================
+    @HttpMapping(url = "/project", auth = false, comment = "项目首页")
+    public void  project(HttpRequest request, HttpResponse response){
+        int contentid = 22;
+        ContentInfo content = contentService.contentInfo(sessionid, contentid);
+        Sheet<CommentInfo> comments = commentService.commentQuery(request.getSessionid(false) ,contentid, new Flipper().limit(30));
+
+        Kv kv = Kv.by("bean", content).set("comments", comments);
+        finish("project/index.html", kv);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.lxyer.bbs.comment;
 
-import com.lxyer.bbs.base.UI;
+import com.lxyer.bbs.base.iface.CI;
+import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.user.UserRecord;
 import org.redkale.convert.json.JsonConvert;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
  *
  * @author lxyer
  */
-public class CommentInfo implements UI<CommentInfo>,Serializable {
+public class CommentInfo implements UI<CommentInfo>,Serializable, CI<CommentInfo> {
 
     @Column(comment = "[评论id]")
     private int commentid;

@@ -3,6 +3,7 @@ package com.lxyer.bbs.content;
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.entity.ActLog;
+import com.lxyer.bbs.base.iface.UIService;
 import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
@@ -18,7 +19,7 @@ import javax.annotation.Resource;
  * Created by Lxy at 2017/11/26 9:33.
  */
 @RestService(automapping = true, comment = "内容管理")
-public class ContentService extends BaseService<Content,ContentInfo>{
+public class ContentService extends BaseService implements UIService<ContentInfo> {
 
     @Resource
     protected UserService userService;
@@ -32,6 +33,7 @@ public class ContentService extends BaseService<Content,ContentInfo>{
     public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, filterNode);
 
+        createInfo(contents);
         Sheet<ContentInfo> infos = createInfo(contents);
         setIUser(infos);
 
@@ -134,7 +136,7 @@ public class ContentService extends BaseService<Content,ContentInfo>{
 
     @RestMapping(name = "collectquery", comment = "收藏列表")
     public Sheet<ContentInfo> collectQuery(@RestSessionid String sessionid){
-        int userid = userService.currentUserId(sessionid);
+        int userid = currentUserId(sessionid);
 
         Flipper flipper = new Flipper().sort("createtime DESC");
         FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", userid);

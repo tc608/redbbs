@@ -52,12 +52,6 @@ public class UserService extends BaseService {
         sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         return userid == null ? null : findUserInfo((Integer) userid);
     }
-    @RestMapping(name = "userid")
-    public int currentUserId(String sessionid){
-        if (sessionid == null) return 0;
-        Object userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
-        return userid == null ? 0 : (Integer)userid;
-    }
 
     @RestMapping(name = "info", comment = "用户信息")
     public UserInfo findUserInfo(int userid) {
