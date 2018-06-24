@@ -20,6 +20,7 @@ import org.redkale.util.AnyValue;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import static com.lxyer.bbs.base.kit.RetCodes.RET_USER_UNLOGIN;
 
@@ -53,6 +54,9 @@ public class BaseServlet extends HttpServlet {
     @Resource
     protected CommentService commentService;
 
+    @Resource
+    protected TaskQueue<Map> logQueue;
+
 
     @Override
     public void init(HttpContext context, AnyValue config) {
@@ -85,6 +89,24 @@ public class BaseServlet extends HttpServlet {
             Kv kv = Kv.by("resSys", "resSys");
             finish(uri, kv);
             return;
+        }
+
+        Kv visLog = new Kv();//ip、time、userid、uri、para
+        visLog.set("ip", request.getRemoteAddr());
+        request.getHost();
+        visLog.set("time", System.currentTimeMillis());
+        visLog.set("userid", currentid);
+        visLog.set("uri", request.getRequestURI());
+
+        Kv para = Kv.create();
+        for (String key : request.getParameterNames()){
+            para.set(key, request.getParameter(key));
+        }
+        visLog.set("para", para);
+        try {
+            logQueue.put(visLog);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 
