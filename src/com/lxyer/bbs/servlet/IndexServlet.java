@@ -5,10 +5,7 @@ import com.lxyer.bbs.base.BaseServlet;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.comment.CommentInfo;
 import com.lxyer.bbs.content.ContentInfo;
-import org.redkale.net.http.HttpMapping;
-import org.redkale.net.http.HttpRequest;
-import org.redkale.net.http.HttpResponse;
-import org.redkale.net.http.WebServlet;
+import org.redkale.net.http.*;
 import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
@@ -27,14 +24,17 @@ public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
     public void abc(HttpRequest request, HttpResponse response){
+
+        String sessionid = request.getSessionid(false);
+
         Flipper flipper = new Flipper().limit(15).sort("top DESC,createtime DESC");
         //置顶贴
         FilterNode topNode = FilterNode.create("status", NOTEQUAL, -10).and("top", GREATERTHANOREQUALTO, 20);
-        Sheet<ContentInfo> top = contentService.contentQuery(flipper, setPrivate(topNode));
+        Sheet<ContentInfo> top = contentService.contentQuery(flipper, setPrivate(request, topNode));
 
         //非置顶贴
         FilterNode untopNode = FilterNode.create("status", NOTEQUAL, -10).and("top", 10);
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(untopNode));
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, untopNode));
 
         //热帖
         /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
@@ -42,7 +42,7 @@ public class IndexServlet extends BaseServlet {
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
@@ -51,13 +51,13 @@ public class IndexServlet extends BaseServlet {
         Number userCount = userService.userCount();
 
         Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg).set("userCount", userCount);
-        finish("index.html", kv);
+        response.finish(HttpScope.refer("index.html").attr(kv));
     }
 
     @HttpMapping(url = "/site", auth = false, comment = "网站首页")
     public void site(HttpRequest request, HttpResponse response){
 
-        finish("/site.html");
+        response.finish(HttpScope.refer("/site.html"));
     }
 
     //====================================文章相关====================================
@@ -70,12 +70,14 @@ public class IndexServlet extends BaseServlet {
     //====================================项目相关====================================
     @HttpMapping(url = "/project", auth = false, comment = "项目首页")
     public void  project(HttpRequest request, HttpResponse response){
+        String sessionid = request.getSessionid(false);
         int contentid = 22;
+
         ContentInfo content = contentService.contentInfo(sessionid, contentid);
-        Sheet<CommentInfo> comments = commentService.commentQuery(request.getSessionid(false) ,contentid, new Flipper().limit(30));
+        Sheet<CommentInfo> comments = commentService.commentQuery(sessionid,contentid, new Flipper().limit(30));
 
         Kv kv = Kv.by("bean", content).set("comments", comments);
-        finish("project/index.html", kv);
+        response.finish(HttpScope.refer("/project/index.html").attr(kv));
     }
 
 }

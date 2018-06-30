@@ -48,6 +48,8 @@ public class UserService extends BaseService {
     }
 
     public UserInfo current(String sessionid){
+        if (sessionid == null) return null;
+
         Object userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         return userid == null ? null : findUserInfo((Integer) userid);
@@ -150,14 +152,6 @@ public class UserService extends BaseService {
 
         return infos;
     }
-
-    /*@RestMapping(name = "stat", auth = false, comment = "用户数据统计")
-    public Map userStat(){
-
-        Number count = source.getNumberResult(User.class, FilterFunc.COUNT, "userId", FilterNode.create("status", FilterExpress.NOTEQUAL, -1));
-
-        return Kv.by("count", count);
-    }*/
 
     @RestMapping(name = "usercount", auth = false, comment = "用户数据统计")
     public Number userCount() {

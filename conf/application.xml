@@ -11,6 +11,7 @@
 
         <properties>
             <property name="mongo.host" value="127.0.0.1"/>
+            <property name="mongo.database" value="redbbs"/>
         </properties>
     </resources>
         
@@ -24,6 +25,11 @@
         <rest path="os" base="com.lxyer.bbs.base.BaseServlet" autoload="true">
 
         </rest>
+
+        <request>
+            <!--从X-Real-IP参数中获取IP-->
+            <remoteaddr value="request.headers.X-Real-IP"/>
+        </request>
         
         <servlets path="" autoload="true"/>
 

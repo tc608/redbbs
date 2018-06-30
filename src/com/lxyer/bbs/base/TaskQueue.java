@@ -17,11 +17,13 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
     @Resource(name = "property.mongo.host")
     private String mongoHost;
+    @Resource(name = "property.mongo.database")
+    private String mongoDatabase;
 
     protected static LinkedBlockingQueue queue = new LinkedBlockingQueue();
 
     private static MongoClient mongoClient;
-    private static MongoDatabase redbbs;
+    private static MongoDatabase database;
     private static MongoCollection<Document> visLog;
 
     public TaskQueue() {
@@ -31,8 +33,8 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     @Override
     public void init(AnyValue config) {
         mongoClient = new MongoClient(mongoHost, 27017);
-        redbbs = mongoClient.getDatabase(winos ? "redbbs_dev": "redbbs");
-        visLog = redbbs.getCollection("vis_log");
+        database = mongoClient.getDatabase(winos ? mongoDatabase + "_dev": mongoDatabase);
+        visLog = database.getCollection("vis_log");
     }
 
     public T take() throws InterruptedException {
@@ -49,7 +51,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
             while (true){
                 Map take = (Map) take();
 
-                take.put("ftime", String.format("%1$tY%1$tm%1$td%1$tH%1$tM", take.get("time")));
+                take.put("ftime", String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", take.get("time")));
                 visLog.insertOne(new Document(take));
 
                 //在这里处理日志数据[访问量]
@@ -58,12 +60,4 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
             e.printStackTrace();
         }
     }
-
-    /*public static void main(String[] args) {
-        //测试mongodb 连通性
-        FindIterable<Document> documents = visLog.find().limit(10);
-        documents.forEach((Block<? super Document>) x->{
-            System.out.println(x);
-        });
-    }*/
 }

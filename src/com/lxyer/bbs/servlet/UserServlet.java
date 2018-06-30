@@ -2,16 +2,14 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.base.user.UserBean;
 import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.comment.CommentInfo;
-import com.lxyer.bbs.content.ContentBean;
 import com.lxyer.bbs.content.ContentInfo;
-import org.redkale.net.http.HttpMapping;
-import org.redkale.net.http.HttpRequest;
-import org.redkale.net.http.HttpResponse;
-import org.redkale.net.http.WebServlet;
+import org.redkale.net.http.*;
+import org.redkale.source.FilterExpress;
+import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
 
@@ -26,7 +24,7 @@ public class UserServlet extends BaseServlet {
     @HttpMapping(url = "/user/login", auth = false, comment = "前往登录页")
     public void login(HttpRequest request, HttpResponse response){
 
-        finish("/user/login.html");
+        response.finish(HttpScope.refer("/user/login.html"));
     }
     @HttpMapping(url = "/user/reg", auth = false, comment = "前往登录页")
     public void reg(HttpRequest request, HttpResponse response){
@@ -36,39 +34,38 @@ public class UserServlet extends BaseServlet {
         list.add(Kv.by("k", 3).set("a", "3+2-5=?").set("q", 0));
         list.add(Kv.by("k", 4).set("a", "Math.abs(-3)=?").set("q", 3));*/
 
-        finish("/user/login.html");
+        response.finish(HttpScope.refer("/user/login.html"));
     }
 
     @HttpMapping(url = "/user/set", auth = true, comment = "用户设置")
     public void set(HttpRequest request, HttpResponse response){
-        finish("/user/set.html");
+        response.finish(HttpScope.refer("/user/set.html"));
     }
 
 
     @HttpMapping(url = "/user", auth = false, comment = "用户首页")
     public void user(HttpRequest request, HttpResponse response){
-        String para = getPara();
+        String para = getPara(request);
 
         //-------个人中心---------
         if ("user".equals(para) || "".equals(para)){
             UserInfo user = request.currentUser();
             if (user == null){
-                finish("/user/login.html");
+                response.finish(HttpScope.refer("/user/login.html"));
                 return;
             }
 
             //创建的帖子
             Flipper flipper = new Flipper().limit(8).sort("createtime DESC");
-            ContentBean bean = new ContentBean();
-            bean.setUserid(user.getUserid());
-            Sheet<ContentInfo> contents = contentService.queryByBean(flipper, bean);
+
+            FilterNode node = FilterNode.create("userid", user.getUserid()).and("status", FilterExpress.NOTEQUAL, -10);
+            Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, node));//queryByBean(flipper, bean);
 
             //收藏的帖子
-            Sheet<ContentInfo> collects = contentService.collectQuery(sessionid);
+            Sheet<ContentInfo> collects = contentService.collectQuery(request.getSessionid(false));
 
             Kv kv = Kv.by("contents", contents).set("collects", collects);
-            finish("/user/index.html", kv);
-            return;
+            response.finish(HttpScope.refer("/user/index.html").attr(kv));
         }
 
         //-------用户主页------
@@ -82,7 +79,7 @@ public class UserServlet extends BaseServlet {
                 userid = users.stream().findFirst().orElse(null).getUserid();
             }
         }else {//直接访问
-            userid = getParaToInt(0);
+            userid = getParaToInt(request,0);
         }
 
         //用户信息
@@ -90,14 +87,13 @@ public class UserServlet extends BaseServlet {
 
         //帖子
         Flipper flipper = new Flipper().limit(8).sort("createtime DESC");
-        ContentBean bean = new ContentBean();
-        bean.setUserid(userid);
-        Sheet<ContentInfo> contents = contentService.queryByBean(flipper, bean);
+        FilterNode node = FilterNode.create("userid", userid).and("status", FilterExpress.NOTEQUAL, -10);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request,node));
 
         //回复
         Sheet<CommentInfo> comments = commentService.queryByUserid(userid);
 
         Kv kv = Kv.by("contents", contents).set("user", user).set("comments", comments);
-        finish("/user/home.html", kv);
+        response.finish(HttpScope.refer("/user/home.html").attr(kv));
     }
 }

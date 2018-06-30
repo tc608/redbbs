@@ -41,7 +41,10 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "query", auth = false, comment = "内容列表")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, int currentid){
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, String sessionid){
+        UserInfo current = userService.current(sessionid);
+        int currentid = current == null ? 0 : current.getUserid();
+
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
         switch (actived){
             case "top": filterNode.and("top", FilterExpress.GREATERTHANOREQUALTO, 20);break;
@@ -157,7 +160,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "t",auth = false, comment = "测试HttpScope 模板使用")
-    public HttpScope t(){
+    public HttpScope t(@RestSessionid String sessionid){
         ContentService contentService = this;
         Flipper flipper = new Flipper().limit(30).sort("top DESC,createtime DESC");
         //置顶贴
@@ -174,7 +177,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", 0);
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();

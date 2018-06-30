@@ -24,37 +24,40 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 public class ContentServlet extends BaseServlet {
     @HttpMapping(url = "/jie", auth = false, comment = "问答列表")
     public void jie(HttpRequest request, HttpResponse response){
-        String actived = getPara(0, "all");
+        String actived = getPara(request, 0, "all");
         int curr = request.getIntParameter("curr", 1);
 
         //分页帖子列表
         Flipper flipper = new Flipper().offset((curr-1)*15).limit(15).sort("top DESC,createtime DESC");
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived, currentid);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, actived, request.getSessionid(false));
 
         Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI())
                 .set("actived", actived).set("curr", curr);
-        finish("/jie/index.html", kv);
+
+        response.finish(HttpScope.refer("/jie/index.html").attr(kv));
     }
 
     @HttpMapping(url = "/jie/add", comment = "发表/编辑问答")
     @HttpParam(name = "#", type = int.class, comment = "内容ID")
     public void add(HttpRequest request, HttpResponse response){
-        int contentid = getParaToInt(0);
+        int contentid = getParaToInt(request, 0);
 
         ContentInfo contentInfo = null;
         if (contentid > 0){
-            contentInfo = contentService.contentInfo(sessionid, contentid);
+            contentInfo = contentService.contentInfo(request.getSessionid(false), contentid);
         }
 
-        finish("/jie/add.html", Kv.by("bean", contentInfo));
+        Kv kv = Kv.by("bean", contentInfo);
+        response.finish(HttpScope.refer("/jie/add.html").attr(kv));
     }
 
     @HttpMapping(url = "/jie/detail", auth = false, comment = "问答详情")
     public void detail(HttpRequest request, HttpResponse response){
-        int contentid = getParaToInt(0);
+        int contentid = getParaToInt(request,0);
+        String sessionid = request.getSessionid(false);
 
         ContentInfo content = contentService.contentInfo(sessionid, contentid);
-        Sheet<CommentInfo> comments = commentService.commentQuery(request.getSessionid(false) ,contentid, new Flipper().limit(30));
+        Sheet<CommentInfo> comments = commentService.commentQuery(sessionid,contentid, new Flipper().limit(30));
 
         //热帖
         //Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
@@ -62,7 +65,7 @@ public class ContentServlet extends BaseServlet {
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
 
         //更新
         CompletableFuture.supplyAsync(new Supplier<String>() {
@@ -76,12 +79,14 @@ public class ContentServlet extends BaseServlet {
         });
 
         Kv kv = Kv.by("bean", content).set("comments", comments)/*.set("hotView", hotView)*/.set("hotReply", hotReply);
-        finish("/jie/detail.html", kv);
+        response.finish(HttpScope.refer("/jie/detail.html").attr(kv));
     }
 
     @HttpMapping(url = "/column", auth = false, comment = "帖子栏目")
     public void column(HttpRequest request, HttpResponse response){
-        String para = getPara();//空，qz，fx，jy，gg，dt，
+        String sessionid = request.getSessionid(false);
+
+        String para = getPara(request);//空，qz，fx，jy，gg，dt，
         int solved = request.getIntParameter("solved", -1);
         int wonderful = request.getIntParameter("wonderful", -1);
         int curr = request.getIntParameter("curr", 1);
@@ -94,15 +99,16 @@ public class ContentServlet extends BaseServlet {
         if (solved > 0) filterNode.and("solved", 20);
         if (wonderful > 0) filterNode.and("wonderful", 20);
 
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(filterNode));
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request,filterNode));
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", currentid);
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
 
 
         Kv kv = Kv.by("contents", contents).set("hotReply", hotReply)
-                .set("solved", solved).set("wonderful", wonderful).set("column", para).set("curr", curr);
-        finish("/jie/index.html", kv);
+                .set("solved", solved).set("wonderful", wonderful)
+                .set("column", para).set("curr", curr);
+        response.finish(HttpScope.refer("/jie/index.html").attr(kv));
     }
 }
