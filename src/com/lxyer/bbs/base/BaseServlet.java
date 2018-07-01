@@ -75,6 +75,12 @@ public class BaseServlet extends HttpServlet {
             visLog.set("userid", userid);
             visLog.set("uri", request.getRequestURI());
 
+            Kv headers = Kv.create();
+            request.getHeaders().forEach((k,v)->{
+                headers.set(k, request.getHeader(k));
+            });
+            visLog.set("headers", headers);
+
             Kv para = Kv.create();
             for (String key : request.getParameterNames()){
                 para.set(key, request.getParameter(key));

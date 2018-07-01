@@ -2,16 +2,12 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.comment.CommentInfo;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Sheet;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 import static org.redkale.source.FilterExpress.NOTEQUAL;
 
@@ -66,17 +62,6 @@ public class ContentServlet extends BaseServlet {
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
-
-        //更新
-        CompletableFuture.supplyAsync(new Supplier<String>() {
-            @Override
-            public String get() {
-                UserRecord user = request.currentUser();
-                if (user == null || user.getRoleid() != 0)
-                    contentService.incrViewNum(contentid);
-                return "";
-            }
-        });
 
         Kv kv = Kv.by("bean", content).set("comments", comments)/*.set("hotView", hotView)*/.set("hotReply", hotReply);
         response.finish(HttpScope.refer("/jie/detail.html").attr(kv));

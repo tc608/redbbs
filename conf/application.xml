@@ -6,11 +6,11 @@
     
     <resources>
         <source name="redis" value="org.redkalex.cache.RedisCacheSource" xxx="16">
-            <node addr="redishost" port="6379"/>
+            <node addr="redishost" port="6379" password="pwd123"/>
         </source>
 
         <properties>
-            <property name="mongo.host" value="127.0.0.1"/>
+            <property name="mongo.host" value="redishost"/>
             <property name="mongo.database" value="redbbs"/>
         </properties>
     </resources>

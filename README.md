@@ -1,5 +1,15 @@
 # redbbs
 
+    2018-07-01更新
+    1、优化帖子阅读计数，让帖子阅读数更准确
+    2、更新最新redkale-plugins.jar，加入redis验权
+
+    2018-06-30更新  
+    1、修改servlet层中BaseServlet中共享request的重大bug 
+    2、将servlet中页面统一使用HttpScope进行渲染
+    3、优化帖子阅读计数，让帖子阅读数更准确
+    4、更新最新redkale-plugins.jar，加入redis验权
+
     2018-06-17更新  
     社区升级
     1、表字段统一小写，
