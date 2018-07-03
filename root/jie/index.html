@@ -42,10 +42,10 @@
                             #else
                             <a class="layui-badge">#(x.typename)</a>
                             #end
-                            <a href="/jie/detail/#(x.contentid)">#(x.title)</a>
+                            <a href="/jie/detail/#(x.contentid)" title="#(x.title)">#(x.title)</a>
                         </h2>
                         <div class="fly-list-info">
-                            <a href="user/#(x.userid)" link>
+                            <a href="/user/#(x.userid)" link>
                                 <cite>#(x.nickname)</cite>
                                 <!--
                                 <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
@@ -84,11 +84,11 @@
         </div>
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
-                <dt class="fly-panel-title">本周热议</dt>
-                #for(x : hotReply.rows??)
+                <dt class="fly-panel-title">本周热帖</dt>
+                #for(x : hotView.rows??)
                 <dd>
                     <a href="/jie/detail/#(x.contentid)">#(x.title)</a>
-                    <span><i class="iconfont icon-pinglun1"></i> #(x.replynum)</span>
+                    <span><i class="iconfont icon-pinglun1"></i> #(x.viewnum)</span>
                 </dd>
                 #else
                 <div class="fly-none">没有相关数据</div>

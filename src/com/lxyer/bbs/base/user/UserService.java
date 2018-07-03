@@ -50,8 +50,13 @@ public class UserService extends BaseService {
     public UserInfo current(String sessionid){
         if (sessionid == null) return null;
 
-        Object userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
-        sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+        Object userid = null;
+        try {
+            userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+            sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return userid == null ? null : findUserInfo((Integer) userid);
     }
 

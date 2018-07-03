@@ -26,6 +26,9 @@ public class BaseService implements Service {
     @Resource(name = "redis")
     protected RedisCacheSource<Integer> sessions;
 
+    @Resource(name = "cacheSource")
+    protected CacheSource cacheSource;
+
     @Resource(name = "userInfos")
     protected CacheSource<UserInfo> userInfos;
 
@@ -39,7 +42,12 @@ public class BaseService implements Service {
     @RestMapping(ignore = true)
     public int currentUserId(String sessionid){
         if (sessionid == null) return 0;
-        Object userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+        Object userid = null;
+        try {
+            userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return userid == null ? 0 : (Integer)userid;
     }
 }

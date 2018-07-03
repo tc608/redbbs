@@ -96,7 +96,7 @@
         <!--评论-->
 		<div class="fly-panel detail-box" id="flyReply">
 	        <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
-	          <legend>回帖</legend>
+	          <legend>还有不明白？追问</legend>
 	        </fieldset>
 
         	<ul class="jieda" id="jieda">
@@ -173,13 +173,13 @@
       		</div>
     	</div>
     <div class="layui-col-md4">
-        <!--热议-->
+		<!--热帖-->
 		<dl class="fly-panel fly-list-one">
-		<dt class="fly-panel-title">本周热议</dt>
-			#for(x : hotReply.rows)
+			<dt class="fly-panel-title">本周热帖</dt>
+			#for(x : hotView.rows??)
 			<dd>
 				<a href="/jie/detail/#(x.contentid)">#(x.title)</a>
-				<span><i class="iconfont icon-pinglun1"></i> #(x.replynum)</span>
+				<span><i class="iconfont icon-pinglun1"></i> #(x.viewnum)</span>
 			</dd>
 			#else
 			<div class="fly-none">没有相关数据</div>

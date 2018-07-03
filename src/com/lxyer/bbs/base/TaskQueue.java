@@ -1,21 +1,36 @@
 package com.lxyer.bbs.base;
 
+import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
+import com.lxyer.bbs.content.ContentInfo;
 import com.lxyer.bbs.content.ContentService;
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.redkale.source.ColumnValue;
+import org.redkale.source.FilterExpress;
+import org.redkale.source.FilterNode;
+import org.redkale.source.Flipper;
 import org.redkale.util.AnyValue;
+import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.mongodb.client.model.Filters.*;
+import static java.util.Arrays.asList;
 
 /**
  * Created by liangxianyou at 2018/6/20 22:54.
@@ -24,6 +39,8 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
     @Resource
     private ContentService contentService;
+    @Resource
+    private UserService userService;
 
     @Resource(name = "property.mongo.host")
     private String mongoHost;
@@ -99,4 +116,54 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
             }
         });
     }
+
+    public Sheet<ContentInfo> hotView(String sessionid){
+        int limit = 8;
+        String cacheKey = "hotView";
+        Object ids = cacheSource.get(cacheKey);
+        if (ids == null){
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_MONTH, -7);
+
+            //查询一周某热帖记录
+            Bson filter = and(ne("userid", 100001)
+                    ,regex("uri", "/jie/detail/*")
+                    ,ne("ip", "")
+                    ,gt("time", cal.getTimeInMillis())
+            );
+            List<Bson> list = asList(
+                    Aggregates.match(filter)
+                    ,Aggregates.group("$uri", Accumulators.sum("count", 1))
+                    ,Aggregates.sort(new Document("count", -1))
+                    ,Aggregates.limit(8)
+            );
+            AggregateIterable<Document> documents = visLog.aggregate(list, Document.class);
+
+            List<Integer> _ids = new ArrayList<>(limit);
+            documents.forEach((Block<? super Document>) x->{
+                String uri = x.getString("_id");
+                _ids.add(Integer.parseInt(uri.replace("/jie/detail/", "")));
+            });
+
+            cacheSource.set(30 * 60, cacheKey, ids = _ids);
+        }
+
+        int[] contentids = new int[limit];
+        for (int i = 0; i < ((List<Integer>) ids).size(); i++) {
+            contentids[i] = ((List<Integer>) ids).get(i);
+        }
+
+        Flipper flipper = new Flipper().limit(limit);
+        FilterNode node = FilterNode.create("contentid", FilterExpress.IN, contentids);
+
+        //权限过滤
+        UserInfo userInfo = userService.current(sessionid);
+        if (userInfo == null){
+            node.and("status", FilterExpress.NOTEQUAL, 30);
+        }else if (!userService.isAdmin(userInfo.getUserid())){
+            node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", userInfo.getUserid())));
+        }
+        return contentService.contentQuery(flipper, node);
+    }
+
 }

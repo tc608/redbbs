@@ -41,8 +41,10 @@ public class IndexServlet extends BaseServlet {
         Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
+        /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
+
+        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
@@ -50,7 +52,7 @@ public class IndexServlet extends BaseServlet {
         //用户统计
         Number userCount = userService.userCount();
 
-        Kv kv = Kv.by("top", top).set("contents", contents).set("hotReply", hotReply).set("lastReg", lastReg).set("userCount", userCount);
+        Kv kv = Kv.by("top", top).set("contents", contents).set("hotView", hotView).set("lastReg", lastReg).set("userCount", userCount);
         response.finish(HttpScope.refer("index.html").attr(kv));
     }
 

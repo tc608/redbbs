@@ -60,10 +60,12 @@ public class ContentServlet extends BaseServlet {
         //Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
+        /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
 
-        Kv kv = Kv.by("bean", content).set("comments", comments)/*.set("hotView", hotView)*/.set("hotReply", hotReply);
+        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
+
+        Kv kv = Kv.by("bean", content).set("comments", comments).set("hotView", hotView)/*.set("hotReply", hotReply)*/;
         response.finish(HttpScope.refer("/jie/detail.html").attr(kv));
     }
 
@@ -87,11 +89,12 @@ public class ContentServlet extends BaseServlet {
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request,filterNode));
 
         //热议
-        Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
+        /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
+        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
 
+        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
 
-        Kv kv = Kv.by("contents", contents).set("hotReply", hotReply)
+        Kv kv = Kv.by("contents", contents).set("hotView", hotView)
                 .set("solved", solved).set("wonderful", wonderful)
                 .set("column", para).set("curr", curr);
         response.finish(HttpScope.refer("/jie/index.html").attr(kv));
