@@ -45,7 +45,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         UserInfo current = userService.current(sessionid);
         int currentid = current == null ? 0 : current.getUserid();
 
-        FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -1);
+        FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -10);
         switch (actived){
             case "top": filterNode.and("top", FilterExpress.GREATERTHANOREQUALTO, 20);break;
             case "untop": filterNode.and("top", 10);break;
@@ -64,13 +64,13 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
 
-    public Sheet<ContentInfo> queryByBean(Flipper flipper, FilterBean bean){
+    /*public Sheet<ContentInfo> queryByBean(Flipper flipper, FilterBean bean){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, bean);
 
         Sheet<ContentInfo> infos = createInfo(contents);
 
         return infos;
-    }
+    }*/
 
     @RestMapping(name = "save", auth = true, comment = "内容保存")
     public RetResult contentSave(@RestParam(name = "bean")Content content, @RestSessionid String sessionid){
@@ -110,11 +110,6 @@ public class ContentService extends BaseService implements UIService<ContentInfo
             if (actLog != null) contentInfo.setHadcollect(1);
         }
         return contentInfo;
-    }
-
-    @RestMapping(name = "upview", comment = "增加文章1个访问量")
-    public void incrViewNum(int contentId){
-        source.updateColumn(Content.class, contentId, ColumnValue.inc("viewnum", 1));
     }
 
     @RestMapping(name = "collect", comment = "内容收藏")
@@ -170,10 +165,6 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         //非置顶贴
         FilterNode untopNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -10).and("top", 0);
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, untopNode);
-
-        //热帖
-        /*Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");
-        Sheet<ContentInfo> hotView = contentService.contentQuery(flipper2, "");*/
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");

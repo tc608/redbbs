@@ -82,16 +82,12 @@ public class ContentServlet extends BaseServlet {
 
         Flipper flipper = new Flipper().offset((curr-1) * 20).limit(20).sort("top DESC,createtime DESC");
         //帖子列表
-        FilterNode filterNode = FilterNode.create("status", NOTEQUAL, -1).and("type", column.getAs(para));
+        FilterNode filterNode = FilterNode.create("status", NOTEQUAL, -10).and("type", column.getAs(para));
         if (solved > 0) filterNode.and("solved", 20);
         if (wonderful > 0) filterNode.and("wonderful", 20);
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, setPrivate(request, filterNode)));
 
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request,filterNode));
-
-        //热议
-        /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
-
+        //热帖
         Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
 
         Kv kv = Kv.by("contents", contents).set("hotView", hotView)

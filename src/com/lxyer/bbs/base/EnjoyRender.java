@@ -38,6 +38,7 @@ public class EnjoyRender implements HttpRender<HttpScope> {
         Map attr = scope.getAttributes();
         if (attr == null) attr = Kv.create();
         attr.put("mine", mine);
+        attr.put("token", request.getSessionid(false));
 
         String str = template.renderToString(attr);
         response.setContentType("text/html; charset=UTF-8");

@@ -1,6 +1,7 @@
 package com.lxyer.bbs.base.kit;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +54,21 @@ public final class LxyKit {
         return htmlStr.trim(); //返回文本字符串
     }
 
+    public static  <T> T[] listToArray(List list, T[] ts){
+        for (int i = 0; i < list.size(); i++) {
+            ts[0] = (T) list.get(i);
+        }
+        return ts;
+    }
+
+    public static int[] listToArray(List list, int[] ts){
+        for (int i = 0; i < list.size(); i++) {
+            ts[0] = (int) list.get(i);
+        }
+        return ts;
+    }
+
+
     public static void main(String[] args) {
         Pattern p = Pattern.compile("@*&nbsp;");
 
@@ -61,10 +77,6 @@ public final class LxyKit {
         int count = 0;
         while (matcher.find()) {
             count++;
-
-
-
         }
-
     }
 }

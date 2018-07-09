@@ -1,6 +1,8 @@
 package com.lxyer.bbs.base;
 
+import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.user.UserInfo;
+import com.lxyer.bbs.base.user.UserRecord;
 import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
 import com.lxyer.bbs.content.ContentInfo;
@@ -8,6 +10,7 @@ import com.lxyer.bbs.content.ContentService;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -22,10 +25,7 @@ import org.redkale.util.AnyValue;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -166,4 +166,40 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         return contentService.contentQuery(flipper, node);
     }
 
+    /**
+     * TODO:帖子访客记录 --待完成
+     * @return
+     */
+    public Sheet<Map> readRecordAsync(Flipper flipper ,int contentid){
+        Bson filter = eq("uri", "/jie/detail/"+ contentid);
+
+        FindIterable<Document> documents = visLog.find(filter).limit(flipper.getLimit()).skip(flipper.getOffset());
+        long total = visLog.countDocuments(filter);
+
+        List<Map> rows = new ArrayList<>();
+        List<Integer> uids = new ArrayList<>();
+        documents.forEach((Block<? super Document>) x->{
+            Integer userid = x.getInteger("userid");
+            if (userid > 0) uids.add(userid);
+
+            Map row = new HashMap<String, Object>();
+            row.put("userid", userid);
+            row.put("ip", x.getString("ip"));
+        });
+
+        int[] userids = LxyKit.listToArray(uids, new int[uids.size()]);
+        List<UserRecord> records = source.queryList(UserRecord.class, FilterNode.create("userid", FilterExpress.IN, userids));
+
+        rows.forEach(x->{
+            UserRecord record = records.stream().filter(y -> (Integer) x.get("userid") == y.getUserid()).findFirst().orElse(new UserRecord());
+            x.put("nickname", record.getRealname());
+            x.put("avatar", record.getAvatar());
+        });
+
+        Sheet<Map> sheet = new Sheet<>();
+        sheet.setTotal(total);
+        sheet.setRows(rows);
+
+        return sheet;
+    }
 }
