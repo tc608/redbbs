@@ -102,7 +102,7 @@ public class BaseServlet extends HttpServlet {
             if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))){
                 response.finish(RetCodes.retResult(RET_USER_UNLOGIN, "未登录，登录后重试").toString());
             }else {
-
+                response.finish(HttpScope.refer("/user/login.html"));
             }
             return;
         }
