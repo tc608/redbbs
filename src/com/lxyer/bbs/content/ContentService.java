@@ -64,32 +64,28 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
 
-    /*public Sheet<ContentInfo> queryByBean(Flipper flipper, FilterBean bean){
-        Sheet<Content> contents = source.querySheet(Content.class, flipper, bean);
-
-        Sheet<ContentInfo> infos = createInfo(contents);
-
-        return infos;
-    }*/
-
-    @RestMapping(name = "save", auth = true, comment = "内容保存")
+    @RestMapping(name = "save", comment = "内容保存")
     public RetResult contentSave(@RestParam(name = "bean")Content content, @RestSessionid String sessionid){
         //数据校验
         if (content.getTitle().isEmpty() || content.getTitle().length() > 64){
             return RetCodes.retResult(-1, "少年你的文章标题太长啦，精简化标题吧，为了更好的SEO长度请少于64个字节");
         }
 
+        int userid = currentUserid(sessionid);
+
         if (content.getContentid() < 1){
             int maxId = source.getNumberResult(Content.class, FilterFunc.MAX,  10_0000, "contentid").intValue();
-            int userId = userService.currentUserId(sessionid);
-
             content.setContentid(maxId+1);
             content.setCreatetime(System.currentTimeMillis());
-            content.setUserid(userId);
+            content.setUserid(userid);
 
             source.insert(content);
         }else {
-            source.updateColumn(content, SelectColumn.createIncludes("title", "digest", "content","type", "status"));
+            source.findAsync(Content.class, content.getContentid()).thenAccept(x->{
+                if (x.getUserid() == userid || userService.isAdmin(userid)){//身份验证 后修改内容
+                    source.updateColumnAsync(content,SelectColumn.createIncludes("title", "digest", "content","type", "status"));
+                }
+            });
         }
 
         return RetResult.success();
