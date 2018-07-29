@@ -125,12 +125,12 @@ public class UserService extends BaseService {
 
         nickname = nickname.replace(" ", "");
         UserRecord _user = source.find(UserRecord.class, FilterNode.create("nickname", nickname));
-        if (_user != null && _user.getUserid() != currentUserId(sessionid))
+        if (_user != null && _user.getUserid() != currentUserid(sessionid))
             return RetCodes.retResult(RET_USER_NICKNAME_EXISTS, "昵称已存在");
 
         user.setNickname(nickname);//去除昵称中的空格
         source.updateColumn(user
-                ,FilterNode.create("userid", currentUserId(sessionid))
+                ,FilterNode.create("userid", currentUserid(sessionid))
                 ,SelectColumn.createIncludes(columns)
         );
         return RetResult.success();

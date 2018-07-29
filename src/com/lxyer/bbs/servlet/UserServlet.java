@@ -66,6 +66,7 @@ public class UserServlet extends BaseServlet {
 
             Kv kv = Kv.by("contents", contents).set("collects", collects);
             response.finish(HttpScope.refer("/user/index.html").attr(kv));
+            return;
         }
 
         //-------用户主页------

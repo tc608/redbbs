@@ -48,11 +48,16 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void preExecute(HttpRequest request, HttpResponse response) throws IOException {
+        /*if (true){
+            response.finish(HttpScope.refer("404.html"));
+            return;
+        }*/
+
         String sessionid = request.getSessionid(true);
         int currentid = 0;
         if (sessionid != null) {
             request.setCurrentUser(userService.current(sessionid));
-            currentid = userService.currentUserId(sessionid);
+            currentid = userService.currentUserid(sessionid);
         }
 
         String uri = request.getRequestURI();

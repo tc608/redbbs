@@ -2,11 +2,9 @@ package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.BaseService;
 import com.lxyer.bbs.base.entity.ActLog;
-import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.iface.UIService;
 import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.kit.RetCodes;
-import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestParam;
@@ -17,8 +15,6 @@ import org.redkale.source.*;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +26,6 @@ import static com.lxyer.bbs.base.kit.RetCodes.RET_COMMENT_PARA_ILLEGAL;
  */
 @RestService(automapping = true, comment = "评论服务")
 public class CommentService extends BaseService implements UIService<CommentInfo> {
-
-    /*@Resource
-    private UserService userService;*/
 
     @RestMapping(name = "save", comment = "评论保存")
     public RetResult commentSave(@RestSessionid String sessionid, @RestParam(name = "bean") Comment comment){
@@ -48,7 +41,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
             return RetCodes.retResult(RET_COMMENT_CONTENT_ILLEGAL, "评论内容无效");
 
         if (comment.getCommentid() < 1) {
-            int userid = currentUserId(sessionid);
+            int userid = currentUserid(sessionid);
             comment.setUserid(userid);
             comment.setCreatetime(System.currentTimeMillis());
             //todo:@用户处理
@@ -65,7 +58,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
 
     @RestMapping(name = "query", auth = false,comment = "查询评论")
     public Sheet<CommentInfo> commentQuery(@RestSessionid String sessionid , int contentId, Flipper flipper){
-        int userid = currentUserId(sessionid);
+        int userid = currentUserid(sessionid);
 
         flipper.setSort("supportnum DESC,commentid ASC");
         Sheet<Comment> comments = source.querySheet(Comment.class, flipper, FilterNode.create("contentid", contentId));
@@ -103,7 +96,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
 
     @RestMapping(name = "support", comment = "评论点赞")
     public RetResult support(@RestSessionid String sessionid, int commentid, int ok){
-        int userid = currentUserId(sessionid);
+        int userid = currentUserid(sessionid);
 
         source.findAsync(ActLog.class, FilterNode.create("userid", userid).and("tid", commentid).and("cate", 10)).thenAccept(actLog -> {
             if (actLog == null && ok == 1){

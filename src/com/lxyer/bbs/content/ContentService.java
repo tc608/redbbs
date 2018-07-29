@@ -93,7 +93,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
     @RestMapping(name = "info", auth = false, comment = "内容详情")
     public ContentInfo contentInfo(@RestSessionid String sessionid, int contentid){
-        int userId = userService.currentUserId(sessionid);
+        int userId = userService.currentUserid(sessionid);
 
         Content content = source.find(Content.class, contentid);
         if (content == null) return null;
@@ -110,7 +110,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
     @RestMapping(name = "collect", comment = "内容收藏")
     public RetResult collect(@RestSessionid String sessionid, int contentid, int ok){
-        int userid = userService.currentUserId(sessionid);//不会为空
+        int userid = userService.currentUserid(sessionid);//不会为空
 
         ActLog actLog = source.find(ActLog.class, FilterNode.create("userid", userid).and("tid", contentid).and("cate", 20));
         if (actLog == null && ok == 1){
@@ -130,7 +130,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
     @RestMapping(name = "collectquery", comment = "收藏列表")
     public Sheet<ContentInfo> collectQuery(@RestSessionid String sessionid){
-        int userid = currentUserId(sessionid);
+        int userid = currentUserid(sessionid);
 
         Flipper flipper = new Flipper().sort("createtime DESC");
         FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", userid);
