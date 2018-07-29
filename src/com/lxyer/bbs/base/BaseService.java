@@ -50,35 +50,4 @@ public class BaseService implements Service {
         return userid == null ? 0 : (Integer)userid;
     }
 
-    /**
-     * 文件上传
-     */
-    private static final String dir = "/var/www/upload/redbbs/";
-    private static final String view = "http://img.1216.top/redbbs/";
-    private static final String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
-    protected PicRecord upFile(File tmpFile, IPic bean){
-        String name = tmpFile.getName();
-        String suffix = name.substring(name.lastIndexOf("."));
-        String path = String.format(format, System.currentTimeMillis()) + suffix;
-        File destFile = new File((winos ? "root/tem/" : dir) + path);
-        destFile.getParentFile().mkdir();
-        if (!tmpFile.renameTo(destFile)){
-            try{
-                Files.copy(tmpFile.toPath(), destFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                tmpFile.delete();//删除临时文件
-            }
-        }
-
-        //存贮资源数据
-        String src = (winos ? "/tem/" : view) + path;//资源访问地址
-        PicRecord pic = bean.crearePic();
-        pic.setSrc(src);
-        pic.setName(name);
-        pic.setLen((int) destFile.length());
-        source.insertAsync(pic);
-        return pic;
-    }
 }
