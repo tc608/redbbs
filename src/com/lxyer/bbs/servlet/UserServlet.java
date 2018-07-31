@@ -17,7 +17,7 @@ import org.redkale.util.Sheet;
  * 用户相关的servlet
  * Created by liangxianyou at 2018/6/4 13:12.
  */
-@WebServlet({"/user", "/user/*"})
+@WebServlet(value = {"/user", "/user/*"}, comment = "用户请求入口")
 public class UserServlet extends BaseServlet {
 
 

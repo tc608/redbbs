@@ -67,16 +67,4 @@ public final class LxyKit {
         }
         return ts;
     }
-
-
-    public static void main(String[] args) {
-        Pattern p = Pattern.compile("@*&nbsp;");
-
-        Matcher matcher = p.matcher("@nick&nbsp;[污]&nbsp;");
-
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-    }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  * 文件相关
  * Created by liangxianyou at 2018/6/4 13:17.
  */
-@WebServlet({"/upload","/upload/*"})
+@WebServlet(value = {"/upload","/upload/*"}, comment = "文件管理入口")
 public class FileServlet extends BaseServlet {
 
     private static final String dir = "/var/www/upload/redbbs/";

@@ -10,6 +10,7 @@ import com.lxyer.bbs.base.user.UserService;
 import org.redkale.net.http.*;
 import org.redkale.service.RetResult;
 import org.redkale.source.*;
+import org.redkale.util.Comment;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
 
@@ -18,18 +19,13 @@ import javax.annotation.Resource;
 /**
  * Created by Lxy at 2017/11/26 9:33.
  */
-@RestService(automapping = true, comment = "内容管理")
+@RestService(automapping = true, comment = "文章帖子服务")
 public class ContentService extends BaseService implements UIService<ContentInfo> {
 
     @Resource
     protected UserService userService;
 
-    /**
-     *
-     * @param flipper
-     * @param filterNode
-     * @return
-     */
+    @RestMapping(ignore = true, comment = "根据条件查询帖子数据")
     public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode){
         Sheet<Content> contents = source.querySheet(Content.class, flipper, filterNode);
 
@@ -64,7 +60,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
 
-    @RestMapping(name = "save", comment = "内容保存")
+    @RestMapping(name = "save", comment = "帖子保存")
     public RetResult contentSave(@RestParam(name = "bean")Content content, @RestSessionid String sessionid){
         //数据校验
         if (content.getTitle().isEmpty() || content.getTitle().length() > 64){
@@ -91,7 +87,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         return RetResult.success();
     }
 
-    @RestMapping(name = "info", auth = false, comment = "内容详情")
+    @RestMapping(name = "info", auth = false, comment = "帖子详情")
     public ContentInfo contentInfo(@RestSessionid String sessionid, int contentid){
         int userId = userService.currentUserid(sessionid);
 
@@ -108,7 +104,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         return contentInfo;
     }
 
-    @RestMapping(name = "collect", comment = "内容收藏")
+    @RestMapping(name = "collect", comment = "帖子收藏")
     public RetResult collect(@RestSessionid String sessionid, int contentid, int ok){
         int userid = userService.currentUserid(sessionid);//不会为空
 
@@ -144,9 +140,23 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         return infos;
     }
 
-    @RestMapping(name = "set", comment = "内容操作")
-    public RetResult contentSet(int id, String field, short v){
-        source.updateColumn(Content.class, id, field, v);
+    @RestMapping(name = "set", comment = "便捷的修改内容")
+    public RetResult contentSet(@RestSessionid String sessionid,
+                                @Comment("帖子id") int id,
+                                @Comment("status|top|wonderful") String field,
+                                @Comment("目标修改值")short v){
+        //只有管理员可访问
+        int userid = currentUserid(sessionid);
+        //身份验证 后修改内容
+        source.findAsync(Content.class, id).thenAccept(content -> {
+            if (content.getUserid() == userid && userService.isAdmin(userid)){//管理员可以做更多
+                //field: status|top|wonderful
+                // update content set {field}={v} where id={id}
+                source.updateColumn(Content.class, id, field, v);
+            }else if (content.getUserid() == userid && ("status".equals(field))){//非管理员只能修改状态
+                source.updateColumn(Content.class, id, field, v);
+            }
+        });
         return RetResult.success();
     }
 

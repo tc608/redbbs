@@ -15,8 +15,7 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
  * 帖子相关
  * Created by liangxianyou at 2018/6/4 13:15.
  */
-@WebServlet({"/jie" ,"/jie/*"
-        ,"/column","/column/*"})
+@WebServlet(value = {"/jie" ,"/jie/*","/column","/column/*"}, comment = "文章帖子入口")
 public class ContentServlet extends BaseServlet {
     @HttpMapping(url = "/jie", auth = false, comment = "问答列表")
     public void jie(HttpRequest request, HttpResponse response){

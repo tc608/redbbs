@@ -17,6 +17,8 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.redkale.net.http.RestMapping;
+import org.redkale.net.http.RestService;
 import org.redkale.source.ColumnValue;
 import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterNode;
@@ -35,6 +37,7 @@ import static java.util.Arrays.asList;
 /**
  * Created by liangxianyou at 2018/6/20 22:54.
  */
+@RestService(name = "xxx",automapping = true, comment = "日志记录")
 public class TaskQueue<T extends Object> extends BaseService implements Runnable {
 
     @Resource
@@ -73,6 +76,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     }
 
     @Override
+    @RestMapping(ignore = true, comment = "独立线程，用户访问行为记录到数据库")
     public void run() {
         try {
             while (true){
@@ -94,10 +98,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         }
     }
 
-    /**
-     * 帖子阅读数处理
-     * @param logData
-     */
+    @RestMapping(ignore = true, comment = "帖子阅读数处理")
     private void updateViewNumAsync(Map logData) {
         CompletableFuture.runAsync(()->{
             Bson filter = and(
@@ -117,6 +118,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         });
     }
 
+    @RestMapping(ignore = true, comment = "访问热帖数据")
     public Sheet<ContentInfo> hotView(String sessionid){
         int limit = 8;
         String cacheKey = "hotView";
@@ -168,8 +170,8 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
     /**
      * TODO:帖子访客记录 --待完成
-     * @return
      */
+    @RestMapping(ignore = true, comment = "帖子访客记录")
     public Sheet<Map> readRecordAsync(Flipper flipper ,int contentid){
         Bson filter = eq("uri", "/jie/detail/"+ contentid);
 

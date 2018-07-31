@@ -80,6 +80,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
         return infos;
     }
 
+    @RestMapping(ignore = true, comment = "查询用户评论数据")
     public Sheet<CommentInfo> queryByUserid(int userid){
         Sheet<Comment> comments = source.querySheet(Comment.class, new Flipper().sort("createtime DESC"), FilterNode.create("userid", userid));
 
@@ -94,7 +95,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
         return infos;
     }
 
-    @RestMapping(name = "support", comment = "评论点赞")
+    @RestMapping(name = "support", comment = "点赞")
     public RetResult support(@RestSessionid String sessionid, int commentid, int ok){
         int userid = currentUserid(sessionid);
 
@@ -117,7 +118,11 @@ public class CommentService extends BaseService implements UIService<CommentInfo
         return RetResult.success();
     }
 
-    @RestMapping(name = "rankuser", auth = false, comment = "评论榜")
+    /**
+     * todo:用户评论榜 待完成
+     * @return
+     */
+    @RestMapping(ignore = true, name = "rankuser", auth = false, comment = "用户评论榜")
     public Map<String, Number> commentRank(){
         Flipper flipper = new Flipper().limit(8);
         source.querySheet(Comment.class, flipper, FilterNode.create("userid", FilterExpress.IN));
