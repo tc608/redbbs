@@ -58,7 +58,7 @@ public class UserInfo implements java.io.Serializable {
         this.sex = sex;
     }
 
-    @ConvertColumn(type = ConvertType.JSON)
+    @ConvertColumn(ignore = true,type = ConvertType.JSON)
     public String getPassword() {
         return password;
     }
