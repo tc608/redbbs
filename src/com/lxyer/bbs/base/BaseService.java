@@ -4,13 +4,9 @@ import org.redkale.net.http.RestMapping;
 import org.redkale.service.Service;
 import org.redkale.source.CacheSource;
 import org.redkale.source.DataSource;
-import org.redkalex.cache.RedisCacheSource;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 /**
  * Created by Lxy at 2017/10/3 13:50.
@@ -41,13 +37,13 @@ public class BaseService implements Service {
     @RestMapping(ignore = true)
     public int currentUserid(String sessionid){
         if (sessionid == null) return 0;
-        Object userid = null;
+        long userid = 0;
         try {
-            userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+            userid = sessions.getLong(sessionid, 0);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return userid == null ? 0 : (Integer)userid;
+        return (int)userid;
     }
 
 }
