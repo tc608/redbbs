@@ -21,7 +21,8 @@
     </build>
 
     <dependencies>
-        <dependency>
+        <!--maven 打包使用下面的包  -->
+        <!--<dependency>
             <groupId>org.redkale</groupId>
             <artifactId>redkale</artifactId>
             <version>1.9.5.2</version>
@@ -51,11 +52,6 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.8.0</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>com.lxyer</groupId>
-            <artifactId>redim</artifactId>
-            <version>1.0</version>
         </dependency>-->
 
     </dependencies>
