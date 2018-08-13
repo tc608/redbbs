@@ -26,7 +26,7 @@ public class BaseService implements Service {
     protected DataSource source;
 
     @Resource(name = "redis")
-    protected RedisCacheSource<Integer> sessions;
+    protected CacheSource<Integer> sessions;
 
     @Resource(name = "cacheSource")
     protected CacheSource cacheSource;

@@ -50,14 +50,14 @@ public class UserService extends BaseService {
     public UserInfo current(String sessionid){
         if (sessionid == null) return null;
 
-        Object userid = null;
+        long userid = 0;
         try {
-            userid = sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+            userid = sessions.getLong(sessionid, 0);
             sessions.getAndRefresh(sessionid, sessionExpireSeconds);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return userid == null ? null : findUserInfo((Integer) userid);
+        return userid == 0 ? null : findUserInfo((int)userid);
     }
 
     @RestMapping(name = "info", comment = "用户信息")
