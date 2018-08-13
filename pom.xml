@@ -54,6 +54,13 @@
             <version>3.8.0</version>
         </dependency>-->
 
+        <!--maven 打包不需要-->
+        <!--<dependency>
+            <groupId>com.lxyer</groupId>
+            <artifactId>redim</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+
     </dependencies>
 
 
