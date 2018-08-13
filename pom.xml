@@ -21,13 +21,18 @@
     </build>
 
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>org.redkale</groupId>
             <artifactId>redkale</artifactId>
-            <version>1.8.6</version>
-        </dependency>-->
+            <version>1.9.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redkalex</groupId>
+            <artifactId>redkale-plugins</artifactId>
+            <version>1.9.5.2</version>
+        </dependency>
 
-        <!--<dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
@@ -36,8 +41,8 @@
             <groupId>com.jfinal</groupId>
             <artifactId>enjoy</artifactId>
             <version>3.4</version>
-        </dependency>-->
-        <!--<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
             <version>3.8.0</version>
@@ -46,6 +51,11 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.8.0</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>com.lxyer</groupId>
+            <artifactId>redim</artifactId>
+            <version>1.0</version>
         </dependency>-->
 
     </dependencies>
