@@ -24,6 +24,7 @@ import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.AnyValue;
+import org.redkale.util.Comment;
 import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
@@ -67,10 +68,12 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         visLog = database.getCollection("vis_log");
     }
 
+    @RestMapping(ignore = true)
     public T take() throws InterruptedException {
         return (T) queue.take();
     }
 
+    @RestMapping(ignore = true)
     public void put(T t) throws InterruptedException {
         queue.put(t);
     }
@@ -98,7 +101,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         }
     }
 
-    @RestMapping(ignore = true, comment = "帖子阅读数处理")
+    @Comment("帖子阅读数处理")
     private void updateViewNumAsync(Map logData) {
         CompletableFuture.runAsync(()->{
             Bson filter = and(
