@@ -51,7 +51,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
             int count = source.getNumberResult(Comment.class, FilterFunc.COUNT, "commentid", FilterNode.create("contentid", contentid)).intValue();
             source.updateColumn(Content.class, contentid, ColumnValue.create("replynum", count));
         }else {
-            source.updateColumn(comment, SelectColumn.createIncludes("content"));
+            source.updateColumn(comment, SelectColumn.includes("content"));
         }
         return RetResult.success();
     }
@@ -85,7 +85,7 @@ public class CommentService extends BaseService implements UIService<CommentInfo
         Sheet<Comment> comments = source.querySheet(Comment.class, new Flipper().sort("createtime DESC"), FilterNode.create("userid", userid));
 
         int[] contentIds = comments.stream().mapToInt(x -> x.getCommentid()).toArray();
-        List<Content> contents = source.queryList(Content.class, SelectColumn.createIncludes("contentid","title"), FilterNode.create("contentid", FilterExpress.IN, contentIds));
+        List<Content> contents = source.queryList(Content.class, SelectColumn.includes("contentid","title"), FilterNode.create("contentid", FilterExpress.IN, contentIds));
 
         Sheet<CommentInfo> infos = createInfo(comments);
         infos.forEach(x->{

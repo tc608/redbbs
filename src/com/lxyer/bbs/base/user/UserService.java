@@ -131,7 +131,7 @@ public class UserService extends BaseService {
         user.setNickname(nickname);//去除昵称中的空格
         source.updateColumn(user
                 ,FilterNode.create("userid", currentUserid(sessionid))
-                ,SelectColumn.createIncludes(columns)
+                ,SelectColumn.includes(columns)
         );
         return RetResult.success();
     }
@@ -139,7 +139,7 @@ public class UserService extends BaseService {
     //最新加入
     public Sheet<UserInfo> lastReg(){
         Sheet<UserRecord> users = source.querySheet(UserRecord.class
-                , SelectColumn.createIncludes("userid", "nickname", "avatar", "createtime")
+                , SelectColumn.includes("userid", "nickname", "avatar", "createtime")
                 , new Flipper().sort("createtime DESC").limit(8)
                 , FilterNode.create("status", 10));
 

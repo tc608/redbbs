@@ -86,6 +86,7 @@ public class BaseServlet extends HttpServlet {
 
             VisLog visLog = new VisLog();
             visLog.setIp(request.getRemoteAddr());
+            visLog.setUri(request.getRequestURI());
             visLog.setHeaders(headers);
             visLog.setPara(para);
             visLog.setTime(System.currentTimeMillis());

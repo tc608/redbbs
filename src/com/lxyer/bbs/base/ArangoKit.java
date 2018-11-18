@@ -5,6 +5,9 @@ import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
 import com.lxyer.bbs.base.entity.VisLog;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
@@ -21,7 +24,6 @@ public class ArangoKit {
     protected static ArangoDatabase dbDev = arangoDb.db(chDev.apply("redbbs"));
     protected static ArangoCollection colVisLog = dbDev.collection(chDev.apply("vis_log"));
 
-    //check exists
     static {
         if (!dbDev.exists()) {
             dbDev.create();
@@ -30,12 +32,35 @@ public class ArangoKit {
         if (!colVisLog.exists()) {
             colVisLog.create();
         }
+
+        //java.net.SocketTimeoutException: Read timed out  加入下面两行，观察是否正常
+        System.setProperty("sun.net.client.defaultConnectTimeout", String.valueOf(1000));
+        System.setProperty("sun.net.client.defaultReadTimeout", String.valueOf(1000));
     }
 
-    public static <T> void save(T t) {
-        if (t instanceof VisLog) {
-            colVisLog.insertDocument(t);
-        }
+    public static <T> CompletableFuture<T> save(T t) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (t instanceof VisLog) {
+                colVisLog.insertDocument(t);
+            }
+            return t;
+        });
+    }
+
+    public static long findInt(String aql) {
+        return dbDev.query(aql, long.class).first();
+    }
+    public static long findInt(String aql, Map para) {
+        return dbDev.query(aql, long.class).first();
+    }
+
+    public static <T> List<T> find(String aql, Class<T> clazz) {
+        return dbDev.query(aql, clazz).asListRemaining();
+    }
+
+    public static <T> List<T> find(String aql, Map para, Class<T> clazz) {
+
+        return dbDev.query(aql, para, clazz).asListRemaining();
     }
 
 }

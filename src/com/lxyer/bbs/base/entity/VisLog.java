@@ -71,4 +71,17 @@ public class VisLog {
     public void setHeaders(Map headers) {
         this.headers = headers;
     }
+
+    @Override
+    public String toString() {
+        return "VisLog{" +
+                "ip='" + ip + '\'' +
+                ", userid='" + userid + '\'' +
+                ", ftime='" + ftime + '\'' +
+                ", uri='" + uri + '\'' +
+                ", time=" + time +
+                ", para=" + para +
+                ", headers=" + headers +
+                '}';
+    }
 }

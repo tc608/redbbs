@@ -1,5 +1,6 @@
 package com.lxyer.bbs.base;
 
+import com.lxyer.bbs.base.entity.Count;
 import com.lxyer.bbs.base.entity.VisLog;
 import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.user.UserInfo;
@@ -8,14 +9,10 @@ import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
 import com.lxyer.bbs.content.ContentInfo;
 import com.lxyer.bbs.content.ContentService;
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.redkale.net.http.RestMapping;
@@ -30,11 +27,11 @@ import org.redkale.util.Sheet;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static com.mongodb.client.model.Filters.*;
-import static java.util.Arrays.asList;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created by liangxianyou at 2018/6/20 22:54.
@@ -82,81 +79,78 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     @Override
     @RestMapping(ignore = true, comment = "独立线程，用户访问行为记录到数据库")
     public void run() {
-        try {
-            while (true){
+        do {
+            try {
                 T task = take();
+
+                //记录访问日志，如果是访问的文章详情：对文章访问数量更新
                 if (task instanceof VisLog) {
-                    ArangoKit.save(task);
+                    ArangoKit.save(task).thenAcceptAsync((_task) -> {
+                        VisLog visLog = (VisLog) _task;
+                        //[访问量]
+                        String uri = visLog.getUri();
+                        if (uri != null && uri.startsWith("/jie/detail/")){
+                            updateViewNum(visLog);
+                        }
+                    });
                 }
 
-                /*Map logData = (Map) take();
-
-                logData.put("ftime", String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", logData.get("time")));
-                visLog.insertOne(new Document(logData));
-
-                //在这里处理日志数据
-                String uri = logData.get("uri")+"";
-
-                //[访问量]
-                if (uri.startsWith("/jie/detail/")){
-                    updateViewNumAsync(logData);
-                }*/
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        } while (true);
     }
 
     @Comment("帖子阅读数处理")
-    private void updateViewNumAsync(Map logData) {
-        CompletableFuture.runAsync(()->{
-            Bson filter = and(
-                    eq("uri", logData.get("uri"))//帖子
-                    ,eq("ip", logData.get("ip"))//IP
-                    ,or(
-                        eq("userid", logData.get("userid"))//登录人
-                        ,eq("userid", 0)//未登录userid=0
-                    )
-            );
-            long count = visLog.count(filter);
-            if (count <= 1){
-                String uri = logData.get("uri") + "";
-                int contentid = Integer.parseInt(uri.replace("/jie/detail/", ""));
-                source.updateColumn(Content.class, contentid, ColumnValue.inc("viewnum", 1));
-            }
-        });
+    private void updateViewNum(VisLog visLog) {
+
+        String aql = String.format("for d in vis_log_dev\n" +
+                "    filter d.uri == '%s' and d.ip == '%s' and (d.userid == %s or d.userid==0)\n" +
+                "    collect WITH COUNT INTO total\n" +
+                "    return total", visLog.getUri(), visLog.getIp(), visLog.getUserid());
+
+        long total = ArangoKit.findInt(aql);
+
+
+        if (total <= 1) {
+            String uri = visLog.getUri();
+            int contentid = Integer.parseInt(uri.replace("/jie/detail/", ""));
+            source.updateColumn(Content.class, contentid, ColumnValue.inc("viewnum", 1));
+        }
     }
 
     @RestMapping(ignore = true, comment = "访问热帖数据")
     public Sheet<ContentInfo> hotView(String sessionid){
         int limit = 8;
         String cacheKey = "hotView";
-        Object ids = cacheSource.get(cacheKey);
+        Object ids = null;//cacheSource.get(cacheKey);
         if (ids == null){
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.DAY_OF_MONTH, -7);
 
+            Map para = new HashMap();
+            para.put("time", cal.getTimeInMillis());
             //查询一周某热帖记录
-            Bson filter = and(ne("userid", 100001)
-                    ,regex("uri", "/jie/detail/*")
-                    ,ne("ip", "")
-                    ,gt("time", cal.getTimeInMillis())
-            );
-            List<Bson> list = asList(
-                    Aggregates.match(filter)
-                    ,Aggregates.group("$uri", Accumulators.sum("count", 1))
-                    ,Aggregates.sort(new Document("count", -1))
-                    ,Aggregates.limit(8)
-            );
-            AggregateIterable<Document> documents = visLog.aggregate(list, Document.class);
+            List<Count> hotArticle = ArangoKit.find(
+                    "for d in vis_log_dev\n" +
+                            "    filter d.uri =~ '^/jie/detail/[0-9]+$' and d.userid != 100001 and d.time > @time\n" +
+                            "    COLLECT uri=d.uri WITH COUNT INTO total\n" +
+                            "    sort total desc\n" +
+                            "    limit 10\n" +
+                            "    return {name: uri,total:total}",
+                    Map.of("time", cal.getTimeInMillis()),
+                    Count.class);
 
-            List<Integer> _ids = new ArrayList<>(limit);
-            documents.forEach((Block<? super Document>) x->{
-                String uri = x.getString("_id");
-                _ids.add(Integer.parseInt(uri.replace("/jie/detail/", "")));
-            });
+            Function<List<Count>, List<Integer>> deal = (counts) -> {
+                List<Integer> _ids = new ArrayList<>();
+                counts.forEach(x -> {
+                    _ids.add(Integer.parseInt(x.getName().replace("/jie/detail/", "")));
+                });
+                return _ids;
+            };
 
-            cacheSource.set(30 * 60, cacheKey, ids = _ids);
+            ids = deal.apply(hotArticle);
+            cacheSource.set(30 * 60, cacheKey, ids);
         }
 
         int[] contentids = new int[limit];
@@ -189,7 +183,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
         List<Map> rows = new ArrayList<>();
         List<Integer> uids = new ArrayList<>();
-        documents.forEach((Block<? super Document>) x->{
+        documents.forEach((Consumer<? super Document>) x->{
             Integer userid = x.getInteger("userid");
             if (userid > 0) uids.add(userid);
 
