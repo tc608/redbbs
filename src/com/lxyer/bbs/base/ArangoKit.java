@@ -17,7 +17,7 @@ public class ArangoKit {
     protected static Function<String, String> chDev = (s) -> s  + (winos ? "_dev" : "");
 
     //Arango
-    protected static ArangoDB arangoDb = new ArangoDB.Builder().host("120.24.230.60", 8529).user("root").password("pwd123").build();
+    protected static ArangoDB arangoDb = new ArangoDB.Builder().host("120.24.230.60", 8529).user("root").password("root").build();
     protected static ArangoDatabase dbDev = arangoDb.db(chDev.apply("redbbs"));
     protected static ArangoCollection colVisLog = dbDev.collection(chDev.apply("vis_log"));
 
