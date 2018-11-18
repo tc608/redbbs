@@ -1,5 +1,6 @@
 package com.lxyer.bbs.base;
 
+import com.lxyer.bbs.base.entity.VisLog;
 import com.lxyer.bbs.base.kit.LxyKit;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserRecord;
@@ -83,7 +84,12 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     public void run() {
         try {
             while (true){
-                Map logData = (Map) take();
+                T task = take();
+                if (task instanceof VisLog) {
+                    ArangoKit.save(task);
+                }
+
+                /*Map logData = (Map) take();
 
                 logData.put("ftime", String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", logData.get("time")));
                 visLog.insertOne(new Document(logData));
@@ -94,7 +100,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
                 //[访问量]
                 if (uri.startsWith("/jie/detail/")){
                     updateViewNumAsync(logData);
-                }
+                }*/
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

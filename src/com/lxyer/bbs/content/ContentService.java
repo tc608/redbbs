@@ -79,7 +79,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         }else {
             source.findAsync(Content.class, content.getContentid()).thenAccept(x->{
                 if (x.getUserid() == userid || userService.isAdmin(userid)){//身份验证 后修改内容
-                    source.updateColumnAsync(content,SelectColumn.createIncludes("title", "digest", "content","type", "status"));
+                    source.updateColumnAsync(content,SelectColumn.includes("title", "digest", "content","type", "status"));
                 }
             });
         }
@@ -130,10 +130,10 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
         Flipper flipper = new Flipper().sort("createtime DESC");
         FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", userid);
-        Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.createIncludes("tid", "createtime"), flipper, filterNode);
+        Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.includes("tid", "createtime"), flipper, filterNode);
 
         int[] contentids = actLogs.stream().mapToInt(x -> x.getTid()).toArray();
-        Sheet<Content> contents = source.querySheet(Content.class, SelectColumn.createIncludes("contentid", "title"), flipper.sort(null), FilterNode.create("contentid", FilterExpress.IN, contentids));
+        Sheet<Content> contents = source.querySheet(Content.class, SelectColumn.includes("contentid", "title"), flipper.sort(null), FilterNode.create("contentid", FilterExpress.IN, contentids));
 
         Sheet<ContentInfo> infos = createInfo(contents);
 

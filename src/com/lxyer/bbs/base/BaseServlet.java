@@ -1,6 +1,7 @@
 package com.lxyer.bbs.base;
 
 import com.jfinal.kit.Kv;
+import com.lxyer.bbs.base.entity.VisLog;
 import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
@@ -14,7 +15,6 @@ import org.redkale.util.AnyValue;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static com.lxyer.bbs.base.kit.RetCodes.RET_USER_UNLOGIN;
@@ -39,7 +39,7 @@ public class BaseServlet extends HttpServlet {
     protected CommentService commentService;
 
     @Resource
-    protected TaskQueue<Map> logQueue;
+    protected TaskQueue<VisLog> logQueue;
 
     @Override
     public void init(HttpContext context, AnyValue config) {
@@ -74,23 +74,23 @@ public class BaseServlet extends HttpServlet {
         //异步记录访问日志
         final int userid = currentid;
         CompletableFuture.runAsync(()->{
-            Kv visLog = new Kv();//ip、time、userid、uri、para
-            visLog.set("ip", request.getRemoteAddr());
-            visLog.set("time", System.currentTimeMillis());
-            visLog.set("userid", userid);
-            visLog.set("uri", request.getRequestURI());
-
-            Kv headers = Kv.create();
-            request.getHeaders().forEach((k,v)->{
-                headers.set(k, request.getHeader(k));
-            });
-            visLog.set("headers", headers);
 
             Kv para = Kv.create();
             for (String key : request.getParameterNames()){
                 para.set(key, request.getParameter(key));
             }
-            visLog.set("para", para);
+            Kv headers = Kv.create();
+            request.getHeaders().forEach((k,v)->{
+                headers.set(k, request.getHeader(k));
+            });
+
+            VisLog visLog = new VisLog();
+            visLog.setIp(request.getRemoteAddr());
+            visLog.setHeaders(headers);
+            visLog.setPara(para);
+            visLog.setTime(System.currentTimeMillis());
+            visLog.setFtime(String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", visLog.getTime()));
+
             try {
                 logQueue.put(visLog);
             } catch (InterruptedException e) {
