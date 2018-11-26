@@ -86,6 +86,8 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
                 //记录访问日志，如果是访问的文章详情：对文章访问数量更新
                 if (task instanceof VisLog) {
+                    System.out.println(task);
+                    /* todo: 需要记录 访问日志，此处添加记录日志逻辑
                     ArangoKit.save(task).thenAcceptAsync((_task) -> {
                         VisLog visLog = (VisLog) _task;
                         //[访问量]
@@ -94,6 +96,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
                             updateViewNum(visLog);
                         }
                     });
+                    */
                 }
 
             } catch (InterruptedException e) {

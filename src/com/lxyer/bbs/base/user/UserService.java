@@ -40,7 +40,7 @@ public class UserService extends BaseService {
         //log(user, 0, "用户登录成功.");
         UserInfo userInfo = user.createUserInfo();
 
-        sessions.setAsync(sessionExpireSeconds, loginBean.getSessionid(), userInfo.getUserid());
+        sessions.setAsync(sessionExpireSeconds, loginBean.getSessionid(), (long)userInfo.getUserid());
         retResult.setRetcode(0);
         retResult.setResult(userInfo);
         retResult.setRetinfo("登录成功.");

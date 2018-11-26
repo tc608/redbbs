@@ -62,7 +62,7 @@ public class ContentServlet extends BaseServlet {
         /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
 
-        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
+        Sheet<ContentInfo> hotView = Sheet.empty();//logQueue.hotView(sessionid); TODO: 依赖日志记录，需记录日志后可使用
 
         Kv kv = Kv.by("bean", content).set("comments", comments).set("hotView", hotView)/*.set("hotReply", hotReply)*/;
         response.finish(HttpScope.refer("/jie/detail.html").attr(kv));
@@ -87,7 +87,7 @@ public class ContentServlet extends BaseServlet {
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, setPrivate(request, filterNode)));
 
         //热帖
-        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
+        Sheet<ContentInfo> hotView = Sheet.empty();//logQueue.hotView(sessionid); TODO: 依赖日志记录，需记录日志后可使用
 
         Kv kv = Kv.by("contents", contents).set("hotView", hotView)
                 .set("solved", solved).set("wonderful", wonderful)

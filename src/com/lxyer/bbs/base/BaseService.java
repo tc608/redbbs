@@ -21,8 +21,10 @@ public class BaseService implements Service {
     @Resource(name = "art123")
     protected DataSource source;
 
-    @Resource(name = "redis")
-    protected CacheSource<Integer> sessions;
+    /* 使用redis 代码中配置此处即可
+    @Resource(name = "redis")*/
+    @Resource(name = "cacheSource")
+    protected CacheSource<Long> sessions;
 
     @Resource(name = "cacheSource")
     protected CacheSource cacheSource;

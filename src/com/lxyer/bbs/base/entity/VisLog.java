@@ -1,5 +1,7 @@
 package com.lxyer.bbs.base.entity;
 
+import org.redkale.convert.json.JsonConvert;
+
 import java.util.Map;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Map;
  */
 public class VisLog {
     private String ip;
-    private String userid;
+    private int userid;
     private String ftime;
     private String uri;
     private long time;
@@ -24,11 +26,11 @@ public class VisLog {
         this.ip = ip;
     }
 
-    public String getUserid() {
+    public int getUserid() {
         return userid;
     }
 
-    public void setUserid(String userid) {
+    public void setUserid(int userid) {
         this.userid = userid;
     }
 
@@ -74,14 +76,6 @@ public class VisLog {
 
     @Override
     public String toString() {
-        return "VisLog{" +
-                "ip='" + ip + '\'' +
-                ", userid='" + userid + '\'' +
-                ", ftime='" + ftime + '\'' +
-                ", uri='" + uri + '\'' +
-                ", time=" + time +
-                ", para=" + para +
-                ", headers=" + headers +
-                '}';
+        return JsonConvert.root().convertTo(this);
     }
 }
