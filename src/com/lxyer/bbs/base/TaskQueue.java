@@ -24,6 +24,7 @@ import org.redkale.source.Flipper;
 import org.redkale.util.AnyValue;
 import org.redkale.util.Comment;
 import org.redkale.util.Sheet;
+import org.redkale.util.Utility;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -138,7 +139,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
                             "    sort total desc\n" +
                             "    limit 10\n" +
                             "    return {name: uri,total:total}",
-                    Map.of("time", cal.getTimeInMillis()),
+                    Utility.ofMap("time", cal.getTimeInMillis()),
                     Count.class);
 
             Function<List<Count>, List<Integer>> deal = (counts) -> {

@@ -225,17 +225,6 @@ public class UserRecord implements java.io.Serializable {
     }
 
     public static String md5IfNeed(String password){
-        if (password == null || password.isEmpty()) return "";
-        if (password.length() == 32) return password;
-        MessageDigest md5 = null;
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        byte[] bytes = password.trim().getBytes();
-        bytes = md5.digest(bytes);
-        return new String(Utility.binToHex(bytes));
+        return Utility.md5Hex(password);
     }
 }
