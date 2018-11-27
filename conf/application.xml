@@ -6,11 +6,11 @@
         <!-- 如果需要使用redis,此处配置  -->
         <!--<source name="redis" value="org.redkalex.cache.RedisCacheSource" xxx="16">
             <node addr="redishost" port="6379" password="pwd123"/>
-        </source>-->
+        </source>
         <properties>
             <property name="mongo.host" value="redishost"/>
             <property name="mongo.database" value="redbbs"/>
-        </properties>
+        </properties>-->
     </resources>
         
     <server protocol="HTTP" host="0.0.0.0" port="80" root="root">
@@ -21,10 +21,6 @@
             <remoteaddr value="request.headers.X-Real-IP"/>
         </request>
         <servlets autoload="true"/>
-
-        <resource-servlet webroot="root" index="index.html">
-            <cache  limit="2M" lengthmax="1M" watch="false"/>
-        </resource-servlet>
         <render value="com.lxyer.bbs.base.EnjoyRender"/>
     </server>
 
