@@ -42,7 +42,7 @@ public class IndexServlet extends BaseServlet {
         /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
 
-        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
+        Sheet<ContentInfo> hotView = Sheet.empty();//logQueue.hotView(sessionid); TODO: 依赖日志记录，需记录日志后可使用
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();

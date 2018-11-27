@@ -6,7 +6,6 @@
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://mysqlhost:3306/?autoReconnect=true&amp;characterEncoding=utf8"/>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.user" value="guest"/>
             <property name="javax.persistence.jdbc.password" value="hello"/>
         </properties>

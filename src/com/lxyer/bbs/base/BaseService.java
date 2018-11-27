@@ -15,6 +15,9 @@ public class BaseService implements Service {
 
     protected final int sessionExpireSeconds = 7 * 24 * 60 * 60;
 
+    @Resource(name = "property.isDev")
+    public boolean isDev = true;
+
     @Resource(name = "SERVER_ROOT")
     protected File webroot;
 
