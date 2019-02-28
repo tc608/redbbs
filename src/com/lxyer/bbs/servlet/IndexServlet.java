@@ -17,7 +17,7 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet(value = {"/","/project" /* ,"/article","/article/*" */}, comment = "首页一级菜单入口")
+@WebServlet(value = {"/","/project"}, comment = "首页一级菜单入口")
 public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
