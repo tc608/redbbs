@@ -135,7 +135,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         }
 
         Flipper flipper = new Flipper().limit(limit);
-        FilterNode node = FilterNode.create("contentid", FilterExpress.IN, contentids);
+        FilterNode node = FilterNode.create("contentid", FilterExpress.IN, contentids).and("status", FilterExpress.NOTEQUAL, -10);
 
         //权限过滤
         UserInfo userInfo = userService.current(sessionid);
