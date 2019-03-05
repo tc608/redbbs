@@ -129,7 +129,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
             cacheSource.set(30 * 60, cacheKey, ids);
         }
 
-        int[] contentids = new int[limit];
+        int[] contentids = new int[((List<Integer>) ids).size()];
         for (int i = 0; i < ((List<Integer>) ids).size(); i++) {
             contentids[i] = ((List<Integer>) ids).get(i);
         }
