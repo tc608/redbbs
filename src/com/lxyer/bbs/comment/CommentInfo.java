@@ -9,10 +9,9 @@ import javax.persistence.Column;
 import java.io.Serializable;
 
 /**
- *
  * @author lxyer
  */
-public class CommentInfo implements UI<CommentInfo>,Serializable, CI<CommentInfo> {
+public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInfo> {
 
     @Column(comment = "[评论id]")
     private int commentid;

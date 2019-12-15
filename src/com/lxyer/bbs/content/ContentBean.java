@@ -4,19 +4,16 @@ import org.redkale.convert.json.JsonConvert;
 import org.redkale.source.FilterBean;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *
  * @author lxyer
  */
 @Table(catalog = "db_redbbs", name = "content", comment = "[内容表]")
-public class ContentBean implements FilterBean,java.io.Serializable {
+public class ContentBean implements FilterBean, java.io.Serializable {
 
     @Id
-    @GeneratedValue
     @Column(comment = "[内容id]")
     private int contentid;
 

@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 
 /**
- *
  * @author lxyer
  */
 public class UserInfo implements java.io.Serializable {
@@ -58,7 +57,7 @@ public class UserInfo implements java.io.Serializable {
         this.sex = sex;
     }
 
-    @ConvertColumn(ignore = true,type = ConvertType.JSON)
+    @ConvertColumn(ignore = true, type = ConvertType.JSON)
     public String getPassword() {
         return password;
     }
@@ -178,6 +177,7 @@ public class UserInfo implements java.io.Serializable {
 
     /**
      * 检查用户权限
+     *
      * @param moduleid
      * @param actionid
      * @return

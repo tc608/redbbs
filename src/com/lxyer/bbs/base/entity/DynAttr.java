@@ -8,10 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *
  * @author lxyer
  */
-@Cacheable(interval = 5*60)
+@Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_dynattr", comment = "[动态属性表]")
 public class DynAttr implements java.io.Serializable {
 

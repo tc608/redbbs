@@ -1,20 +1,20 @@
 package com.lxyer.bbs.base.entity;
 
-import javax.persistence.*;
-import org.redkale.convert.json.*;
+import org.redkale.convert.json.JsonConvert;
 
-import java.util.Date;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- *
  * @author lxyer
  */
-@Cacheable(interval = 5*60)
+@Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_actlog")
 public class ActLog implements java.io.Serializable {
 
     @Id
-    @GeneratedValue
     @Column(comment = "[日志id]")
     private int logid;
 

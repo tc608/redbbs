@@ -1,17 +1,17 @@
 package com.lxyer.bbs.base.user;
 
-import javax.persistence.*;
-import org.redkale.convert.json.*;
+import org.redkale.convert.json.JsonConvert;
 import org.redkale.util.Utility;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- *
  * @author lxyer
  */
-@Cacheable(interval = 5*60)
+@Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_userrecord")
 public class UserRecord implements java.io.Serializable {
 
@@ -220,11 +220,11 @@ public class UserRecord implements java.io.Serializable {
         return userInfo;
     }
 
-    public String passwordForMd5(){
+    public String passwordForMd5() {
         return md5IfNeed(password);
     }
 
-    public static String md5IfNeed(String password){
+    public static String md5IfNeed(String password) {
         return Utility.md5Hex(password);
     }
 }

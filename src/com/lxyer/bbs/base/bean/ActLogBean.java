@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import java.io.Serializable;
 
 /**
- *
  * @author lxyer
  */
 public class ActLogBean implements Serializable, FilterBean {

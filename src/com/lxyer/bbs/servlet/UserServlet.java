@@ -22,12 +22,13 @@ public class UserServlet extends BaseServlet {
 
 
     @HttpMapping(url = "/user/login", auth = false, comment = "前往登录页")
-    public void login(HttpRequest request, HttpResponse response){
+    public void login(HttpRequest request, HttpResponse response) {
 
         response.finish(HttpScope.refer("/user/login.html"));
     }
+
     @HttpMapping(url = "/user/reg", auth = false, comment = "前往登录页")
-    public void reg(HttpRequest request, HttpResponse response){
+    public void reg(HttpRequest request, HttpResponse response) {
         /*List<Kv> list = new ArrayList<>();
         list.add(Kv.by("k", 1).set("a", "1+1=?").set("q", 2));
         list.add(Kv.by("k", 2).set("a", "1*1=?").set("q", 1));
@@ -38,19 +39,19 @@ public class UserServlet extends BaseServlet {
     }
 
     @HttpMapping(url = "/user/set", auth = true, comment = "用户设置")
-    public void set(HttpRequest request, HttpResponse response){
+    public void set(HttpRequest request, HttpResponse response) {
         response.finish(HttpScope.refer("/user/set.html"));
     }
 
 
     @HttpMapping(url = "/user", auth = false, comment = "用户首页")
-    public void user(HttpRequest request, HttpResponse response){
+    public void user(HttpRequest request, HttpResponse response) {
         String para = getPara(request);
 
         //-------个人中心---------
-        if ("user".equals(para) || "".equals(para)){
+        if ("user".equals(para) || "".equals(para)) {
             UserInfo user = request.currentUser();
-            if (user == null){
+            if (user == null) {
                 response.finish(HttpScope.refer("/user/login.html"));
                 return;
             }
@@ -62,7 +63,7 @@ public class UserServlet extends BaseServlet {
             Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, node));//queryByBean(flipper, bean);
 
             //收藏的帖子
-            Sheet<ContentInfo> collects = contentService.collectQuery(request.getSessionid(false));
+            Sheet<ContentInfo> collects = contentService.collectQuery(user);
 
             Kv kv = Kv.by("contents", contents).set("collects", collects);
             response.finish(HttpScope.refer("/user/index.html").attr(kv));
@@ -71,25 +72,25 @@ public class UserServlet extends BaseServlet {
 
         //-------用户主页------
         int userid = 0;
-        if ("nick".equals(para)){//通过@ 点击跳转
+        if ("nick".equals(para)) {//通过@ 点击跳转
             String nickname = request.getParameter("nickname");
             UserBean userBean = new UserBean();
             userBean.setNickname(nickname);
-            Sheet<UserRecord> users = userService.queryUser(new Flipper().limit(1), userBean);
-            if (users.getTotal() > 0){
+            Sheet<UserRecord> users = userService.query(new Flipper().limit(1), userBean);
+            if (users.getTotal() > 0) {
                 userid = users.stream().findFirst().orElse(null).getUserid();
             }
-        }else {//直接访问
-            userid = getParaToInt(request,0);
+        } else {//直接访问
+            userid = getParaToInt(request, 0);
         }
 
         //用户信息
-        UserInfo user = userService.findUserInfo(userid);
+        UserInfo user = userService.find(userid);
 
         //帖子
         Flipper flipper = new Flipper().limit(8).sort("createtime DESC");
         FilterNode node = FilterNode.create("userid", userid).and("status", FilterExpress.NOTEQUAL, -10);
-        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request,node));
+        Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, node));
 
         //回复
         Sheet<CommentInfo> comments = commentService.queryByUserid(userid);

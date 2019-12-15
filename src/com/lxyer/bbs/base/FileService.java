@@ -25,17 +25,17 @@ public class FileService extends BaseService {
         String name = tmpFile.getName();
         String suffix = name.substring(name.lastIndexOf("."));
         String path = String.format(format, System.currentTimeMillis()) + suffix;
-        File destFile = new File((winos ? "E:/wk/redbbs/root/tem/" : dir) + path);
+        File destFile = new File((winos ? "D:/wk/_own/redbbs/root/tem/" : dir) + path);
         destFile.getParentFile().mkdir();
-        if (!tmpFile.renameTo(destFile)){
-            try{
+        if (!tmpFile.renameTo(destFile)) {
+            try {
                 Files.copy(tmpFile.toPath(), destFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
-            }finally {
+            } finally {
                 tmpFile.delete();//删除临时文件
             }
         }
         RetResult result = RetResult.success();
-        result.setRetinfo((winos ? "/tem/": view) + path);
+        result.setRetinfo((winos ? "/tem/" : view) + path);
         return result;
     }
 }

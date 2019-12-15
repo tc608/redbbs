@@ -5,19 +5,20 @@ import com.lxyer.bbs.base.iface.C;
 import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.JsonConvert;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
- *
  * @author lxyer
  */
-@Cacheable(interval = 5*60)
+@Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_content", comment = "[内容表]")
 public class Content implements Serializable, C<ContentInfo> {
 
     @Id
-    @GeneratedValue
     @Column(comment = "[内容id]")
     private int contentid;
 
@@ -195,7 +196,7 @@ public class Content implements Serializable, C<ContentInfo> {
         info.setSolved(solved);
         info.setStatus(status);
 
-        info.setTypename(types.getOrDefault((int)type, "其他").toString());
+        info.setTypename(types.getOrDefault((int) type, "其他").toString());
         info.setCreatetime(LxyKit.dateFmt(createtime));
         return info;
     }

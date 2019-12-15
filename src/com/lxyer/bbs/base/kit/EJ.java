@@ -12,10 +12,11 @@ import java.text.SimpleDateFormat;
 @RestService
 public class EJ {
 
-    public String date(long time){
+    public String date(long time) {
         return date(time, "yyyy-MM-dd HH:mm:ss");
     }
-    public String date(long time, String pattern){
+
+    public String date(long time, String pattern) {
         return new SimpleDateFormat(pattern).format(time);
     }
 

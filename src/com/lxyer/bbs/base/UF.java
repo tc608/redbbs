@@ -8,5 +8,6 @@ import com.lxyer.bbs.base.iface.UI;
  */
 public interface UF<I extends UI> {
     int getUserid();
+
     I createInfo();
 }

@@ -15,6 +15,7 @@ import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
 import org.redkale.util.Comment;
 import org.redkale.util.Sheet;
+import org.redkale.util.Utility;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -24,7 +25,7 @@ import java.util.function.Function;
 /**
  * Created by liangxianyou at 2018/6/20 22:54.
  */
-@RestService(name = "xxx",automapping = true, comment = "日志记录")
+@RestService(name = "xxx", automapping = true, comment = "日志记录")
 public class TaskQueue<T extends Object> extends BaseService implements Runnable {
 
     @Resource
@@ -57,17 +58,15 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
                 //记录访问日志，如果是访问的文章详情：对文章访问数量更新
                 if (task instanceof VisLog) {
-                    System.out.println(task);
-                    /* todo: 需要记录 访问日志，此处添加记录日志逻辑
+                    //System.out.println(task);
                     ArangoService.save(task).thenAcceptAsync((_task) -> {
                         VisLog visLog = (VisLog) _task;
                         //[访问量]
                         String uri = visLog.getUri();
-                        if (uri != null && uri.startsWith("/jie/detail/")){
+                        if (uri != null && uri.startsWith("/jie/detail/")) {
                             updateViewNum(visLog);
                         }
                     });
-                    */
                 }
 
             } catch (InterruptedException e) {
@@ -84,7 +83,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
                 "    collect WITH COUNT INTO total\n" +
                 "    return total", visLog.getUri(), visLog.getIp(), visLog.getUserid());
 
-        long total = 2;//ArangoService.findInt(aql);
+        long total = ArangoService.findInt(aql);
 
         if (total <= 1) {
             String uri = visLog.getUri();
@@ -94,28 +93,26 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     }
 
     @RestMapping(ignore = true, comment = "访问热帖数据")
-    public Sheet<ContentInfo> hotView(String sessionid){
+    public Sheet<ContentInfo> hotView(String sessionid) {
         int limit = 8;
         String cacheKey = "hotView";
-        Object ids = null;//cacheSource.get(cacheKey);
-        if (ids == null){
+        Object ids = cacheSource.get(cacheKey);
+        if (isEmpty.test(ids)) {
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.DAY_OF_MONTH, -7);
 
             Map para = new HashMap();
             para.put("time", cal.getTimeInMillis());
             //查询一周某热帖记录
-            List<Count> hotArticle = new ArrayList<>();
-            /* TODO: 依赖日志记录，需记录日志后可使用
             List<Count> hotArticle = ArangoService.find(
-                    "for d in vis_log_dev\n" +
+                    "for d in " + (isDev ? "vis_log_dev" : "vis_log") + "\n" +
                             "    filter d.uri =~ '^/jie/detail/[0-9]+$' and d.userid != 100001 and d.time > @time\n" +
                             "    COLLECT uri=d.uri WITH COUNT INTO total\n" +
                             "    sort total desc\n" +
                             "    limit 10\n" +
                             "    return {name: uri,total:total}",
                     Utility.ofMap("time", cal.getTimeInMillis()),
-                    Count.class);*/
+                    Count.class);
 
             Function<List<Count>, List<Integer>> deal = (counts) -> {
                 List<Integer> _ids = new ArrayList<>();
@@ -139,9 +136,9 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
 
         //权限过滤
         UserInfo userInfo = userService.current(sessionid);
-        if (userInfo == null){
+        if (userInfo == null) {  //访客
             node.and("status", FilterExpress.NOTEQUAL, 30);
-        }else if (!userService.isAdmin(userInfo.getUserid())){
+        } else if (!userService.isAdmin(userInfo.getUserid())) { //非管理员
             node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", userInfo.getUserid())));
         }
         return contentService.contentQuery(flipper, node);
@@ -151,7 +148,7 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
      * TODO:帖子访客记录 --待完成
      */
     @RestMapping(ignore = true, comment = "帖子访客记录")
-    public Sheet<Map> readRecordAsync(Flipper flipper ,int contentid){
+    public Sheet<Map> readRecordAsync(Flipper flipper, int contentid) {
         /*Bson filter = eq("uri", "/jie/detail/"+ contentid);
 
         FindIterable<Document> documents = visLog.find(filter).limit(flipper.getLimit()).skip(flipper.getOffset());

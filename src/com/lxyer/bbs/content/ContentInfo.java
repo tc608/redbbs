@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * Created by Lxy at 2017/11/26 20:52.
  */
-public class ContentInfo implements UI<ContentInfo>,Serializable, CI {
+public class ContentInfo implements UI<ContentInfo>, Serializable, CI {
 
     private int contentid;
     private int userid;
@@ -161,6 +161,7 @@ public class ContentInfo implements UI<ContentInfo>,Serializable, CI {
 
     //-----------
     private UserRecord user;
+
     @ConvertColumn(ignore = true)
     @Override
     public UserRecord getUser() {

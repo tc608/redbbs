@@ -9,23 +9,29 @@ public interface UI<I extends UI> {
 
     //抽象方法
     int getUserid();
+
     UserRecord getUser();
+
     I setUser(UserRecord user);
 
     //默认实现方法
-    default String getRealname(){
+    default String getRealname() {
         return getUser() == null ? null : getUser().getRealname();
     }
-    default String getNickname(){
+
+    default String getNickname() {
         return getUser() == null ? null : getUser().getNickname();
     }
-    default String getSite(){
+
+    default String getSite() {
         return getUser() == null ? "" : getUser().getSite();
     }
-    default String getGit(){
+
+    default String getGit() {
         return getUser() == null ? "" : getUser().getGit();
     }
-    default String getAvatar(){
+
+    default String getAvatar() {
         return getUser() == null ? null : getUser().getAvatar();
     }
 }

@@ -17,11 +17,11 @@ public interface UIService<I extends UI> extends CService<I> {
     DataSource getSource();
 
     @RestMapping(ignore = true)
-    default Sheet<I> setIUser(Sheet<I> sheet){
+    default Sheet<I> setIUser(Sheet<I> sheet) {
         int[] userids = sheet.stream().mapToInt(I::getUserid).toArray();
 
         List<UserRecord> users = getSource().queryList(UserRecord.class, FilterNode.create("userid", FilterExpress.IN, userids));
-        sheet.forEach(x->{
+        sheet.forEach(x -> {
             UserRecord user = users.stream().filter(u -> u.getUserid() == x.getUserid()).findAny().orElse(null);
             x.setUser(user);
         });
@@ -29,7 +29,7 @@ public interface UIService<I extends UI> extends CService<I> {
     }
 
     @RestMapping(ignore = true)
-    default I setIUser(I i){
+    default I setIUser(I i) {
         UserRecord user = getSource().find(UserRecord.class, i.getUserid());
 
         return (I) i.setUser(user);

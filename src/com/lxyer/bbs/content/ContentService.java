@@ -7,9 +7,14 @@ import com.lxyer.bbs.base.iface.UIService;
 import com.lxyer.bbs.base.kit.RetCodes;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
-import org.redkale.net.http.*;
+import org.redkale.net.http.HttpScope;
+import org.redkale.net.http.RestMapping;
+import org.redkale.net.http.RestService;
 import org.redkale.service.RetResult;
-import org.redkale.source.*;
+import org.redkale.source.FilterExpress;
+import org.redkale.source.FilterFunc;
+import org.redkale.source.FilterNode;
+import org.redkale.source.Flipper;
 import org.redkale.util.Comment;
 import org.redkale.util.SelectColumn;
 import org.redkale.util.Sheet;
@@ -19,14 +24,14 @@ import javax.annotation.Resource;
 /**
  * Created by Lxy at 2017/11/26 9:33.
  */
-@RestService(automapping = true, comment = "文章帖子服务")
+@RestService(name = "content", comment = "文章帖子服务")
 public class ContentService extends BaseService implements UIService<ContentInfo> {
 
     @Resource
     protected UserService userService;
 
-    @RestMapping(ignore = true, comment = "根据条件查询帖子数据")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode){
+    @Comment("根据条件查询帖子数据")
+    public Sheet<ContentInfo> contentQuery(Flipper flipper, FilterNode filterNode) {
         Sheet<Content> contents = source.querySheet(Content.class, flipper, filterNode);
 
         createInfo(contents);
@@ -37,22 +42,31 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "query", auth = false, comment = "内容列表")
-    public Sheet<ContentInfo> contentQuery(Flipper flipper, String actived, String sessionid){
-        UserInfo current = userService.current(sessionid);
-        int currentid = current == null ? 0 : current.getUserid();
+    public Sheet<ContentInfo> query(Flipper flipper, String actived, UserInfo user) {
+        int userid = user == null ? 0 : user.getUserid();
 
         FilterNode filterNode = FilterNode.create("status", FilterExpress.NOTEQUAL, -10);
-        switch (actived){
-            case "top": filterNode.and("top", FilterExpress.GREATERTHANOREQUALTO, 20);break;
-            case "untop": filterNode.and("top", 10);break;
-            case "unsolved": filterNode.and("solved", 10);break;
-            case "solved": filterNode.and("solved", 20);break;
-            case "wonderful": filterNode.and("wonderful", FilterExpress.GREATERTHANOREQUALTO, 20);break;
+        switch (actived) {
+            case "top":
+                filterNode.and("top", FilterExpress.GREATERTHANOREQUALTO, 20);
+                break;
+            case "untop":
+                filterNode.and("top", 10);
+                break;
+            case "unsolved":
+                filterNode.and("solved", 10);
+                break;
+            case "solved":
+                filterNode.and("solved", 20);
+                break;
+            case "wonderful":
+                filterNode.and("wonderful", FilterExpress.GREATERTHANOREQUALTO, 20);
+                break;
         }
 
-        if (!userService.isAdmin(currentid)){//私密贴：非管理员限制查看
-            filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", currentid)));
-        }else if (currentid <= 0){//私密贴：未登录限制查看
+        if (!userService.isAdmin(userid)) {//私密贴：非管理员限制查看
+            filterNode.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", userid)));
+        } else if (userid <= 0) {//私密贴：未登录限制查看
             filterNode.and("status", FilterExpress.NOTEQUAL, 30);
         }
 
@@ -61,25 +75,25 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
 
     @RestMapping(name = "save", comment = "帖子保存")
-    public RetResult contentSave(@RestParam(name = "bean")Content content, @RestSessionid String sessionid){
+    public RetResult save(UserInfo user, Content bean) {
         //数据校验
-        if (content.getTitle().isEmpty() || content.getTitle().length() > 64){
+        if (bean.getTitle().isEmpty() || bean.getTitle().length() > 64) {
             return RetCodes.retResult(-1, "少年你的文章标题太长啦，精简化标题吧，为了更好的SEO长度请少于64个字节");
         }
 
-        int userid = currentUserid(sessionid);
+        int userid = user.getUserid();
 
-        if (content.getContentid() < 1){
-            int maxId = source.getNumberResult(Content.class, FilterFunc.MAX,  10_0000, "contentid").intValue();
-            content.setContentid(maxId+1);
-            content.setCreatetime(System.currentTimeMillis());
-            content.setUserid(userid);
+        if (bean.getContentid() < 1) {
+            int maxId = source.getNumberResult(Content.class, FilterFunc.MAX, 10_0000, "contentid").intValue();
+            bean.setContentid(maxId + 1);
+            bean.setCreatetime(System.currentTimeMillis());
+            bean.setUserid(userid);
 
-            source.insert(content);
-        }else {
-            source.findAsync(Content.class, content.getContentid()).thenAccept(x->{
-                if (x.getUserid() == userid || userService.isAdmin(userid)){//身份验证 后修改内容
-                    source.updateColumnAsync(content,SelectColumn.includes("title", "digest", "content","type", "status"));
+            source.insert(bean);
+        } else {
+            source.findAsync(Content.class, bean.getContentid()).thenAccept(x -> {
+                if (x.getUserid() == userid || userService.isAdmin(userid)) {//身份验证 后修改内容
+                    source.updateColumnAsync(bean, SelectColumn.includes("title", "digest", "content", "type", "status"));
                 }
             });
         }
@@ -88,8 +102,8 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "info", auth = false, comment = "帖子详情")
-    public ContentInfo contentInfo(@RestSessionid String sessionid, int contentid){
-        int userId = userService.currentUserid(sessionid);
+    public ContentInfo info(UserInfo user, int contentid) {
+        int userId = user != null ? user.getUserid() : 0;
 
         Content content = source.find(Content.class, contentid);
         if (content == null) return null;
@@ -97,7 +111,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         ContentInfo contentInfo = setIUser(content.createInfo());
 
         //收藏状态
-        if (userId > 0){
+        if (userId > 0) {
             ActLog actLog = source.find(ActLog.class, FilterNode.create("cate", 20).and("tid", contentid).and("status", 10));
             if (actLog != null) contentInfo.setHadcollect(1);
         }
@@ -105,19 +119,19 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "collect", comment = "帖子收藏")
-    public RetResult collect(@RestSessionid String sessionid, int contentid, int ok){
-        int userid = userService.currentUserid(sessionid);//不会为空
+    public RetResult collect(UserInfo user, int contentid, int ok) {
+        int userid = user.getUserid();
 
         ActLog actLog = source.find(ActLog.class, FilterNode.create("userid", userid).and("tid", contentid).and("cate", 20));
-        if (actLog == null && ok == 1){
+        if (actLog == null && ok == 1) {
             actLog = new ActLog(20, contentid, userid);//.cate(2).tid(contentId).userId(userId);
             actLog.setCreatetime(System.currentTimeMillis());
             source.insert(actLog);
-        }else if (actLog != null && actLog.getStatus() != ok){
+        } else if (actLog != null && actLog.getStatus() != ok) {
             actLog.setStatus((short) ok);
             actLog.setCreatetime(System.currentTimeMillis());
             source.update(actLog);
-        }else {
+        } else {
             return RetCodes.retResult(-1, ok == 1 ? "已收藏" : "已取消收藏");
         }
 
@@ -125,11 +139,9 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "collectquery", comment = "收藏列表")
-    public Sheet<ContentInfo> collectQuery(@RestSessionid String sessionid){
-        int userid = currentUserid(sessionid);
-
+    public Sheet<ContentInfo> collectQuery(UserInfo user) {
         Flipper flipper = new Flipper().sort("createtime DESC");
-        FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", userid);
+        FilterNode filterNode = FilterNode.create("cate", 20).and("status", 10).and("userid", user.getUserid());
         Sheet<ActLog> actLogs = source.querySheet(ActLog.class, SelectColumn.includes("tid", "createtime"), flipper, filterNode);
 
         int[] contentids = actLogs.stream().mapToInt(x -> x.getTid()).toArray();
@@ -141,27 +153,27 @@ public class ContentService extends BaseService implements UIService<ContentInfo
     }
 
     @RestMapping(name = "set", comment = "便捷的修改内容")
-    public RetResult contentSet(@RestSessionid String sessionid,
+    public RetResult contentSet(UserInfo user,
                                 @Comment("帖子id") int id,
                                 @Comment("status|top|wonderful") String field,
-                                @Comment("目标修改值")short v){
-        //只有管理员可访问
-        int userid = currentUserid(sessionid);
+                                @Comment("目标修改值") short v) {
+        int userid = user.getUserid();
+
         //身份验证 后修改内容
         source.findAsync(Content.class, id).thenAccept(content -> {
-            if (content.getUserid() == userid && userService.isAdmin(userid)){//管理员可以做更多
+            if (userService.isAdmin(userid)) {//管理员可以做更多
                 //field: status|top|wonderful
                 // update content set {field}={v} where id={id}
                 source.updateColumn(Content.class, id, field, v);
-            }else if (content.getUserid() == userid && ("status".equals(field))){//非管理员只能修改状态
+            } else if (content.getUserid() == userid && ("status".equals(field))) {//非管理员只能修改状态
                 source.updateColumn(Content.class, id, field, v);
             }
         });
         return RetResult.success();
     }
 
-    @RestMapping(name = "t",auth = false, comment = "测试HttpScope 模板使用")
-    public HttpScope t(@RestSessionid String sessionid){
+    @RestMapping(name = "t", auth = false, comment = "测试HttpScope 模板使用")
+    public HttpScope t(UserInfo user) {
         ContentService contentService = this;
         Flipper flipper = new Flipper().limit(30).sort("top DESC,createtime DESC");
         //置顶贴
@@ -174,7 +186,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
         //热议
         Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
-        Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);
+        Sheet<ContentInfo> hotReply = contentService.query(flipper3, "", user);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();

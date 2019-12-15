@@ -1,25 +1,23 @@
 package com.lxyer.bbs.comment;
 
-import javax.persistence.*;
-
-import com.lxyer.bbs.base.UF;
 import com.lxyer.bbs.base.iface.C;
-import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.kit.LxyKit;
-import org.redkale.convert.json.*;
+import org.redkale.convert.json.JsonConvert;
 
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
- *
  * @author lxyer
  */
-@Cacheable(interval = 5*60)
+@Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_comment", comment = "[评论表]")
 public class Comment implements Serializable, C<CommentInfo> {
 
     @Id
-    @GeneratedValue
     @Column(comment = "[评论id]")
     private int commentid;
 
@@ -124,7 +122,7 @@ public class Comment implements Serializable, C<CommentInfo> {
         return JsonConvert.root().convertTo(this);
     }
 
-    public CommentInfo createInfo(){
+    public CommentInfo createInfo() {
         CommentInfo info = new CommentInfo();
         info.setCommentid(commentid);
         info.setUserid(userid);

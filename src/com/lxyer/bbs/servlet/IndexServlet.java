@@ -1,6 +1,7 @@
 package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
+
 import com.lxyer.bbs.base.BaseServlet;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.comment.CommentInfo;
@@ -17,11 +18,11 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet(value = {"/","/project"}, comment = "首页一级菜单入口")
+@WebServlet(value = {"/", "/project" /* ,"/article","/article/*" */}, comment = "首页一级菜单入口")
 public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
-    public void abc(HttpRequest request, HttpResponse response){
+    public void abc(HttpRequest request, HttpResponse response) {
 
         String sessionid = request.getSessionid(false);
 
@@ -42,7 +43,7 @@ public class IndexServlet extends BaseServlet {
         /*Flipper flipper3 = new Flipper().limit(8).sort("replynum DESC");
         Sheet<ContentInfo> hotReply = contentService.contentQuery(flipper3, "", sessionid);*/
 
-        Sheet<ContentInfo> hotView = Sheet.empty();//logQueue.hotView(sessionid); TODO: 依赖日志记录，需记录日志后可使用
+        Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
 
         //最新加入
         Sheet<UserInfo> lastReg = userService.lastReg();
@@ -55,7 +56,7 @@ public class IndexServlet extends BaseServlet {
     }
 
     @HttpMapping(url = "/site", auth = false, comment = "网站首页")
-    public void site(HttpRequest request, HttpResponse response){
+    public void site(HttpRequest request, HttpResponse response) {
 
         response.finish(HttpScope.refer("/site.html"));
     }
@@ -69,12 +70,13 @@ public class IndexServlet extends BaseServlet {
 
     //====================================项目相关====================================
     @HttpMapping(url = "/project", auth = false, comment = "项目首页")
-    public void  project(HttpRequest request, HttpResponse response){
+    public void project(HttpRequest request, HttpResponse response) {
         String sessionid = request.getSessionid(false);
+        UserInfo user = userService.current(sessionid);
         int contentid = 22;
 
-        ContentInfo content = contentService.contentInfo(sessionid, contentid);
-        Sheet<CommentInfo> comments = commentService.commentQuery(sessionid,contentid, new Flipper().limit(30));
+        ContentInfo content = contentService.info(user, contentid);
+        Sheet<CommentInfo> comments = commentService.query(user, contentid, new Flipper().limit(30));
 
         Kv kv = Kv.by("bean", content).set("comments", comments);
         response.finish(HttpScope.refer("/project/index.html").attr(kv));

@@ -55,7 +55,6 @@ public abstract class RetCodes {
     public static final int RET_COMMENT_PARA_ILLEGAL = 3004_0002;
 
 
-
     public static RetResult retResult(int retcode) {
         return new RetResult(retcode);
     }
