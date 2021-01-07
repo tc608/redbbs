@@ -1,6 +1,5 @@
 package com.lxyer.bbs.base;
 
-import com.arangodb.Predicate;
 import org.redkale.net.http.RestMapping;
 import org.redkale.service.Service;
 import org.redkale.source.CacheSource;
@@ -11,6 +10,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Created by Lxy at 2017/10/3 13:50.
@@ -18,9 +18,6 @@ import java.util.Map;
 public class BaseService implements Service {
 
     protected final int sessionExpireSeconds = 7 * 24 * 60 * 60;
-
-    @Resource(name = "property.isDev")
-    public boolean isDev = true;
 
     @Resource(name = "SERVER_ROOT")
     protected File webroot;

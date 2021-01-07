@@ -3,6 +3,7 @@ package com.lxyer.bbs.servlet;
 import com.lxyer.bbs.base.BaseServlet;
 import org.redkale.net.http.*;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,9 +18,11 @@ import java.util.Map;
 @WebServlet(value = {"/upload", "/upload/*"}, comment = "文件管理入口")
 public class FileServlet extends BaseServlet {
 
-    private static final String dir = "/var/www/upload/redbbs/";
-    private static final String view = "http://img.1216.top/redbbs/";
-    private static final String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
+    @Resource(name = "property.file.upload_dir")
+    private String dir = "";
+    @Resource(name = "property.file.view_path")
+    private String view = "";
+    private String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
 
     @HttpMapping(url = "/upload/img", auth = false, comment = "图片上传")
     public void uploadImg(HttpRequest request, HttpResponse response) {
@@ -32,12 +35,12 @@ public class FileServlet extends BaseServlet {
                 String name = part.getName();
                 String suffix = name.substring(name.lastIndexOf("."));
                 String path = String.format(format, System.currentTimeMillis()) + suffix;
-                File destFile = new File((winos ? "E:/wk/own/redbbs/root/tem/" : dir) + path);
+                File destFile = new File(dir + path);
                 destFile.getParentFile().mkdir();
 
                 part.save(destFile);
 
-                data.add((winos ? "/tem/" : view) + path);
+                data.add(view + path);
             }
             ret.put("data", data);
 

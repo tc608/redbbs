@@ -1,15 +1,3 @@
------------ mongo conf ----------
-mongo.host=127.0.0.1
-mongo.port=27017
-mongo.database=redbbs
-
------------ arango conf ----------
-arango.host=120.24.230.60
-arango.port=8529
-arango.database=redbbs
-arango.user=root
-arango.password=root
-
 ----------- file conf ----------
-file.upload_dir=D:/wk/_os/redbbs/root/file_pub/
+file.upload_dir=./root/file_pub/
 file.view_path=http://127.0.0.1/file_pub/

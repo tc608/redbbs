@@ -1,8 +1,6 @@
 package com.lxyer.bbs.base;
 
-import com.lxyer.bbs.base.entity.Count;
 import com.lxyer.bbs.base.entity.VisLog;
-import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserService;
 import com.lxyer.bbs.content.Content;
 import com.lxyer.bbs.content.ContentInfo;
@@ -10,17 +8,14 @@ import com.lxyer.bbs.content.ContentService;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestService;
 import org.redkale.source.ColumnValue;
-import org.redkale.source.FilterExpress;
-import org.redkale.source.FilterNode;
 import org.redkale.source.Flipper;
+import org.redkale.util.AnyValue;
 import org.redkale.util.Comment;
 import org.redkale.util.Sheet;
-import org.redkale.util.Utility;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Function;
 
 /**
  * Created by liangxianyou at 2018/6/20 22:54.
@@ -34,6 +29,25 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     private UserService userService;
 
     protected static LinkedBlockingQueue queue = new LinkedBlockingQueue();
+
+    @Override
+    public void init(AnyValue config) {
+
+        // 独立线程，用户访问行为记录到数据库
+        new Thread(() -> {
+            while (true) {
+                try {
+                    T task = take();
+                    //记录访问日志，如果是访问的文章详情：对文章访问数量更新
+                    if (task instanceof VisLog) {
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     public TaskQueue() {
         new Thread(this).start();
@@ -50,32 +64,12 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
     }
 
     @Override
-    @RestMapping(ignore = true, comment = "独立线程，用户访问行为记录到数据库")
+    @RestMapping(ignore = true, comment = "")
     public void run() {
-        do {
-            try {
-                T task = take();
 
-                //记录访问日志，如果是访问的文章详情：对文章访问数量更新
-                if (task instanceof VisLog) {
-                    //System.out.println(task);
-                    ArangoService.save(task).thenAcceptAsync((_task) -> {
-                        VisLog visLog = (VisLog) _task;
-                        //[访问量]
-                        String uri = visLog.getUri();
-                        if (uri != null && uri.startsWith("/jie/detail/")) {
-                            updateViewNum(visLog);
-                        }
-                    });
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } while (true);
     }
 
-    @Comment("帖子阅读数处理")
+    /*@Comment("帖子阅读数处理")
     private void updateViewNum(VisLog visLog) {
 
         String aql = String.format("for d in vis_log_dev\n" +
@@ -90,11 +84,11 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
             int contentid = Integer.parseInt(uri.replace("/jie/detail/", ""));
             source.updateColumn(Content.class, contentid, ColumnValue.inc("viewnum", 1));
         }
-    }
+    }*/
 
     @RestMapping(ignore = true, comment = "访问热帖数据")
     public Sheet<ContentInfo> hotView(String sessionid) {
-        int limit = 8;
+        /*int limit = 8;
         String cacheKey = "hotView";
         Object ids = cacheSource.get(cacheKey);
         if (isEmpty.test(ids)) {
@@ -141,7 +135,9 @@ public class TaskQueue<T extends Object> extends BaseService implements Runnable
         } else if (!userService.isAdmin(userInfo.getUserid())) { //非管理员
             node.and(FilterNode.create("status", FilterExpress.NOTEQUAL, 30).or(FilterNode.create("status", 30).and("userid", userInfo.getUserid())));
         }
-        return contentService.contentQuery(flipper, node);
+        return contentService.contentQuery(flipper, node);*/
+
+        return Sheet.empty();
     }
 
     /**
