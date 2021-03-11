@@ -2,7 +2,7 @@
 
 <application port="5002">
     <resources>
-        <!-- 如果需要使用redis,此处配置  -->
+        <!-- 如果需要使用redis,此处配置（需要导入 redkale-plugin）  -->
         <!--<source name="redis" value="org.redkalex.cache.RedisCacheSource" xxx="16">
             <node addr="redishost" port="6379" password="pwd123"/>
         </source>-->

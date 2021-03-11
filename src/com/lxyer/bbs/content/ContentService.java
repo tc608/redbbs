@@ -103,7 +103,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
 
     @RestMapping(name = "info", auth = false, comment = "帖子详情")
     public ContentInfo info(UserInfo user, int contentid) {
-        int userId = user != null ? user.getUserid() : 0;
+        int userid = user != null ? user.getUserid() : 0;
 
         Content content = source.find(Content.class, contentid);
         if (content == null) return null;
@@ -111,7 +111,7 @@ public class ContentService extends BaseService implements UIService<ContentInfo
         ContentInfo contentInfo = setIUser(content.createInfo());
 
         //收藏状态
-        if (userId > 0) {
+        if (userid > 0) {
             ActLog actLog = source.find(ActLog.class, FilterNode.create("cate", 20).and("tid", contentid).and("status", 10));
             if (actLog != null) contentInfo.setHadcollect(1);
         }

@@ -18,11 +18,11 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 /**
  * Created by Lxy at 2017/11/25 12:31.
  */
-@WebServlet(value = {"/", "/project" /* ,"/article","/article/*" */}, comment = "首页一级菜单入口")
+@WebServlet(value = {"/", "/project"}, comment = "首页一级菜单入口")
 public class IndexServlet extends BaseServlet {
 
     @HttpMapping(url = "/", auth = false, comment = "社区首页")
-    public void abc(HttpRequest request, HttpResponse response) {
+    public void index(HttpRequest request, HttpResponse response) {
 
         String sessionid = request.getSessionid(false);
 
