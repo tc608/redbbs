@@ -2,12 +2,9 @@ package com.lxyer.bbs.base.user;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseService;
-import com.lxyer.bbs.base.kit.LxyKit;
+import com.lxyer.bbs.base.Utils;
 import com.lxyer.bbs.base.kit.RetCodes;
-import org.redkale.net.http.RestMapping;
-import org.redkale.net.http.RestParam;
-import org.redkale.net.http.RestService;
-import org.redkale.net.http.RestSessionid;
+import org.redkale.net.http.*;
 import org.redkale.service.RetResult;
 import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterFunc;
@@ -21,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import static com.lxyer.bbs.base.kit.RetCodes.*;
+import static com.lxyer.bbs.base.kit.RetCodes.RET_USER_ACCOUNT_PWD_ILLEGAL;
 
 /**
  * Created by Lxy at 2017/10/3 14:02.
@@ -31,11 +28,13 @@ public class UserService extends BaseService {
 
     @RestMapping(auth = false, comment = "登录校验")
     public RetResult<UserInfo> login(LoginBean bean) {
-        if (bean == null || bean.emptyUsername()) return RetCodes.retResult(RetCodes.RET_PARAMS_ILLEGAL, "参数错误");
+        if (bean == null || bean.emptyUsername()) {
+            return retError("参数错误");
+        }
 
         final RetResult retResult = new RetResult();
 
-        UserRecord user = source.find(UserRecord.class, "username", bean.getUsername());
+        UserRecord user = dataSource.find(UserRecord.class, "username", bean.getUsername());
         if (user == null || !Objects.equals(user.getPassword(), bean.getPassword())) {
             //log(null, 0, "用户或密码错误");
             return RetCodes.retResult(RET_USER_ACCOUNT_PWD_ILLEGAL, "用户名或密码错误");
@@ -48,7 +47,9 @@ public class UserService extends BaseService {
     }
 
     public UserInfo current(String sessionid) {
-        if (sessionid == null) return null;
+        if (sessionid == null) {
+            return null;
+        }
 
         long userid = 0;
         try {
@@ -57,12 +58,17 @@ public class UserService extends BaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return userid == 0 ? null : find((int) userid);
+
+        if (userid == 0) {
+            return null;
+        }
+        UserInfo info = find((int) userid);
+        return info;
     }
 
     @RestMapping(name = "info", comment = "用户信息")
     public UserInfo find(int userid) {
-        UserRecord user = source.find(UserRecord.class, userid);
+        UserRecord user = dataSource.find(UserRecord.class, userid);
         UserInfo bean = user.createUserInfo();
         return bean;
     }
@@ -77,31 +83,36 @@ public class UserService extends BaseService {
 
     @RestMapping(name = "query", auth = false, comment = "用户数据查询")
     public Sheet<UserRecord> query(Flipper flipper, @RestParam(name = "bean", comment = "过滤条件") final UserBean userBean) {
-        Sheet<UserRecord> users = source.querySheet(UserRecord.class, flipper, userBean);
+        Sheet<UserRecord> users = dataSource.querySheet(UserRecord.class, flipper, userBean);
 
         return users;
     }
 
     @RestMapping(name = "changepwd", comment = "修改密码")
-    public RetResult updatePwd(UserInfo user, String pass, String nowpass) {
-
-        if (!Objects.equals(user.getPassword(), UserRecord.md5IfNeed(nowpass)))
-            return RetCodes.retResult(RET_USER_ACCOUNT_PWD_ILLEGAL, "密码错误");
-        if (pass == null || pass.length() < 6 || Objects.equals(pass, nowpass))
-            return RetCodes.retResult(RET_USER_PASSWORD_ILLEGAL, "密码设置无效");
-        source.updateColumn(UserRecord.class, user.getUserid(), "password", UserRecord.md5IfNeed(pass));
+    public RetResult updatePwd(@RestUserid int userid, String pass, String nowpass) {
+        UserInfo user = find(userid);
+        if (!Objects.equals(user.getPassword(), UserRecord.md5IfNeed(nowpass))) {
+            return retError("密码错误");
+        }
+        if (pass == null || pass.length() < 6 || Objects.equals(pass, nowpass)) {
+            return retError("密码设置无效");
+        }
+        dataSource.updateColumn(UserRecord.class, user.getUserid(), "password", UserRecord.md5IfNeed(pass));
         return RetResult.success();
     }
 
     @RestMapping(name = "register", auth = false, comment = "用户注册")
     public RetResult register(UserRecord bean) {
         /*用户名、密码、邮箱*/
-        if (bean.getEmail() == null) return RetCodes.retResult(RET_USER_EMAIL_ILLEGAL, "邮件地址无效");
-        if (bean.getPassword() == null || bean.getPassword().length() < 6)
-            return RetCodes.retResult(RET_USER_PASSWORD_ILLEGAL, "密码设置无效");
-
-        UserRecord _user = source.find(UserRecord.class, FilterNode.create("email", bean.getEmail()));
-        if (_user != null) return RetCodes.retResult(RET_USER_USERNAME_EXISTS, "用户名已存在");
+        if (bean.getEmail() == null) {
+            return retError("邮件地址无效");
+        }
+        if (bean.getPassword() == null || bean.getPassword().length() < 6) {
+            return retError("密码设置无效");
+        }
+        if (dataSource.exists(UserRecord.class, FilterNode.create("email", bean.getEmail()))) {
+            return retError("用户名已存在");
+        }
 
         bean.setCreatetime(System.currentTimeMillis());
         bean.setPassword(bean.passwordForMd5());
@@ -109,29 +120,35 @@ public class UserService extends BaseService {
         bean.setUsername(bean.getEmail());
         bean.setAvatar("/res/images/avatar/" + new Random().nextInt(21) + ".jpg");//默认头像
 
-        int maxId = source.getNumberResult(UserRecord.class, FilterFunc.MAX, 10_0000, "userid").intValue();
-        if (maxId < 10_0000) maxId = 10_0000;
-        bean.setUserid(maxId + 1);
-        source.insert(bean);
+        synchronized (this) {
+            int maxid = dataSource.getNumberResult(UserRecord.class, FilterFunc.MAX, 10_0000, "userid").intValue();
+            if (maxid < 10_0000) {
+                maxid = 10_0000;
+            }
+            bean.setUserid(maxid + 1);
+        }
+        dataSource.insert(bean);
 
         //记录日志
         return RetResult.success();
     }
 
     @RestMapping(name = "update", comment = "用户信息修改")
-    public RetResult userUpdate(UserInfo user, UserRecord bean, String[] columns) {
+    public RetResult userUpdate(@RestUserid int userid, UserRecord bean, String[] columns) {
         String nickname = bean.getNickname();
-        if (nickname == null && nickname.isEmpty())
-            return RetCodes.retResult(RET_USER_NICKNAME_ILLEGAL, "昵称无效");
+        if (nickname == null && nickname.isEmpty()) {
+            return retError("昵称无效");
+        }
 
         nickname = nickname.replace(" ", "");
-        UserRecord _user = source.find(UserRecord.class, FilterNode.create("nickname", nickname));
-        if (_user != null && _user.getUserid() != user.getUserid())
-            return RetCodes.retResult(RET_USER_NICKNAME_EXISTS, "昵称已存在");
+        FilterNode node = FilterNode.create("nickname", nickname).and("userid", FilterExpress.NOTEQUAL, userid);
+        if (dataSource.exists(UserRecord.class, node)) {
+            return retError("昵称已存在");
+        }
 
         bean.setNickname(nickname);//去除昵称中的空格
-        source.updateColumn(bean
-                , FilterNode.create("userid", user.getUserid())
+        dataSource.updateColumn(bean
+                , FilterNode.create("userid", userid)
                 , SelectColumn.includes(columns)
         );
         return RetResult.success();
@@ -139,7 +156,7 @@ public class UserService extends BaseService {
 
     //最新加入
     public Sheet<UserInfo> lastReg() {
-        Sheet<UserRecord> users = source.querySheet(UserRecord.class
+        Sheet<UserRecord> users = dataSource.querySheet(UserRecord.class
                 , SelectColumn.includes("userid", "nickname", "avatar", "createtime")
                 , new Flipper().sort("createtime DESC").limit(8)
                 , FilterNode.create("status", 10));
@@ -149,7 +166,7 @@ public class UserService extends BaseService {
 
         users.forEach(x -> {
             UserInfo info = x.createUserInfo();
-            info.setTime(LxyKit.dateFmt(x.getCreatetime()));
+            info.setTime(Utils.dateFmt(x.getCreatetime()));
             list.add(info);
         });
 
@@ -161,14 +178,16 @@ public class UserService extends BaseService {
 
     @RestMapping(name = "usercount", auth = false, comment = "用户数据统计")
     public Number userCount() {
-        return source.getNumberResult(UserRecord.class, FilterFunc.COUNT, "userid", FilterNode.create("status", FilterExpress.NOTEQUAL, -10));
+        return dataSource.getNumberResult(UserRecord.class, FilterFunc.COUNT, "userid", FilterNode.create("status", FilterExpress.NOTEQUAL, -10));
     }
 
     @RestMapping(ignore = true, comment = "判断用户是否是管理员")
     public boolean isAdmin(int userid) {
-        if (userid <= 0) return false;
+        if (userid <= 0) {
+            return false;
+        }
 
-        List<Integer> userIds = source.queryColumnList("userid", UserRecord.class, FilterNode.create("roleid", 1));
+        List<Integer> userIds = dataSource.queryColumnList("userid", UserRecord.class, FilterNode.create("roleid", 1));
         for (Integer x : userIds) {
             if (userid == x) {
                 return true;

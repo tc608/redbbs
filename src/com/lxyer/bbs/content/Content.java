@@ -1,8 +1,8 @@
 package com.lxyer.bbs.content;
 
 import com.jfinal.kit.Kv;
+import com.lxyer.bbs.base.Utils;
 import com.lxyer.bbs.base.iface.C;
-import com.lxyer.bbs.base.kit.LxyKit;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Cacheable;
@@ -197,7 +197,7 @@ public class Content implements Serializable, C<ContentInfo> {
         info.setStatus(status);
 
         info.setTypename(types.getOrDefault((int) type, "其他").toString());
-        info.setCreatetime(LxyKit.dateFmt(createtime));
+        info.setCreatetime(Utils.dateFmt(createtime));
         return info;
     }
 }

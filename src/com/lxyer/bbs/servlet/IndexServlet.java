@@ -1,10 +1,9 @@
 package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
-
 import com.lxyer.bbs.base.BaseServlet;
 import com.lxyer.bbs.base.user.UserInfo;
-import com.lxyer.bbs.comment.CommentInfo;
+import com.lxyer.bbs.comment.CommentBean;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterNode;
@@ -71,12 +70,11 @@ public class IndexServlet extends BaseServlet {
     //====================================项目相关====================================
     @HttpMapping(url = "/project", auth = false, comment = "项目首页")
     public void project(HttpRequest request, HttpResponse response) {
-        String sessionid = request.getSessionid(false);
-        UserInfo user = userService.current(sessionid);
+        Integer userid = request.currentUserid(int.class);
         int contentid = 22;
 
-        ContentInfo content = contentService.info(user, contentid);
-        Sheet<CommentInfo> comments = commentService.query(user, contentid, new Flipper().limit(30));
+        ContentInfo content = contentService.info(userid, contentid);
+        Sheet<CommentBean> comments = commentService.query(userid, contentid, new Flipper().limit(30));
 
         Kv kv = Kv.by("bean", content).set("comments", comments);
         response.finish(HttpScope.refer("/project/index.html").attr(kv));

@@ -5,7 +5,7 @@ import com.lxyer.bbs.base.BaseServlet;
 import com.lxyer.bbs.base.user.UserBean;
 import com.lxyer.bbs.base.user.UserInfo;
 import com.lxyer.bbs.base.user.UserRecord;
-import com.lxyer.bbs.comment.CommentInfo;
+import com.lxyer.bbs.comment.CommentBean;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterExpress;
@@ -46,6 +46,7 @@ public class UserServlet extends BaseServlet {
 
     @HttpMapping(url = "/user", auth = false, comment = "用户首页")
     public void user(HttpRequest request, HttpResponse response) {
+        Integer userid = request.currentUserid(int.class);
         String para = getPara(request);
 
         //-------个人中心---------
@@ -63,7 +64,7 @@ public class UserServlet extends BaseServlet {
             Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, node));//queryByBean(flipper, bean);
 
             //收藏的帖子
-            Sheet<ContentInfo> collects = contentService.collectQuery(user);
+            Sheet<ContentInfo> collects = contentService.collectQuery(userid);
 
             Kv kv = Kv.by("contents", contents).set("collects", collects);
             response.finish(HttpScope.refer("/user/index.html").attr(kv));
@@ -71,7 +72,6 @@ public class UserServlet extends BaseServlet {
         }
 
         //-------用户主页------
-        int userid = 0;
         if ("nick".equals(para)) {//通过@ 点击跳转
             String nickname = request.getParameter("nickname");
             UserBean userBean = new UserBean();
@@ -93,7 +93,7 @@ public class UserServlet extends BaseServlet {
         Sheet<ContentInfo> contents = contentService.contentQuery(flipper, setPrivate(request, node));
 
         //回复
-        Sheet<CommentInfo> comments = commentService.queryByUserid(userid);
+        Sheet<CommentBean> comments = commentService.queryByUserid(userid);
 
         Kv kv = Kv.by("contents", contents).set("user", user).set("comments", comments);
         response.finish(HttpScope.refer("/user/home.html").attr(kv));

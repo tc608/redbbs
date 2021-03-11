@@ -1,18 +1,23 @@
 package com.lxyer.bbs.comment;
 
-import com.lxyer.bbs.base.iface.CI;
-import com.lxyer.bbs.base.iface.UI;
-import com.lxyer.bbs.base.user.UserRecord;
+import com.lxyer.bbs.base.Utils;
+import com.lxyer.bbs.base.iface.C;
 import org.redkale.convert.json.JsonConvert;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * @author lxyer
  */
-public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInfo> {
+@Cacheable(interval = 5 * 60)
+@Table(catalog = "redbbs", name = "sys_comment", comment = "[评论表]")
+public class CommentInfo implements Serializable, C<CommentBean> {
 
+    @Id
     @Column(comment = "[评论id]")
     private int commentid;
 
@@ -23,7 +28,7 @@ public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInf
     private int pid;
 
     @Column(comment = "[评论的类型]")
-    private int cate;
+    private short cate = 1;
 
     @Column(comment = "[被评论内容的id]")
     private int contentid;
@@ -31,19 +36,14 @@ public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInf
     @Column(comment = "[评论内容]")
     private String content = "";
 
+    @Column(updatable = false, comment = "[创建时间]")
+    private long createtime;
+
     @Column(comment = "[支持数]")
     private int supportnum;
 
     @Column(comment = "[状态]1正常，-1删除")
-    private int status = 1;
-
-
-    private String createtime;
-
-    private CommentInfo pCommentInfo;
-
-    private String title;
-    private int hadsupport = -1;
+    private short status = 10;
 
     public void setCommentid(int commentid) {
         this.commentid = commentid;
@@ -61,20 +61,20 @@ public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInf
         return this.userid;
     }
 
-    public int getPid() {
-        return pid;
-    }
-
     public void setPid(int pid) {
         this.pid = pid;
     }
 
-    public int getCate() {
-        return cate;
+    public int getPid() {
+        return this.pid;
     }
 
-    public void setCate(int cate) {
+    public void setCate(short cate) {
         this.cate = cate;
+    }
+
+    public short getCate() {
+        return this.cate;
     }
 
     public void setContentid(int contentid) {
@@ -85,60 +85,36 @@ public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInf
         return this.contentid;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    public int getSupportnum() {
-        return supportnum;
+    public String getContent() {
+        return this.content;
+    }
+
+    public void setCreatetime(long createtime) {
+        this.createtime = createtime;
+    }
+
+    public long getCreatetime() {
+        return this.createtime;
     }
 
     public void setSupportnum(int supportnum) {
         this.supportnum = supportnum;
     }
 
-    public void setStatus(int status) {
+    public int getSupportnum() {
+        return this.supportnum;
+    }
+
+    public void setStatus(short status) {
         this.status = status;
     }
 
-    public int getStatus() {
+    public short getStatus() {
         return this.status;
-    }
-
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
-    public CommentInfo getpCommentInfo() {
-        return pCommentInfo;
-    }
-
-    public void setpCommentInfo(CommentInfo pCommentInfo) {
-        this.pCommentInfo = pCommentInfo;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getHadsupport() {
-        return hadsupport;
-    }
-
-    public void setHadsupport(int hadsupport) {
-        this.hadsupport = hadsupport;
     }
 
     @Override
@@ -146,17 +122,18 @@ public class CommentInfo implements UI<CommentInfo>, Serializable, CI<CommentInf
         return JsonConvert.root().convertTo(this);
     }
 
-    //----
-    private UserRecord user;
+    public CommentBean createInfo() {
+        CommentBean info = new CommentBean();
+        info.setCommentid(commentid);
+        info.setUserid(userid);
+        info.setPid(pid);
+        info.setCate(cate);
+        info.setContentid(contentid);
+        info.setContent(content);
+        info.setSupportnum(supportnum);
+        info.setStatus(status);
 
-    @Override
-    public UserRecord getUser() {
-        return user;
-    }
-
-    @Override
-    public CommentInfo setUser(UserRecord user) {
-        this.user = user;
-        return this;
+        info.setCreatetime(Utils.dateFmt(createtime));
+        return info;
     }
 }

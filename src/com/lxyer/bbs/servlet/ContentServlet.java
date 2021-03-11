@@ -2,8 +2,7 @@ package com.lxyer.bbs.servlet;
 
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.BaseServlet;
-import com.lxyer.bbs.base.user.UserInfo;
-import com.lxyer.bbs.comment.CommentInfo;
+import com.lxyer.bbs.comment.CommentBean;
 import com.lxyer.bbs.content.ContentInfo;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterNode;
@@ -20,14 +19,14 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 public class ContentServlet extends BaseServlet {
     @HttpMapping(url = "/jie", auth = false, comment = "问答列表")
     public void jie(HttpRequest request, HttpResponse response) {
+        Integer userid = request.currentUserid(int.class);
+
         String actived = getPara(request, 0, "all");
         int curr = request.getIntParameter("curr", 1);
 
-        UserInfo user = userService.current(request.getSessionid(false));
-
         //分页帖子列表
         Flipper flipper = new Flipper().offset((curr - 1) * 15).limit(15).sort("top DESC,createtime DESC");
-        Sheet<ContentInfo> contents = contentService.query(flipper, actived, user);
+        Sheet<ContentInfo> contents = contentService.query(userid, flipper, actived);
 
         Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI())
                 .set("actived", actived).set("curr", curr);
@@ -39,12 +38,10 @@ public class ContentServlet extends BaseServlet {
     @HttpParam(name = "#", type = int.class, comment = "内容ID")
     public void add(HttpRequest request, HttpResponse response) {
         int contentid = getParaToInt(request, 0);
-        String sessionid = request.getSessionid(false);
-        UserInfo user = userService.current(sessionid);
-
+        Integer userid = request.currentUserid(int.class);
         ContentInfo contentInfo = null;
         if (contentid > 0) {
-            contentInfo = contentService.info(user, contentid);
+            contentInfo = contentService.info(userid, contentid);
         }
 
         Kv kv = Kv.by("bean", contentInfo);
@@ -55,10 +52,10 @@ public class ContentServlet extends BaseServlet {
     public void detail(HttpRequest request, HttpResponse response) {
         int contentid = getParaToInt(request, 0);
         String sessionid = request.getSessionid(false);
-        UserInfo user = userService.current(sessionid);
+        Integer userid = request.currentUserid(int.class);
 
-        ContentInfo content = contentService.info(user, contentid);
-        Sheet<CommentInfo> comments = commentService.query(user, contentid, new Flipper().limit(30));
+        ContentInfo content = contentService.info(userid, contentid);
+        Sheet<CommentBean> comments = commentService.query(userid, contentid, new Flipper().limit(30));
 
         //热帖
         //Flipper flipper2 = new Flipper().limit(8).sort("viewNum DESC");

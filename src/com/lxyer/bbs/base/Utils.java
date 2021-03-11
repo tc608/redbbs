@@ -1,14 +1,17 @@
-package com.lxyer.bbs.base.kit;
+package com.lxyer.bbs.base;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Lxy at 2017/11/29 15:17.
  */
-public final class LxyKit {
+public final class Utils {
 
     public static String dateFmt(long time) {
         /**
@@ -66,5 +69,27 @@ public final class LxyKit {
             ts[0] = (int) list.get(i);
         }
         return ts;
+    }
+
+    /**
+     * 判断对象是否为空
+     *
+     * @param obj 待判断的对象
+     * @return
+     */
+    public static boolean isEmpty(Object obj) {
+        if (obj == null) {
+            return true;
+        } else if (obj instanceof String) {
+            return ((String) obj).trim().isEmpty();
+        } else if (obj instanceof Collection) {
+            return ((Collection) obj).isEmpty();
+        } else if (obj instanceof Map) {
+            return ((Map) obj).isEmpty();
+        } else if (obj.getClass().isArray() && Array.getLength(obj) == 0) {
+            return true;
+        }
+
+        return false;
     }
 }

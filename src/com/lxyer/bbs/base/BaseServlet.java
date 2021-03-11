@@ -1,6 +1,9 @@
 package com.lxyer.bbs.base;
 
 import com.jfinal.kit.Kv;
+import com.lxyer.bbs.base.user.UserService;
+import com.lxyer.bbs.comment.CommentService;
+import com.lxyer.bbs.content.ContentService;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterNode;
@@ -16,7 +19,7 @@ import static com.lxyer.bbs.base.kit.RetCodes.RET_USER_UNLOGIN;
 /**
  * Created by Lxy at 2017/10/3 13:39.
  */
-@HttpUserType(com.lxyer.bbs.base.user.UserInfo.class)
+//@HttpUserType(com.lxyer.bbs.base.user.UserInfo.class)
 public class BaseServlet extends HttpServlet {
 
     protected static final boolean winos = System.getProperty("os.name").contains("Window");
@@ -25,16 +28,16 @@ public class BaseServlet extends HttpServlet {
     protected File webroot;
 
     @Resource
-    protected com.lxyer.bbs.base.user.UserService userService;
+    protected UserService userService;
 
     @Resource
-    protected com.lxyer.bbs.content.ContentService contentService;
+    protected ContentService contentService;
 
     @Resource
-    protected com.lxyer.bbs.comment.CommentService commentService;
+    protected CommentService commentService;
 
     @Resource
-    protected com.lxyer.bbs.base.TaskQueue<com.lxyer.bbs.base.entity.VisLog> logQueue;
+    protected TaskQueue<com.lxyer.bbs.base.entity.VisLog> logQueue;
 
     @Override
     public void init(HttpContext context, AnyValue config) {
@@ -51,8 +54,9 @@ public class BaseServlet extends HttpServlet {
         String sessionid = request.getSessionid(true);
         int currentid = 0;
         if (sessionid != null) {
-            request.setCurrentUser(userService.current(sessionid));
+            // request.setCurrentUser(userService.current(sessionid));
             currentid = userService.currentUserid(sessionid);
+            request.setCurrentUserid(currentid);
         }
 
         String uri = request.getRequestURI();
@@ -150,7 +154,9 @@ public class BaseServlet extends HttpServlet {
     public int getParaToInt(HttpRequest request, int index) {
         int n = 0;
         String para = getPara(request, index);
-        if (para == null || "".equals(para)) n = 0;
+        if (para == null || "".equals(para)) {
+            n = 0;
+        }
         try {
             n = Integer.parseInt(para);
         } catch (Exception e) {

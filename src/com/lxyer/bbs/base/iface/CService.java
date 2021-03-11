@@ -12,21 +12,21 @@ import java.util.List;
 public interface CService<I extends UI> {
 
     @RestMapping(ignore = true)
-    default <A extends C> Sheet<I> createInfo(Sheet<A> fSheet) {
-        Sheet<I> sheet = new Sheet<>();
+    default <A extends C> Sheet<I> createInfo(Sheet<A> sheet) {
+        Sheet<I> sheet2 = new Sheet<>();
 
-        if (fSheet == null || fSheet.getTotal() < 1) {
-            sheet.setTotal(0);
-            sheet.setRows(new ArrayList<>());
+        if (sheet == null || sheet.getTotal() < 1) {
+            sheet2.setTotal(0);
+            sheet2.setRows(new ArrayList<>());
         } else {
-            int total = (int) fSheet.getTotal();
+            int total = (int) sheet.getTotal();
             List<I> rows = new ArrayList<>(total);
-            fSheet.forEach(x -> rows.add((I) x.createInfo()));
+            sheet.forEach(x -> rows.add((I) x.createInfo()));
 
-            sheet.setTotal(total);
-            sheet.setRows(rows);
+            sheet2.setTotal(total);
+            sheet2.setRows(rows);
         }
 
-        return sheet;
+        return sheet2;
     }
 }
