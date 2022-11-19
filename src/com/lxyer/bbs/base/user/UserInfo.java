@@ -1,7 +1,7 @@
 package com.lxyer.bbs.base.user;
 
-import org.redkale.convert.ConvertColumn;
-import org.redkale.convert.ConvertType;
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Column;
@@ -10,6 +10,8 @@ import javax.persistence.Id;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 public class UserInfo implements java.io.Serializable {
 
     @Id
@@ -33,142 +35,6 @@ public class UserInfo implements java.io.Serializable {
     private int status = 1;
     private String time = "";
 
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
-    }
-
-    @ConvertColumn(ignore = true, type = ConvertType.JSON)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPhone() {
-        return this.phone;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getNickname() {
-        return this.nickname;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getAvatar() {
-        return this.avatar;
-    }
-
-    public void setRelaname(String relaname) {
-        this.relaname = relaname;
-    }
-
-    public String getRelaname() {
-        return this.relaname;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return this.email == null || this.email.isEmpty() ? "" : this.email;
-    }
-
-    public int getRoleid() {
-        return roleid;
-    }
-
-    public void setRoleid(int roleid) {
-        this.roleid = roleid;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    public String getGit() {
-        return git;
-    }
-
-    public void setGit(String git) {
-        this.git = git;
-    }
-
-    public void setCreatetime(long createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getCreatetime() {
-        return this.createtime;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     @Override
     public String toString() {

@@ -3,6 +3,8 @@ package com.lxyer.bbs.comment;
 import com.lxyer.bbs.base.iface.CI;
 import com.lxyer.bbs.base.iface.UI;
 import com.lxyer.bbs.base.user.UserRecord;
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import java.io.Serializable;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 public class CommentBean implements UI<CommentBean>, Serializable, CI<CommentBean> {
 
     @Column(comment = "[评论id]")
@@ -44,102 +48,6 @@ public class CommentBean implements UI<CommentBean>, Serializable, CI<CommentBea
 
     private String title;
     private int hadsupport = -1;
-
-    public void setCommentid(int commentid) {
-        this.commentid = commentid;
-    }
-
-    public int getCommentid() {
-        return this.commentid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public int getPid() {
-        return pid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
-    }
-
-    public int getCate() {
-        return cate;
-    }
-
-    public void setCate(int cate) {
-        this.cate = cate;
-    }
-
-    public void setContentid(int contentid) {
-        this.contentid = contentid;
-    }
-
-    public int getContentid() {
-        return this.contentid;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getSupportnum() {
-        return supportnum;
-    }
-
-    public void setSupportnum(int supportnum) {
-        this.supportnum = supportnum;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getStatus() {
-        return this.status;
-    }
-
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
-    public CommentBean getpCommentInfo() {
-        return pCommentInfo;
-    }
-
-    public void setpCommentInfo(CommentBean pCommentInfo) {
-        this.pCommentInfo = pCommentInfo;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getHadsupport() {
-        return hadsupport;
-    }
-
-    public void setHadsupport(int hadsupport) {
-        this.hadsupport = hadsupport;
-    }
 
     @Override
     public String toString() {

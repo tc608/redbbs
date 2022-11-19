@@ -2,6 +2,8 @@ package com.lxyer.bbs.comment;
 
 import com.lxyer.bbs.base.Utils;
 import com.lxyer.bbs.base.iface.C;
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Cacheable;
@@ -13,6 +15,8 @@ import java.io.Serializable;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 @Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_comment", comment = "[评论表]")
 public class CommentInfo implements Serializable, C<CommentBean> {
@@ -44,78 +48,6 @@ public class CommentInfo implements Serializable, C<CommentBean> {
 
     @Column(comment = "[状态]1正常，-1删除")
     private short status = 10;
-
-    public void setCommentid(int commentid) {
-        this.commentid = commentid;
-    }
-
-    public int getCommentid() {
-        return this.commentid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
-    }
-
-    public int getPid() {
-        return this.pid;
-    }
-
-    public void setCate(short cate) {
-        this.cate = cate;
-    }
-
-    public short getCate() {
-        return this.cate;
-    }
-
-    public void setContentid(int contentid) {
-        this.contentid = contentid;
-    }
-
-    public int getContentid() {
-        return this.contentid;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getContent() {
-        return this.content;
-    }
-
-    public void setCreatetime(long createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getCreatetime() {
-        return this.createtime;
-    }
-
-    public void setSupportnum(int supportnum) {
-        this.supportnum = supportnum;
-    }
-
-    public int getSupportnum() {
-        return this.supportnum;
-    }
-
-    public void setStatus(short status) {
-        this.status = status;
-    }
-
-    public short getStatus() {
-        return this.status;
-    }
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package com.lxyer.bbs.base.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Cacheable;
@@ -10,6 +12,8 @@ import javax.persistence.Table;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 @Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_dynattr", comment = "[动态属性表]")
 public class DynAttr implements java.io.Serializable {
@@ -26,38 +30,6 @@ public class DynAttr implements java.io.Serializable {
 
     @Column(comment = "[属性值]")
     private String value = "";
-
-    public void setTid(int tid) {
-        this.tid = tid;
-    }
-
-    public int getTid() {
-        return this.tid;
-    }
-
-    public void setCate(short cate) {
-        this.cate = cate;
-    }
-
-    public short getCate() {
-        return this.cate;
-    }
-
-    public void setAttr(String attr) {
-        this.attr = attr;
-    }
-
-    public String getAttr() {
-        return this.attr;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
 
     @Override
     public String toString() {

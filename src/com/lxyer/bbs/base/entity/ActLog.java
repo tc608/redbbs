@@ -1,5 +1,7 @@
 package com.lxyer.bbs.base.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Cacheable;
@@ -10,6 +12,8 @@ import javax.persistence.Table;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 @Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_actlog")
 public class ActLog implements java.io.Serializable {
@@ -35,62 +39,6 @@ public class ActLog implements java.io.Serializable {
 
     @Column(comment = "[状态]-1删除 1正常")
     private short status = 10;
-
-    public void setLogid(int logid) {
-        this.logid = logid;
-    }
-
-    public int getLogid() {
-        return this.logid;
-    }
-
-    public void setCate(short cate) {
-        this.cate = cate;
-    }
-
-    public short getCate() {
-        return this.cate;
-    }
-
-    public void setTid(int tid) {
-        this.tid = tid;
-    }
-
-    public int getTid() {
-        return this.tid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public void setCreatetime(long createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getCreatetime() {
-        return this.createtime;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getRemark() {
-        return this.remark;
-    }
-
-    public void setStatus(short status) {
-        this.status = status;
-    }
-
-    public short getStatus() {
-        return this.status;
-    }
 
     @Override
     public String toString() {

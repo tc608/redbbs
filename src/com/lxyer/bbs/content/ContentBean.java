@@ -1,5 +1,7 @@
 package com.lxyer.bbs.content;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 import org.redkale.source.FilterBean;
 
@@ -10,6 +12,8 @@ import javax.persistence.Table;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 @Table(catalog = "db_redbbs", name = "content", comment = "[内容表]")
 public class ContentBean implements FilterBean, java.io.Serializable {
 
@@ -43,98 +47,6 @@ public class ContentBean implements FilterBean, java.io.Serializable {
 
     @Column(comment = "[阅读量]")
     private int viewnum;
-
-/*    @Column(comment = "[精] 0否，1是")
-    private int wonderful;
-
-    @Column(comment = "[置顶] 0否，1是")
-    private int top;
-
-    @Column(comment = "[结帖]大于0结帖")
-    private int solved;
-
-    @Column(comment = "[状态]")
-    private int status = 1;*/
-
-    public void setContentid(int contentid) {
-        this.contentid = contentid;
-    }
-
-    public int getContentid() {
-        return this.contentid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setDigest(String digest) {
-        this.digest = digest;
-    }
-
-    public String getDigest() {
-        return this.digest;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setCreatetime(long createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getCreatetime() {
-        return this.createtime;
-    }
-
-    public int getCate() {
-        return cate;
-    }
-
-    public void setCate(int cate) {
-        this.cate = cate;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public int getType() {
-        return this.type;
-    }
-
-    public int getReplynum() {
-        return replynum;
-    }
-
-    public void setReplynum(int replynum) {
-        this.replynum = replynum;
-    }
-
-    public int getViewnum() {
-        return viewnum;
-    }
-
-    public void setViewnum(int viewnum) {
-        this.viewnum = viewnum;
-    }
 
     @Override
     public String toString() {

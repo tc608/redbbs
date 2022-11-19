@@ -3,6 +3,8 @@ package com.lxyer.bbs.content;
 import com.jfinal.kit.Kv;
 import com.lxyer.bbs.base.Utils;
 import com.lxyer.bbs.base.iface.C;
+import lombok.Getter;
+import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
 import javax.persistence.Cacheable;
@@ -14,6 +16,8 @@ import java.io.Serializable;
 /**
  * @author lxyer
  */
+@Setter
+@Getter
 @Cacheable(interval = 5 * 60)
 @Table(catalog = "redbbs", name = "sys_content", comment = "[内容表]")
 public class Content implements Serializable, C<ContentInfo> {
@@ -60,118 +64,6 @@ public class Content implements Serializable, C<ContentInfo> {
 
     @Column(comment = "[状态] -10删除 10未结帖 20结帖 30私密")
     private short status = 10;
-
-    public void setContentid(int contentid) {
-        this.contentid = contentid;
-    }
-
-    public int getContentid() {
-        return this.contentid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
-
-    public int getUserid() {
-        return this.userid;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setDigest(String digest) {
-        this.digest = digest;
-    }
-
-    public String getDigest() {
-        return this.digest;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getContent() {
-        return this.content;
-    }
-
-    public void setCreatetime(long createtime) {
-        this.createtime = createtime;
-    }
-
-    public long getCreatetime() {
-        return this.createtime;
-    }
-
-    public void setCate(short cate) {
-        this.cate = cate;
-    }
-
-    public short getCate() {
-        return this.cate;
-    }
-
-    public void setType(short type) {
-        this.type = type;
-    }
-
-    public short getType() {
-        return this.type;
-    }
-
-    public void setReplynum(int replynum) {
-        this.replynum = replynum;
-    }
-
-    public int getReplynum() {
-        return this.replynum;
-    }
-
-    public void setViewnum(int viewnum) {
-        this.viewnum = viewnum;
-    }
-
-    public int getViewnum() {
-        return this.viewnum;
-    }
-
-    public void setWonderful(short wonderful) {
-        this.wonderful = wonderful;
-    }
-
-    public short getWonderful() {
-        return this.wonderful;
-    }
-
-    public void setTop(short top) {
-        this.top = top;
-    }
-
-    public short getTop() {
-        return this.top;
-    }
-
-    public void setSolved(short solved) {
-        this.solved = solved;
-    }
-
-    public short getSolved() {
-        return this.solved;
-    }
-
-    public void setStatus(short status) {
-        this.status = status;
-    }
-
-    public short getStatus() {
-        return this.status;
-    }
 
     @Override
     public String toString() {
