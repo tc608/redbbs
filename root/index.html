@@ -15,7 +15,7 @@
                         #for(x : top.rows??)
                         <li>
                             <a href="/user/#(x.userid)" class="fly-avatar">
-                                <img src="#(x.avatar)" alt="#(x.nickname)">
+                                <img src="#(x.user.avatar)" alt="#(x.user.nickname)">
                             </a>
                             <h2 title="#(x.title)">
                                 #if(x.status == 30)
@@ -33,7 +33,7 @@
                             </h2>
                             <div class="fly-list-info">
                                 <a href="/user/#(x.userid)" link>
-                                    <cite>#(x.nickname)</cite>
+                                    <cite>#(x.user.nickname)</cite>
                                     <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                     <i class="layui-badge fly-badge-vip">VIP3</i>-->
                                 </a>
@@ -80,7 +80,7 @@
                         #for(x : contents.rows??)
                         <li>
                             <a href="/user/#(x.userid)" class="fly-avatar">
-                                <img src="#(x.avatar)" alt="#(x.nickname)">
+                                <img src="#(x.user.avatar)" alt="#(x.user.nickname)">
                             </a>
                             <h2 title="#(x.title)">
                                 #if(x.status == 30)
@@ -92,7 +92,7 @@
                             </h2>
                             <div class="fly-list-info">
                                 <a href="/user/#(x.userid)" link>
-                                    <cite>#(x.nickname)</cite>
+                                    <cite>#(x.user.nickname)</cite>
                                     <!--
                                     <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                     <i class="layui-badge fly-badge-vip">VIP3</i>

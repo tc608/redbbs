@@ -12,13 +12,13 @@
         
     <server protocol="HTTP" host="0.0.0.0" port="80" root="root">
         <services autoload="true"/>
-        <rest path="os" base="com.lxyer.bbs.base.BaseServlet" autoload="true"/>
+        <rest path="os" base="net.tccn.bbs.base.BaseServlet" autoload="true"/>
         <request>
             <!--从X-Real-IP参数中获取IP-->
             <remoteaddr value="request.headers.X-Real-IP"/>
         </request>
         <servlets autoload="true"/>
-        <render value="com.lxyer.bbs.base.EnjoyRender"/>
+        <render value="net.tccn.bbs.base.TplRender"/>
     </server>
 
 </application>

@@ -47,11 +47,11 @@
                         <a name="item-1111111111"></a>
                         <div class="detail-about detail-about-reply">
                             <a class="fly-avatar" href="/user/#(x.userid)">
-                                <img src="#(x.avatar)" alt="#(x.nickname)">
+                                <img src="#(x.user.avatar)" alt="#(x.user.nickname)">
                             </a>
                             <div class="fly-detail-user">
                                 <a href="" class="fly-link">
-                                    <cite>#(x.nickname)</cite>
+                                    <cite>#(x.user.nickname)</cite>
                                     <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                     <i class="layui-badge fly-badge-vip">VIP3</i>-->
                                 </a>
@@ -119,11 +119,11 @@
             <div class="fly-panel detail-box">
                 <div class="detail-about">
                     <a class="fly-avatar" href="/user/#(bean.userid)">
-                        <img src="#(bean.avatar)" alt="#(bean.nickname)">
+                        <img src="#(bean.user.avatar)" alt="#(bean.user.nickname)">
                     </a>
                     <div class="fly-detail-user">
                         <a href="/user/#(bean.userid)" class="fly-link">
-                            <cite>#(bean.nickname)</cite>
+                            <cite>#(bean.user.nickname)</cite>
                             <!--
                             <i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
                             <i class="layui-badge fly-badge-vip">VIP3</i>
