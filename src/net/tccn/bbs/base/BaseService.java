@@ -17,18 +17,10 @@ public class BaseService implements Service {
 
     protected final static RetResult RET_SUCCESS = RetResult.success();
 
-    /*@Resource(name = "SERVER_ROOT")
-    protected File webroot;*/
-
     @Resource(name = "redbbs")
     protected DataSource dataSource;
 
-    /* 使用redis 代码中配置此处即可
-    @Resource(name = "redis")*/
-    @Resource(name = "cacheSource")
-    protected CacheSource<Long> sessions;
-
-    @Resource(name = "cacheSource")
+    @Resource(name = "redis_cache")
     protected CacheSource cacheSource;
 
     protected static final boolean winos = System.getProperty("os.name").contains("Window");

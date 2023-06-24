@@ -3,14 +3,14 @@
 <application port="5002">
     <resources>
         <!-- 如果需要使用redis,此处配置（需要导入 redkale-plugin）  -->
-        <!--<source name="redis" value="org.redkalex.cache.RedisCacheSource" xxx="16">
-            <node addr="redishost" port="6379" password="pwd123"/>
-        </source>-->
+        <source name="rediscache" value="org.redkalex.cache.RedisCacheSource" xxx="16">
+            <node addr="127.0.0.1" port="6379" password="123456"/>
+        </source>
 
         <properties load="config.txt"></properties>
     </resources>
         
-    <server protocol="HTTP" host="0.0.0.0" port="80" root="root">
+    <server protocol="HTTP" host="0.0.0.0" port="6060" root="root">
         <services autoload="true"/>
         <rest path="os" base="net.tccn.bbs.base.BaseServlet" autoload="true"/>
         <request>

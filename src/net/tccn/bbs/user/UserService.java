@@ -26,7 +26,7 @@ import static net.tccn.bbs.base.util.RetCodes.RET_USER_ACCOUNT_PWD_ILLEGAL;
 public class UserService extends BaseService {
 
     @RestMapping(name = "login", auth = false, comment = "登录校验")
-    public RetResult<UserInfo> login(LoginBean bean) {
+    public RetResult login(LoginBean bean) {
         if (bean == null || bean.emptyUsername()) {
             return retError("参数错误");
         }
@@ -38,7 +38,8 @@ public class UserService extends BaseService {
             //log(null, 0, "用户或密码错误");
             return RetCodes.retResult(RET_USER_ACCOUNT_PWD_ILLEGAL, "用户名或密码错误");
         }
-        sessions.setAsync(sessionExpireSeconds, bean.getSessionid(), (long) user.getUserid());
+        cacheSource.setLongAsync(sessionExpireSeconds, bean.getSessionid(), user.getUserid());
+        cacheSource.setString("b", "1");
         retResult.setRetcode(0);
         retResult.setResult(Kv.by("token", bean.getSessionid()));
         retResult.setRetinfo("登录成功.");
@@ -50,9 +51,10 @@ public class UserService extends BaseService {
         if (sessionid == null) return 0;
         long userid = 0;
         try {
-            userid = sessions.getLong(sessionid, 0);
+            userid = cacheSource.getLong(sessionid, 0);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return 0;
         }
         return (int) userid;
     }
@@ -64,8 +66,7 @@ public class UserService extends BaseService {
 
         long userid = 0;
         try {
-            userid = sessions.getLong(sessionid, 0);
-            sessions.getAndRefresh(sessionid, sessionExpireSeconds);
+            userid = cacheSource.getLongAndRefresh(sessionid, sessionExpireSeconds, 0l);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +102,7 @@ public class UserService extends BaseService {
 
     @RestMapping(name = "logout", auth = false, comment = "退出登录")
     public RetResult logout(@RestSessionid String sessionid) {
-        sessions.remove(sessionid);
+        cacheSource.remove(sessionid);
 
         return RetResult.success();
         //return new HttpResult().header("Location", "/").status(302);

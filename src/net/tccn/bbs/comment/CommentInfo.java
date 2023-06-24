@@ -1,9 +1,9 @@
 package net.tccn.bbs.comment;
 
-import net.tccn.bbs.base.BaseEntity;
-import net.tccn.bbs.user.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
+import net.tccn.bbs.base.BaseEntity;
+import net.tccn.bbs.user.UserInfo;
 
 import javax.persistence.*;
 
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Cacheable(interval = 5 * 60)
-@Table(catalog = "redbbs", name = "commentinfo", comment = "[评论表]")
+@Table(comment = "[评论表]")
 public class CommentInfo extends BaseEntity {
 
     @Id

@@ -28,8 +28,7 @@ public class ContentServlet extends BaseServlet {
         Flipper flipper = new Flipper().offset((curr - 1) * 15).limit(15).sort("top DESC,createtime DESC");
         Sheet<ContentInfo> contents = contentService.query(userid, flipper, actived);
 
-        Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI())
-                .set("actived", actived).set("curr", curr);
+        Kv kv = Kv.by("contents", contents).set("url", request.getRequestURI()).set("actived", actived).set("curr", curr);
 
         response.finish(HttpScope.refer("/jie/index.html").attr(kv));
     }
@@ -92,9 +91,7 @@ public class ContentServlet extends BaseServlet {
         //热帖
         Sheet<ContentInfo> hotView = logQueue.hotView(sessionid);
 
-        Kv kv = Kv.by("contents", contents).set("hotView", hotView)
-                .set("solved", solved).set("wonderful", wonderful)
-                .set("column", para).set("curr", curr);
+        Kv kv = Kv.by("contents", contents).set("hotView", hotView).set("solved", solved).set("wonderful", wonderful).set("column", para).set("curr", curr);
         response.finish(HttpScope.refer("/jie/index.html").attr(kv));
     }
 }

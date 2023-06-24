@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Setter
 @Getter
 @Cacheable(interval = 5 * 60)
-@Table(catalog = "redbbs", name = "sys_dynattr", comment = "[动态属性表]")
+@Table(comment = "[动态属性表]")
 public class DynAttr implements java.io.Serializable {
 
     @Id

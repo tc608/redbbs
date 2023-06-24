@@ -143,7 +143,7 @@ public class CommentService extends BaseService {
      *
      * @return
      */
-    @org.redkale.util.Comment("用户评论榜")
+    @Comment("用户评论榜")
     public Map<String, Number> commentRank() {
         dataSource.querySheet(CommentInfo.class, new Flipper(8), FilterNode.create("userid", IN));
 

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Setter
 @Getter
 @Cacheable(interval = 5 * 60)
-@Table(catalog = "redbbs", name = "userdetail")
+@Table(comment = "用户表")
 public class UserDetail implements java.io.Serializable {
 
     @Id

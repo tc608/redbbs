@@ -253,7 +253,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util', 'face'], f
     ,editer: function(key){
           var E = window.wangEditor;
           var editor = new E('#editor');
-          editor.customConfig.uploadImgServer = '/upload/img';
+          editor.customConfig.uploadImgServer = '/os/file/img';
 
           var cache_key = key+"_" + $("input[name='contentid']").val();
           var html = localStorage.getItem(cache_key);

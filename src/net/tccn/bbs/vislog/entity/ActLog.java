@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.redkale.convert.json.JsonConvert;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,8 +13,7 @@ import javax.persistence.Table;
  */
 @Setter
 @Getter
-@Cacheable(interval = 5 * 60)
-@Table(catalog = "redbbs", name = "actlog")
+@Table(comment = "日志记录表")
 public class ActLog implements java.io.Serializable {
 
     @Id

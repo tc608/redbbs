@@ -1,3 +1,0 @@
------------ file conf ----------
-file.upload_dir=./root/file_pub/
-file.view_path=http://127.0.0.1/file_pub/

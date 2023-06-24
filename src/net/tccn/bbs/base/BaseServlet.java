@@ -49,15 +49,9 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void preExecute(HttpRequest request, HttpResponse response) throws IOException {
-        /*if (true){
-            response.finish(HttpScope.refer("404.html"));
-            return;
-        }*/
-
         String sessionid = request.getSessionid(true);
         int currentid = 0;
         if (sessionid != null) {
-            request.setCurrentUser(userService.current(sessionid));
             currentid = userService.currentUserid(sessionid);
             request.setCurrentUserid(currentid);
         }
@@ -69,6 +63,10 @@ public class BaseServlet extends HttpServlet {
             return;
         }
         if (uri.endsWith(".html")) {
+            response.finish(HttpScope.refer(uri));
+            return;
+        }
+        if (uri.startsWith("/upload/")) {
             response.finish(HttpScope.refer(uri));
             return;
         }
@@ -107,7 +105,7 @@ public class BaseServlet extends HttpServlet {
 
     @Override
     protected void authenticate(HttpRequest request, HttpResponse response) throws IOException {
-        if (request.currentUser() == null) {
+        if (request.currentIntUserid() == 0) {
             if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
                 response.finish(RetCodes.retResult(RET_USER_UNLOGIN, "未登录，登录后重试").toString());
             } else {

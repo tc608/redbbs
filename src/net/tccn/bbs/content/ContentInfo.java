@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Cacheable(interval = 5 * 60)
-@Table(catalog = "redbbs", name = "contentinfo", comment = "[内容表]")
+@Table(comment = "[内容表]")
 public class ContentInfo extends BaseEntity {
 
     @Id

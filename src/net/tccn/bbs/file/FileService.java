@@ -4,42 +4,42 @@ import net.tccn.bbs.base.BaseService;
 import org.redkale.net.http.RestMapping;
 import org.redkale.net.http.RestService;
 import org.redkale.net.http.RestUploadFile;
-import org.redkale.service.RetResult;
+import org.redkale.util.Utility;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by Lxy at 2017/10/3 13:48.
- */
-@RestService(automapping = true, comment = "文件服务")
+@RestService(name = "file")
 public class FileService extends BaseService {
 
     @Resource(name = "property.file.upload_dir")
-    private String dir = "";
+    private String dir = "./root/upload/";
     @Resource(name = "property.file.view_path")
-    private String view = "";
+    private String view = "/upload/";
     private String format = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS";
 
-    @RestMapping(name = "upload", comment = "文件上传")
-    public RetResult upload(@RestUploadFile File tmpFile) throws IOException {
-        String name = tmpFile.getName();
-        String suffix = name.substring(name.lastIndexOf("."));
-        String path = String.format(format, System.currentTimeMillis()) + suffix;
-        File destFile = new File(dir + path);
-        destFile.getParentFile().mkdir();
-        if (!tmpFile.renameTo(destFile)) {
-            try {
-                Files.copy(tmpFile.toPath(), destFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
-            } finally {
-                tmpFile.delete();//删除临时文件
-            }
+    @RestMapping(name = "img")
+    public Map img(@RestUploadFile File[] parts) {
+        Map ret = new HashMap();
+        ret.put("errno", 0);
+        List data = new ArrayList();
+
+        for (File part : parts) {
+            String name = part.getName();
+            String suffix = name.substring(name.lastIndexOf("."));
+            String path = String.format(format, System.currentTimeMillis()) + suffix;
+            File destFile = new File(dir + Utility.todayYYMMDD() + "/" + path);
+            destFile.getParentFile().mkdirs();
+            part.renameTo(destFile);
+
+
+            data.add(view + Utility.todayYYMMDD() + "/" + path);
         }
-        RetResult result = RetResult.success();
-        result.setRetinfo(view + path);
-        return result;
+        ret.put("data", data);
+        return ret;
     }
 }

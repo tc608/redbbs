@@ -6,9 +6,6 @@
 package net.tccn.bbs.base;
 
 import net.tccn.bbs.base.util.Kv;
-import org.redkale.source.DataJdbcSource;
-import org.redkale.source.DataSource;
-import org.redkale.source.Flipper;
 import org.redkale.util.Comment;
 import org.redkale.util.Reproduce;
 import org.redkale.util.Sheet;
@@ -653,32 +650,6 @@ public final class Utils {
             builder.append(String.format("\"%s\":\"%s\",", x.substring(0, index), c == '[' || c == '{' ? x.substring(index + 1).replaceAll("\"", "\\\\\"") : x.substring(index + 1)));
         });
         return String.format("{%s}", builder.deleteCharAt(builder.length() - 1).toString());
-    }
-
-    public static <T> Sheet<T> querySheetBySql(DataSource dataSource, String sql, Flipper flipper, Class<T> type) {
-        DataJdbcSource jdbcSource = (DataJdbcSource) dataSource;
-        //总条数
-        int total = jdbcSource.directQuery("select count(0) c from (" + sql + ") c", rs -> {
-            int result = 0;
-            try {
-                while (rs.next()) {
-                    result = rs.getInt(1);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return result;
-        });
-
-        if (total == 0) {
-            return new Sheet<>(0, new ArrayList<>());
-        }
-
-        if (flipper != null) {
-            sql = String.format("%s %s limit %s,%s ", sql, Utils.isEmpty(flipper.getSort()) ? "" : "order by " + flipper.getSort(), flipper.getOffset(), flipper.getLimit());
-        }
-        List<T> dataList = jdbcSource.directQuery(sql, rs -> Utils.queryList(rs, type));
-        return new Sheet<>(total, dataList);
     }
 
     @Comment("获取次日0点0分0秒时间戳")
