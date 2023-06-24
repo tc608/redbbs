@@ -11,7 +11,6 @@ import net.tccn.bbs.vislog.entity.VisLog;
 import org.redkale.net.http.*;
 import org.redkale.source.FilterExpress;
 import org.redkale.source.FilterNode;
-import org.redkale.util.AnyValue;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -41,11 +40,6 @@ public class BaseServlet extends HttpServlet {
 
     @Resource
     protected TaskQueue<VisLog> logQueue;
-
-    @Override
-    public void init(HttpContext context, AnyValue config) {
-
-    }
 
     @Override
     protected void preExecute(HttpRequest request, HttpResponse response) throws IOException {
@@ -80,9 +74,7 @@ public class BaseServlet extends HttpServlet {
                 para.set(key, request.getParameter(key));
             }
             Kv headers = Kv.create();
-            request.getHeaders().forEach((k, v) -> {
-                headers.set(k, request.getHeader(k));
-            });
+            request.getHeaders().forEach((k, v) -> headers.set(k, request.getHeader(k)));
 
             VisLog visLog = new VisLog();
             visLog.setIp(request.getRemoteAddr());
@@ -147,10 +139,6 @@ public class BaseServlet extends HttpServlet {
         return para == null || "".equals(para) ? defaultValue : para;
     }
 
-    public int getParaToInt(HttpRequest request, int index, int defaultValue) {
-        String para = getPara(request, index);
-        return para == null || "".equals(para) ? defaultValue : Integer.parseInt(para);
-    }
 
     public int getParaToInt(HttpRequest request, int index) {
         int n = 0;
@@ -161,7 +149,7 @@ public class BaseServlet extends HttpServlet {
         try {
             n = Integer.parseInt(para);
         } catch (Exception e) {
-
+            //throw new RuntimeException(e);
         }
         return n;
     }

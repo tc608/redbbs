@@ -39,7 +39,7 @@ public final class Utils {
     }
 
     public static String dateFmt(long time) {
-        /**
+        /*
          * 刚刚       60秒内        60 * 1000
          * x分钟前     1小时候内    60 * 60*1000
          * x小时前     1天内        24 * 60*60*1000
@@ -83,15 +83,15 @@ public final class Utils {
     }
 
     public static <T> T[] listToArray(List list, T[] ts) {
-        for (int i = 0; i < list.size(); i++) {
-            ts[0] = (T) list.get(i);
+        for (Object o : list) {
+            ts[0] = (T) o;
         }
         return ts;
     }
 
     public static int[] listToArray(List list, int[] ts) {
-        for (int i = 0; i < list.size(); i++) {
-            ts[0] = (int) list.get(i);
+        for (Object o : list) {
+            ts[0] = (int) o;
         }
         return ts;
     }
@@ -118,7 +118,7 @@ public final class Utils {
         return false;
     }
 
-    private static Map<String, Reproduce> reproduceMap = new HashMap<>();
+    private static final Map<String, Reproduce> reproduceMap = new HashMap<>();
 
     /**
      * @param d   目标对象
@@ -132,9 +132,7 @@ public final class Utils {
 
         Reproduce<D, S> reproduce = reproduceMap.get(reproductKey);
         if (reproduce == null) {
-            if (reproduce == null) {
-                reproduceMap.put(reproductKey, reproduce = (Reproduce<D, S>) Reproduce.create(d.getClass(), s.getClass()));
-            }
+            reproduceMap.put(reproductKey, reproduce = (Reproduce<D, S>) Reproduce.create(d.getClass(), s.getClass()));
         }
 
         return reproduce.apply(d, s);
@@ -296,7 +294,7 @@ public final class Utils {
      */
     public static int strLength(String value) {
         int valueLength = 0;
-        String chinese = "[\u4e00-\u9fa5]";
+        String chinese = "[一-龥]";
         for (int i = 0; i < value.length(); i++) {
             String temp = value.substring(i, i + 1);
             if (temp.matches(chinese)) {
@@ -550,9 +548,9 @@ public final class Utils {
 
     @Comment("对象转GET请求参数转换为字符，结果：p1=v1&p2=v2&p3=v3")
     public static String convertHttpParams(Object o, List<String> removeFields, boolean encode) {
-        Class<? extends Object> c = o.getClass();
+        Class<?> c = o.getClass();
         Field[] fields = c.getDeclaredFields();
-        Map<String, Object> map = new TreeMap<String, Object>();
+        Map<String, Object> map = new TreeMap<>();
         for (Field field : fields) {
             field.setAccessible(true);
             String name = field.getName();
@@ -577,13 +575,13 @@ public final class Utils {
         if (map == null || map.isEmpty()) {
             return "";
         }
-        Set<String> sortSet = new TreeSet<String>();
+        Set<String> sortSet = new TreeSet<>();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             sortSet.add(entry.getKey());
         }
 
         // 参数名按ASCII码从小到大排序（字典序）,然后使用( & )连接排好序的key=value集合
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (String key : sortSet) {
             if (isFirst) {
@@ -599,7 +597,7 @@ public final class Utils {
 
     @Comment("对象转map")
     public static Map<String, Object> convertToMap(Object o, List<String> removeFields) {
-        Class<? extends Object> c = o.getClass();
+        Class<?> c = o.getClass();
         List<Field> fields = Stream.of(c.getDeclaredFields()).collect(Collectors.toList());
         if (c.getSuperclass() != null) {
             Field[] superFields = c.getSuperclass().getDeclaredFields();
@@ -682,7 +680,7 @@ public final class Utils {
         return count;
     }
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     public static int randomNum(int len) {
         int rs = random.nextInt(9);

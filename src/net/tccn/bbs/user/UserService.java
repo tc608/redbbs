@@ -66,7 +66,7 @@ public class UserService extends BaseService {
 
         long userid = 0;
         try {
-            userid = cacheSource.getLongAndRefresh(sessionid, sessionExpireSeconds, 0l);
+            userid = cacheSource.getLongAndRefresh(sessionid, sessionExpireSeconds, 0L);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,8 +74,7 @@ public class UserService extends BaseService {
         if (userid == 0) {
             return null;
         }
-        UserInfo info = find((int) userid);
-        return info;
+        return find((int) userid);
     }
 
     @RestMapping(name = "info", comment = "用户信息")
@@ -84,8 +83,7 @@ public class UserService extends BaseService {
             return null;
         }
         UserDetail user = dataSource.find(UserDetail.class, userid);
-        UserInfo bean = user.createUserInfo();
-        return bean;
+        return user.createUserInfo();
     }
 
     @Comment("根据用户ID, 批量查询一批用户信息")
@@ -96,8 +94,7 @@ public class UserService extends BaseService {
 
         FilterNode node = FilterNode.create("userid", (Serializable) userids);
         List<UserDetail> records = dataSource.queryList(UserDetail.class, node);
-        Map<Integer, UserInfo> map = Utils.toMap(records, x -> x.getUserid(), x -> x.createUserInfo());
-        return map;
+        return Utils.toMap(records, x -> x.getUserid(), x -> x.createUserInfo());
     }
 
     @RestMapping(name = "logout", auth = false, comment = "退出登录")
@@ -110,9 +107,7 @@ public class UserService extends BaseService {
 
     @RestMapping(name = "query", auth = false, comment = "用户数据查询")
     public Sheet<UserDetail> query(Flipper flipper, @RestParam(name = "bean", comment = "过滤条件") final UserBean userBean) {
-        Sheet<UserDetail> users = dataSource.querySheet(UserDetail.class, flipper, userBean);
-
-        return users;
+        return dataSource.querySheet(UserDetail.class, flipper, userBean);
     }
 
     @RestMapping(name = "changepwd", comment = "修改密码")

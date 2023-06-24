@@ -35,15 +35,4 @@ public class UserInfo extends BaseEntity {
     private int status = 1;
     private String time = "";
 
-    /**
-     * 检查用户权限
-     *
-     * @param moduleid
-     * @param actionid
-     * @return
-     */
-    public boolean checkAuth(int moduleid, int actionid) {
-
-        return !(moduleid == 2 && actionid == 1);
-    }
 }

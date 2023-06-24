@@ -47,7 +47,7 @@ public class UserDetail implements java.io.Serializable {
     @Column(length = 32, comment = "[邮箱]")
     private String email = "";
 
-    @Column(comment = "")
+    @Column()
     private int roleid;
 
     @Column(length = 128, comment = "[个人博客地址]")

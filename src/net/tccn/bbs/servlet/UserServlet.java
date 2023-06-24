@@ -29,16 +29,12 @@ public class UserServlet extends BaseServlet {
 
     @HttpMapping(url = "/user/reg", auth = false, comment = "前往登录页")
     public void reg(HttpRequest request, HttpResponse response) {
-        /*List<Kv> list = new ArrayList<>();
-        list.add(Kv.by("k", 1).set("a", "1+1=?").set("q", 2));
-        list.add(Kv.by("k", 2).set("a", "1*1=?").set("q", 1));
-        list.add(Kv.by("k", 3).set("a", "3+2-5=?").set("q", 0));
-        list.add(Kv.by("k", 4).set("a", "Math.abs(-3)=?").set("q", 3));*/
+
 
         response.finish(HttpScope.refer("/user/login.html"));
     }
 
-    @HttpMapping(url = "/user/set", auth = true, comment = "用户设置")
+    @HttpMapping(url = "/user/set", comment = "用户设置")
     public void set(HttpRequest request, HttpResponse response) {
         response.finish(HttpScope.refer("/user/set.html"));
     }

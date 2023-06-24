@@ -27,6 +27,7 @@ import static org.redkale.source.FilterExpress.NOTEQUAL;
 /**
  * Created by Lxy at 2017/11/26 9:33.
  */
+@SuppressWarnings("Convert2MethodRef")
 @RestService(name = "content", comment = "文章帖子服务")
 public class ContentService extends BaseService {
 

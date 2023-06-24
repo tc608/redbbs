@@ -72,24 +72,4 @@ public class ContentInfo extends BaseEntity {
 
 
     private static final Kv types = Kv.by(10, "求助").set(20, "分享").set(30, "讨论").set(40, "公告").set(50, "动态");
-
-    /*public ContentInfo createInfo() {
-        ContentInfo info = new ContentInfo();
-        info.setContentid(contentid);
-        info.setUserid(userid);
-        info.setTitle(title);
-        info.setContent(content);
-        info.setCate(cate);
-        info.setType(type);
-        info.setViewnum(viewnum);
-        info.setReplynum(replynum);
-        info.setWonderful(wonderful);
-        info.setTop(top);
-        info.setSolved(solved);
-        info.setStatus(status);
-
-        info.setTypename(types.getOrDefault((int) type, "其他").toString());
-        info.setCreatetime(Utils.dateFmt(createtime));
-        return info;
-    }*/
 }

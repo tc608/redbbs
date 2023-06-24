@@ -44,9 +44,6 @@ public class CommentInfo extends BaseEntity {
     @Column(comment = "[状态]1正常，-1删除")
     private short status = 10;
 
-    /*@Transient
-    private CommentBean pCommentInfo;*/
-
     @Transient
     private String title;
     @Transient
@@ -55,19 +52,4 @@ public class CommentInfo extends BaseEntity {
     @Transient
     private UserInfo user;
 
-
-    /*public CommentBean createInfo() {
-        CommentBean info = new CommentBean();
-        info.setCommentid(commentid);
-        info.setUserid(userid);
-        info.setPid(pid);
-        info.setCate(cate);
-        info.setContentid(contentid);
-        info.setContent(content);
-        info.setSupportnum(supportnum);
-        info.setStatus(status);
-
-        info.setCreatetime(Utils.dateFmt(createtime));
-        return info;
-    }*/
 }

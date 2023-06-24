@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 /**
  * 2018/3/12 14:17.
  */
+@SuppressWarnings("Convert2MethodRef")
 public class Kv<K, V> extends LinkedHashMap<K, V> {
 
     protected static final JsonConvert convert = JsonConvert.root();
@@ -80,7 +81,7 @@ public class Kv<K, V> extends LinkedHashMap<K, V> {
                     kv.set(filedT, method.invoke(m));
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                new IllegalArgumentException(String.format("Kv.toKv获取 获取参数[]失败", field), e);
+                new IllegalArgumentException(String.format("Kv.toKv获取 获取参数[%s]失败", field), e);
             }
         });
 
@@ -105,9 +106,7 @@ public class Kv<K, V> extends LinkedHashMap<K, V> {
             if (!kv.containsKey(k) || Utils.isEmpty(kv.get(k))) {
                 try {
                     kv.set(k, method.invoke(m));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
@@ -159,19 +158,14 @@ public class Kv<K, V> extends LinkedHashMap<K, V> {
     }
 
     // 首字母大写
-    private static Function<String, String> upFirst = (s) -> {
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    };
+    private static final Function<String, String> upFirst = (s) -> s.substring(0, 1).toUpperCase() + s.substring(1);
 
-    private static Predicate<Class> isNumber = (t) -> {
-        return t == Integer.class || t == int.class
-                || t == Long.class || t == long.class
-                || t == Float.class || t == float.class
-                || t == Double.class || t == double.class
-                || t == Short.class || t == short.class
-                || t == Byte.class || t == byte.class
-                ;
-    };
+    private static final Predicate<Class> isNumber = (t) -> t == Integer.class || t == int.class
+            || t == Long.class || t == long.class
+            || t == Float.class || t == float.class
+            || t == Double.class || t == double.class
+            || t == Short.class || t == short.class
+            || t == Byte.class || t == byte.class;
 
     public static <T> T toAs(Object v, Class<T> clazz) {
         if (v == null) {

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 存贮数据到 非关系型数据库
  *
- * @author: liangxianyou at 2018/11/18 8:47.
+ * @author liangxianyou at 2018/11/18 8:47.
  */
 @Setter
 @Getter

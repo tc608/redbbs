@@ -85,9 +85,7 @@ public class CommentService extends BaseService {
         List<Integer> commentids = Utils.toList(comments, x -> x.getCommentid());
         FilterNode node = FilterNode.create("cate", 10).and("status", 10).and("userid", userid).and("tid", IN, (Serializable) commentids);
         List<Integer> supports = dataSource.queryColumnList("tid", ActLog.class, node);
-        comments.forEach(x -> {
-            x.setHadsupport(supports.contains(x.getCommentid()) ? 1 : 0);
-        });
+        comments.forEach(x -> x.setHadsupport(supports.contains(x.getCommentid()) ? 1 : 0));
 
         return comments;
     }
@@ -138,17 +136,10 @@ public class CommentService extends BaseService {
         return RetResult.success();
     }
 
-    /**
-     * todo:用户评论榜 待完成
-     *
-     * @return
-     */
     @Comment("用户评论榜")
     public Map<String, Number> commentRank() {
         dataSource.querySheet(CommentInfo.class, new Flipper(8), FilterNode.create("userid", IN));
 
-        Map<String, Number> numberMap = dataSource.getNumberMap(CommentInfo.class, FilterFuncColumn.create(FilterFunc.DISTINCTCOUNT, "userid"));
-
-        return numberMap;
+        return dataSource.getNumberMap(CommentInfo.class, FilterFuncColumn.create(FilterFunc.DISTINCTCOUNT, "userid"));
     }
 }

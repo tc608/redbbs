@@ -25,7 +25,7 @@ public class DynAttr implements java.io.Serializable {
     @Column(comment = "[类型]1文章, 2xx, 3...,")
     private short cate;
 
-    @Column(length = 32, comment = "")
+    @Column(length = 32)
     private String attr = "";
 
     @Column(comment = "[属性值]")
